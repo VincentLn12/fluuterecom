@@ -1,27 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
-import 'app/bindings/initial_binding.dart';
-import 'app/config/app_theme.dart';
-import 'app/routes/app_pages.dart';
-import 'app/routes/app_routes.dart';
 
 void main() {
-  runApp(const DormitoryApp());
+  runApp(const MyApp());
 }
 
-class DormitoryApp extends StatelessWidget {
-  const DormitoryApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Dormitory Management System',
-      theme: AppTheme.lightTheme,
-      initialBinding: InitialBinding(),
-      initialRoute: AppRoutes.login,
-      getPages: AppPages.pages,
+    return MaterialApp(
+      title: 'Projecte',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Projecte'),
+      ),
+      body: const Center(
+        child: Text('New Flutter Project'),
+      ),
     );
   }
 }
