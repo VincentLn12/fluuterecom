@@ -1,37 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+
+import 'bindings/initial_binding.dart';
+import 'pages/splash/splash_page.dart';
+import 'themes/app_theme.dart';
+import 'utils/constants.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RecipeApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RecipeApp extends StatelessWidget {
+  const RecipeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Projecte',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
-        useMaterial3: true,
-      ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Projecte'),
-      ),
-      body: const Center(
-        child: Text('New Flutter Project'),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812),
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return GetMaterialApp(
+          title: AppConstants.appName,
+          debugShowCheckedModeBanner: false,
+          initialBinding: InitialBinding(),
+          theme: AppTheme.lightTheme(),
+          darkTheme: AppTheme.darkTheme(),
+          themeMode: ThemeMode.light,
+          home: child,
+        );
+      },
+      child: const SplashPage(),
     );
   }
 }
