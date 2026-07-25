@@ -23,6 +23,7 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _imageUrlController = TextEditingController();
+  final _videoUrlController = TextEditingController();
   final _prepTimeController = TextEditingController(text: '10');
   final _cookTimeController = TextEditingController(text: '10');
   final _servingsController = TextEditingController(text: '2');
@@ -43,14 +44,19 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
       _nameController.text = recipe.name;
       _descriptionController.text = recipe.description;
       _imageUrlController.text = recipe.imageUrl;
+      _videoUrlController.text = recipe.videoUrl;
       _prepTimeController.text = recipe.prepTime.toString();
       _cookTimeController.text = recipe.cookTime.toString();
       _servingsController.text = recipe.servings.toString();
       _ratingController.text = recipe.rating.toString();
       _categoryId = recipe.categoryId;
       _difficulty = recipe.difficulty;
-      _ingredients.addAll(recipe.ingredients.map(_IngredientInput.fromIngredient));
-      _stepControllers.addAll(recipe.steps.map((step) => TextEditingController(text: step)));
+      _ingredients.addAll(
+        recipe.ingredients.map(_IngredientInput.fromIngredient),
+      );
+      _stepControllers.addAll(
+        recipe.steps.map((step) => TextEditingController(text: step)),
+      );
     } else {
       _ingredients.add(_IngredientInput.empty());
       _stepControllers.add(TextEditingController());
@@ -62,6 +68,7 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
     _nameController.dispose();
     _descriptionController.dispose();
     _imageUrlController.dispose();
+    _videoUrlController.dispose();
     _prepTimeController.dispose();
     _cookTimeController.dispose();
     _servingsController.dispose();
@@ -79,7 +86,9 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
   Widget build(BuildContext context) {
     final recipeController = Get.find<RecipeController>();
     return Scaffold(
-      appBar: AppBar(title: Text(_isEditing ? 'แก้ไขสูตรอาหาร' : 'เพิ่มสูตรอาหาร')),
+      appBar: AppBar(
+        title: Text(_isEditing ? 'แก้ไขสูตรอาหาร' : 'เพิ่มสูตรอาหาร'),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -89,14 +98,16 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(labelText: 'ชื่อเมนู'),
-                validator: (value) => Validators.requiredText(value, 'ชื่อเมนู'),
+                validator: (value) =>
+                    Validators.requiredText(value, 'ชื่อเมนู'),
               ),
               SizedBox(height: 12.h),
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(labelText: 'คำอธิบาย'),
                 maxLines: 3,
-                validator: (value) => Validators.requiredText(value, 'คำอธิบาย'),
+                validator: (value) =>
+                    Validators.requiredText(value, 'คำอธิบาย'),
               ),
               SizedBox(height: 12.h),
               Obx(
@@ -112,7 +123,8 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                       )
                       .toList(),
                   onChanged: (value) => setState(() => _categoryId = value),
-                  validator: (value) => value == null ? 'หมวดหมู่ห้ามว่าง' : null,
+                  validator: (value) =>
+                      value == null ? 'หมวดหมู่ห้ามว่าง' : null,
                 ),
               ),
               SizedBox(height: 12.h),
@@ -121,14 +133,27 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                 decoration: const InputDecoration(labelText: 'URL รูปภาพ'),
               ),
               SizedBox(height: 12.h),
+              TextFormField(
+                controller: _videoUrlController,
+                keyboardType: TextInputType.url,
+                decoration: const InputDecoration(
+                  labelText: 'ลิงก์วิดีโอสอนทำอาหาร',
+                  hintText: 'เช่น YouTube, TikTok, Facebook Reel',
+                ),
+                validator: _validateOptionalUrl,
+              ),
+              SizedBox(height: 12.h),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
                       controller: _prepTimeController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'เวลาเตรียม'),
-                      validator: (value) => Validators.zeroOrPositiveInt(value, 'เวลาเตรียม'),
+                      decoration: const InputDecoration(
+                        labelText: 'เวลาเตรียม',
+                      ),
+                      validator: (value) =>
+                          Validators.zeroOrPositiveInt(value, 'เวลาเตรียม'),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -137,7 +162,8 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                       controller: _cookTimeController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(labelText: 'เวลาปรุง'),
-                      validator: (value) => Validators.zeroOrPositiveInt(value, 'เวลาปรุง'),
+                      validator: (value) =>
+                          Validators.zeroOrPositiveInt(value, 'เวลาปรุง'),
                     ),
                   ),
                 ],
@@ -149,8 +175,11 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                     child: TextFormField(
                       controller: _servingsController,
                       keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: 'จำนวนเสิร์ฟ'),
-                      validator: (value) => Validators.positiveInt(value, 'จำนวนเสิร์ฟ'),
+                      decoration: const InputDecoration(
+                        labelText: 'จำนวนเสิร์ฟ',
+                      ),
+                      validator: (value) =>
+                          Validators.positiveInt(value, 'จำนวนเสิร์ฟ'),
                     ),
                   ),
                   SizedBox(width: 10.w),
@@ -169,30 +198,37 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                 initialValue: _difficulty,
                 decoration: const InputDecoration(labelText: 'ระดับความยาก'),
                 items: AppConstants.difficulties
-                    .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+                    .map(
+                      (item) =>
+                          DropdownMenuItem(value: item, child: Text(item)),
+                    )
                     .toList(),
-                onChanged: (value) => setState(() => _difficulty = value ?? _difficulty),
+                onChanged: (value) =>
+                    setState(() => _difficulty = value ?? _difficulty),
               ),
               SizedBox(height: 18.h),
               _DynamicHeader(
                 title: 'วัตถุดิบ',
-                onAdd: () => setState(() => _ingredients.add(_IngredientInput.empty())),
+                onAdd: () =>
+                    setState(() => _ingredients.add(_IngredientInput.empty())),
               ),
               ..._ingredients.indexed.map(
                 (entry) => _IngredientFields(
                   input: entry.$2,
                   onDelete: _ingredients.length > 1
                       ? () => setState(() {
-                            final removed = _ingredients.removeAt(entry.$1);
-                            removed.dispose();
-                          })
+                          final removed = _ingredients.removeAt(entry.$1);
+                          removed.dispose();
+                        })
                       : null,
                 ),
               ),
               SizedBox(height: 18.h),
               _DynamicHeader(
                 title: 'ขั้นตอนการทำ',
-                onAdd: () => setState(() => _stepControllers.add(TextEditingController())),
+                onAdd: () => setState(
+                  () => _stepControllers.add(TextEditingController()),
+                ),
               ),
               ..._stepControllers.indexed.map(
                 (entry) => Padding(
@@ -202,16 +238,21 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                       Expanded(
                         child: TextFormField(
                           controller: entry.$2,
-                          decoration: InputDecoration(labelText: 'ขั้นตอนที่ ${entry.$1 + 1}'),
-                          validator: (value) => Validators.requiredText(value, 'ขั้นตอน'),
+                          decoration: InputDecoration(
+                            labelText: 'ขั้นตอนที่ ${entry.$1 + 1}',
+                          ),
+                          validator: (value) =>
+                              Validators.requiredText(value, 'ขั้นตอน'),
                         ),
                       ),
                       IconButton(
                         onPressed: _stepControllers.length > 1
                             ? () => setState(() {
-                                  final removed = _stepControllers.removeAt(entry.$1);
-                                  removed.dispose();
-                                })
+                                final removed = _stepControllers.removeAt(
+                                  entry.$1,
+                                );
+                                removed.dispose();
+                              })
                             : null,
                         icon: const Icon(Icons.remove_circle_outline),
                       ),
@@ -230,10 +271,7 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                       )
                     : Text(_isEditing ? 'บันทึกการแก้ไข' : 'เพิ่มสูตรอาหาร'),
               ),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('ยกเลิก'),
-              ),
+              TextButton(onPressed: Get.back, child: const Text('ยกเลิก')),
             ],
           ),
         ),
@@ -245,10 +283,15 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    final ingredients = _ingredients.map((item) => item.toIngredient()).toList();
+    final ingredients = _ingredients
+        .map((item) => item.toIngredient())
+        .toList();
     final steps = _stepControllers.map((item) => item.text.trim()).toList();
     if (ingredients.isEmpty || steps.isEmpty) {
-      Get.snackbar('ข้อมูลไม่ครบ', 'ต้องมีวัตถุดิบและขั้นตอนอย่างน้อย 1 รายการ');
+      Get.snackbar(
+        'ข้อมูลไม่ครบ',
+        'ต้องมีวัตถุดิบและขั้นตอนอย่างน้อย 1 รายการ',
+      );
       return;
     }
     final recipeController = Get.find<RecipeController>();
@@ -266,6 +309,7 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
       categoryId: _categoryId!,
       categoryName: category?.name ?? '',
       imageUrl: _imageUrlController.text.trim(),
+      videoUrl: _videoUrlController.text.trim(),
       prepTime: int.parse(_prepTimeController.text),
       cookTime: int.parse(_cookTimeController.text),
       servings: int.parse(_servingsController.text),
@@ -284,15 +328,41 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
       } else {
         await recipeController.addRecipe(recipe);
       }
-      Get.snackbar('สำเร็จ', _isEditing ? 'แก้ไขสูตรอาหารแล้ว' : 'เพิ่มสูตรอาหารแล้ว');
+      await Get.dialog<void>(
+        AlertDialog(
+          title: Text(_isEditing ? 'แก้ไขสำเร็จ' : 'เพิ่มสำเร็จ'),
+          content: Text(
+            _isEditing
+                ? 'บันทึกการแก้ไข "${recipe.name}" เรียบร้อยแล้ว'
+                : 'เพิ่ม "${recipe.name}" เรียบร้อยแล้ว',
+          ),
+          actions: [
+            ElevatedButton(onPressed: Get.back, child: const Text('ตกลง')),
+          ],
+        ),
+      );
       if (mounted) {
-        Navigator.pop(context);
+        Get.back();
       }
     } finally {
       if (mounted) {
         setState(() => _isSaving = false);
       }
     }
+  }
+
+  String? _validateOptionalUrl(String? value) {
+    final text = value?.trim() ?? '';
+    if (text.isEmpty) {
+      return null;
+    }
+    final uri = Uri.tryParse(text);
+    if (uri == null ||
+        !uri.hasScheme ||
+        !(uri.isScheme('http') || uri.isScheme('https'))) {
+      return 'กรุณากรอกลิงก์ http หรือ https ให้ถูกต้อง';
+    }
+    return null;
   }
 }
 
@@ -307,7 +377,10 @@ class _DynamicHeader extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-          child: Text(title, style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800)),
+          child: Text(
+            title,
+            style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w800),
+          ),
         ),
         TextButton.icon(
           onPressed: onAdd,
@@ -396,7 +469,9 @@ class _IngredientInput {
   factory _IngredientInput.fromIngredient(Ingredient ingredient) {
     return _IngredientInput(
       nameController: TextEditingController(text: ingredient.name),
-      amountController: TextEditingController(text: ingredient.amount.toString()),
+      amountController: TextEditingController(
+        text: ingredient.amount.toString(),
+      ),
       unitController: TextEditingController(text: ingredient.unit),
     );
   }

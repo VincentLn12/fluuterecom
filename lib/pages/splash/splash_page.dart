@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
+import '../../routes/app_routes.dart';
 import '../../utils/constants.dart';
-import '../auth/auth_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -23,10 +24,7 @@ class _SplashPageState extends State<SplashPage> {
       if (!mounted) {
         return;
       }
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute<void>(builder: (_) => const AuthPage()),
-      );
+      Get.offNamed(AppRoutes.auth);
     });
   }
 

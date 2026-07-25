@@ -7,7 +7,8 @@ import '../models/recipe.dart';
 import '../services/recipe_service.dart';
 
 class RecipeController extends GetxController {
-  RecipeController({RecipeService? service}) : _service = service ?? RecipeService();
+  RecipeController({RecipeService? service})
+    : _service = service ?? RecipeService();
 
   final RecipeService _service;
 
@@ -43,6 +44,24 @@ class RecipeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<Recipe> fetchRecipeById(int id) async {
+    final cachedRecipe = recipes.firstWhereOrNull((recipe) => recipe.id == id);
+    if (cachedRecipe != null) {
+      return cachedRecipe;
+    }
+
+    final recipe = await _service.fetchRecipe(id);
+    final index = recipes.indexWhere((item) => item.id == recipe.id);
+    if (index == -1) {
+      recipes.add(recipe);
+    } else {
+      recipes[index] = recipe;
+    }
+    filterRecipes();
+    refreshFavoriteRecipes();
+    return recipe;
   }
 
   Future<void> fetchCategories() async {
@@ -91,13 +110,13 @@ class RecipeController extends GetxController {
     }
   }
 
-  Future<void> deleteRecipe(Recipe recipe) async {
+  Future<bool> deleteRecipe(Recipe recipe) async {
     if (recipe.id == null) {
-      return;
+      return false;
     }
     if (!canManageRecipe(recipe)) {
       _showPermissionDenied();
-      return;
+      return false;
     }
     final confirmed = await Get.dialog<bool>(
       AlertDialog(
@@ -116,7 +135,7 @@ class RecipeController extends GetxController {
       ),
     );
     if (confirmed != true) {
-      return;
+      return false;
     }
     try {
       isLoading.value = true;
@@ -124,9 +143,19 @@ class RecipeController extends GetxController {
       recipes.removeWhere((item) => item.id == recipe.id);
       filterRecipes();
       refreshFavoriteRecipes();
-      Get.snackbar('สำเร็จ', 'ลบสูตรอาหารแล้ว');
+      await Get.dialog<void>(
+        AlertDialog(
+          title: const Text('ลบสำเร็จ'),
+          content: Text('ลบ "${recipe.name}" เรียบร้อยแล้ว'),
+          actions: [
+            ElevatedButton(onPressed: Get.back, child: const Text('ตกลง')),
+          ],
+        ),
+      );
+      return true;
     } catch (error) {
       _showError(error);
+      return false;
     } finally {
       isLoading.value = false;
     }
@@ -171,16 +200,24 @@ class RecipeController extends GetxController {
 
     final query = searchText.value.trim().toLowerCase();
     final result = recipes.where((recipe) {
-      final matchesText = query.isEmpty ||
+      final matchesText =
+          query.isEmpty ||
           recipe.name.toLowerCase().contains(query) ||
           recipe.categoryName.toLowerCase().contains(query) ||
-          recipe.ingredients.any((item) => item.name.toLowerCase().contains(query));
-      final matchesCategory = selectedCategoryId.value == null ||
+          recipe.ingredients.any(
+            (item) => item.name.toLowerCase().contains(query),
+          );
+      final matchesCategory =
+          selectedCategoryId.value == null ||
           recipe.categoryId == selectedCategoryId.value;
-      final matchesDifficulty = selectedDifficulty.value.isEmpty ||
+      final matchesDifficulty =
+          selectedDifficulty.value.isEmpty ||
           recipe.difficulty == selectedDifficulty.value;
       final matchesFavorite = onlyFavorites != true || recipe.isFavorite;
-      return matchesText && matchesCategory && matchesDifficulty && matchesFavorite;
+      return matchesText &&
+          matchesCategory &&
+          matchesDifficulty &&
+          matchesFavorite;
     }).toList();
 
     filteredRecipes.assignAll(result);
@@ -217,6 +254,17 @@ class RecipeController extends GetxController {
       return recipes.length;
     }
     return recipes.where((recipe) => recipe.ownerId == currentUser.id).length;
+  }
+
+  List<Recipe> manageableRecipes() {
+    final currentUser = _authController.currentUser.value;
+    if (currentUser == null) {
+      return [];
+    }
+    if (currentUser.isAdmin) {
+      return recipes.toList();
+    }
+    return recipes.where((recipe) => recipe.ownerId == currentUser.id).toList();
   }
 
   void _showError(Object error) {

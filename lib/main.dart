@@ -3,7 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'bindings/initial_binding.dart';
-import 'pages/splash/splash_page.dart';
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
 import 'themes/app_theme.dart';
 import 'utils/constants.dart';
 
@@ -28,10 +29,12 @@ class RecipeApp extends StatelessWidget {
           theme: AppTheme.lightTheme(),
           darkTheme: AppTheme.darkTheme(),
           themeMode: ThemeMode.light,
+          initialRoute: AppRoutes.splash,
+          getPages: AppPages.routes,
           home: child,
         );
       },
-      child: const SplashPage(),
+      child: null,
     );
   }
 }

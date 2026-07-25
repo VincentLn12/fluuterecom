@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/navigation_controller.dart';
 import '../../controllers/recipe_controller.dart';
+import '../../routes/app_navigator.dart';
 import '../../models/recipe.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/recipe_card.dart';
-import '../recipe_detail/recipe_detail_page.dart';
 
 class FavoritePage extends GetView<RecipeController> {
   const FavoritePage({super.key});
@@ -24,7 +23,7 @@ class FavoritePage extends GetView<RecipeController> {
               title: 'ยังไม่มีรายการโปรด',
               message: 'กดหัวใจบนสูตรอาหารเพื่อเก็บไว้ดูภายหลัง',
               buttonText: 'ไปหน้าแรก',
-              onPressed: () => Get.find<NavigationController>().changeIndex(0),
+              onPressed: () => AppNavigator.goToTab(0),
             );
           }
           return ListView.builder(
@@ -34,7 +33,7 @@ class FavoritePage extends GetView<RecipeController> {
               final recipe = controller.favoriteRecipes[index];
               return RecipeCard(
                 recipe: recipe,
-                onTap: () => _openDetail(context, recipe),
+                onTap: () => _openDetail(recipe),
                 onFavoritePressed: () => controller.toggleFavorite(recipe),
               );
             },
@@ -44,13 +43,7 @@ class FavoritePage extends GetView<RecipeController> {
     );
   }
 
-  void _openDetail(BuildContext context, Recipe recipe) {
-    Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: (_) => const RecipeDetailPage(),
-        settings: RouteSettings(arguments: recipe),
-      ),
-    );
+  void _openDetail(Recipe recipe) {
+    AppNavigator.openRecipeDetail(recipe);
   }
 }

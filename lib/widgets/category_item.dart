@@ -19,21 +19,39 @@ class CategoryItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 96.w,
+        width: 102.w,
         margin: EdgeInsets.only(right: 12.w),
-        padding: EdgeInsets.all(10.w),
+        padding: EdgeInsets.all(11.w),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(16.r),
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(22.r),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 16,
+              offset: const Offset(0, 9),
+            ),
+          ],
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircleAvatar(
-              radius: 24.r,
-              backgroundImage: category.imageUrl != null
-                  ? NetworkImage(category.imageUrl!)
-                  : const AssetImage(AppConstants.placeholderFoodAsset) as ImageProvider,
+            Container(
+              padding: EdgeInsets.all(3.w),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: CircleAvatar(
+                radius: 25.r,
+                backgroundImage: category.imageUrl.isNotEmpty
+                    ? NetworkImage(category.imageUrl)
+                    : const AssetImage(AppConstants.placeholderFoodAsset)
+                        as ImageProvider,
+              ),
             ),
             SizedBox(height: 8.h),
             Text(

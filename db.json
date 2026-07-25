@@ -34,6 +34,7 @@
       "categoryId": 1,
       "categoryName": "อาหารไทย",
       "imageUrl": "https://www.unileverfoodsolutions.co.th/dam/global-ufs/mcos/SEA/calcmenu/recipes/TH-recipes/minced-pork-and-basil-fried-rice-with-lava-fried-egg/3be1b76f-ddbe-4f1c-a73c-0f894d66ba1c_header.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=4fCD6l2asFI",
       "prepTime": 10,
       "cookTime": 10,
       "servings": 2,
@@ -72,12 +73,15 @@
       "categoryId": 1,
       "categoryName": "อาหารไทย",
       "imageUrl": "https://www.maggi.co.th/sites/default/files/srh_recipes/a1b6cab9710d963ab0d30f62e5d3a88a.jpeg",
+      "videoUrl": "https://www.youtube.com/watch?v=6j8V6s6VQ8A",
       "prepTime": 8,
       "cookTime": 8,
       "servings": 2,
       "difficulty": "ง่าย",
       "rating": 4.4,
       "isFavorite": false,
+      "ownerId": "user-2",
+      "ownerName": "ผู้ใช้ตัวอย่าง",
       "ingredients": [
         {
           "name": "ข้าวสวย",
@@ -99,9 +103,7 @@
         "ผัดไข่ให้พอสุก",
         "ใส่ข้าวสวยลงผัดให้เข้ากัน",
         "ปรุงรสและโรยต้นหอม"
-      ],
-      "ownerId": "user-2",
-      "ownerName": "ผู้ใช้ตัวอย่าง"
+      ]
     },
     {
       "id": "3",
@@ -110,6 +112,7 @@
       "categoryId": 1,
       "categoryName": "อาหารไทย",
       "imageUrl": "https://images.unsplash.com/photo-1548943487-a2e4e43b4853?auto=format&fit=crop&w=500&q=80",
+      "videoUrl": "https://www.youtube.com/watch?v=8m5lQn0iX6A",
       "prepTime": 15,
       "cookTime": 20,
       "servings": 3,
@@ -148,12 +151,15 @@
       "categoryId": 2,
       "categoryName": "อาหารคลีน",
       "imageUrl": "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80",
+      "videoUrl": "",
       "prepTime": 12,
       "cookTime": 15,
       "servings": 2,
       "difficulty": "ง่าย",
       "rating": 4.5,
       "isFavorite": false,
+      "ownerId": "user-1",
+      "ownerName": "นักศึกษา Flutter",
       "ingredients": [
         {
           "name": "อกไก่",
@@ -175,9 +181,7 @@
         "ย่างอกไก่จนสุก",
         "หั่นผักและจัดลงจาน",
         "วางไก่และราดน้ำสลัด"
-      ],
-      "ownerId": "user-1",
-      "ownerName": "นักศึกษา Flutter"
+      ]
     },
     {
       "id": "5",

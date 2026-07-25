@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 
 import '../../controllers/recipe_controller.dart';
 import '../../models/recipe.dart';
+import '../../routes/app_navigator.dart';
 import '../../utils/constants.dart';
 import '../../widgets/empty_state.dart';
 import '../../widgets/recipe_card.dart';
-import '../recipe_detail/recipe_detail_page.dart';
 
 class SearchPage extends GetView<RecipeController> {
   const SearchPage({super.key});
@@ -94,7 +94,7 @@ class SearchPage extends GetView<RecipeController> {
                       final recipe = controller.filteredRecipes[index];
                       return RecipeCard(
                         recipe: recipe,
-                        onTap: () => _openDetail(context, recipe),
+                        onTap: () => _openDetail(recipe),
                         onFavoritePressed: () => controller.toggleFavorite(recipe),
                       );
                     },
@@ -108,13 +108,7 @@ class SearchPage extends GetView<RecipeController> {
     );
   }
 
-  void _openDetail(BuildContext context, Recipe recipe) {
-    Navigator.push(
-      context,
-      MaterialPageRoute<void>(
-        builder: (_) => const RecipeDetailPage(),
-        settings: RouteSettings(arguments: recipe),
-      ),
-    );
+  void _openDetail(Recipe recipe) {
+    AppNavigator.openRecipeDetail(recipe);
   }
 }

@@ -9,6 +9,7 @@ class Recipe {
     required this.categoryId,
     required this.categoryName,
     required this.imageUrl,
+    required this.videoUrl,
     required this.prepTime,
     required this.cookTime,
     required this.servings,
@@ -27,6 +28,7 @@ class Recipe {
   final int categoryId;
   final String categoryName;
   final String imageUrl;
+  final String videoUrl;
   final int prepTime;
   final int cookTime;
   final int servings;
@@ -50,6 +52,7 @@ class Recipe {
       categoryId: readInt(json['categoryId']) ?? 0,
       categoryName: json['categoryName'] as String? ?? '',
       imageUrl: json['imageUrl'] as String? ?? '',
+      videoUrl: json['videoUrl'] as String? ?? '',
       prepTime: readInt(json['prepTime']) ?? 0,
       cookTime: readInt(json['cookTime']) ?? 0,
       servings: readInt(json['servings']) ?? 1,
@@ -74,6 +77,7 @@ class Recipe {
       'categoryId': categoryId,
       'categoryName': categoryName,
       'imageUrl': imageUrl,
+      'videoUrl': videoUrl,
       'prepTime': prepTime,
       'cookTime': cookTime,
       'servings': servings,
@@ -94,6 +98,7 @@ class Recipe {
     int? categoryId,
     String? categoryName,
     String? imageUrl,
+    String? videoUrl,
     int? prepTime,
     int? cookTime,
     int? servings,
@@ -112,6 +117,7 @@ class Recipe {
       categoryId: categoryId ?? this.categoryId,
       categoryName: categoryName ?? this.categoryName,
       imageUrl: imageUrl ?? this.imageUrl,
+      videoUrl: videoUrl ?? this.videoUrl,
       prepTime: prepTime ?? this.prepTime,
       cookTime: cookTime ?? this.cookTime,
       servings: servings ?? this.servings,

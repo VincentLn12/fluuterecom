@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/recipe_controller.dart';
 import '../../controllers/theme_controller.dart';
+import '../../routes/app_routes.dart';
 import '../../utils/constants.dart';
-import '../auth/auth_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -125,10 +125,7 @@ class ProfilePage extends StatelessWidget {
               subtitle: const Text('กลับไปหน้า Login'),
               onTap: () {
                 authController.logout();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute<void>(builder: (_) => const AuthPage()),
-                );
+                Get.offAllNamed(AppRoutes.auth);
               },
             ),
           ],

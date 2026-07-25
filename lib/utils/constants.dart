@@ -8,6 +8,7 @@ class AppConstants {
   static const String logoAsset = 'assets/images/logo.png';
   static const String placeholderFoodAsset = 'assets/images/categories.png';
   static const String defaultProfileAsset = 'assets/images/default_profile.png';
+  static const String boy = 'assets/images/boy.png';
 
   static const List<String> difficulties = ['ง่าย', 'ปานกลาง', 'ยาก'];
 }
