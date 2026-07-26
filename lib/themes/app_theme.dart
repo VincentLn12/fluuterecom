@@ -4,15 +4,17 @@ class AppTheme {
   const AppTheme._();
 
   static const Color primary = Color(0xFFE85D24);
-  static const Color secondary = Color(0xFF2D9C6A);
-  static const Color lightBackground = Color(0xFFFFF7ED);
-  static const Color darkBackground = Color(0xFF171717);
+  static const Color secondary = Color(0xFFFFA15C);
+  static const Color lightBackground = Color(0xFFFFFAF5);
+  static const Color darkBackground = Color(0xFF24160F);
 
   static ThemeData lightTheme() {
     final base = ThemeData(
       colorScheme: ColorScheme.fromSeed(
         seedColor: primary,
         secondary: secondary,
+        primaryContainer: const Color(0xFFFFD8BF),
+        secondaryContainer: const Color(0xFFFFE6D5),
         surface: lightBackground,
       ),
       useMaterial3: true,
@@ -49,10 +51,17 @@ class AppTheme {
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         filled: true,
         fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFFFFE0CC)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
@@ -64,7 +73,9 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
           backgroundColor: primary,
           foregroundColor: Colors.white,
         ),
@@ -72,12 +83,17 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size.fromHeight(48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          foregroundColor: primary,
+          side: const BorderSide(color: Color(0xFFE85D24)),
         ),
       ),
       chipTheme: base.chipTheme.copyWith(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
         selectedColor: const Color(0xFFFFD8BF),
+        backgroundColor: Colors.white,
       ),
       bottomNavigationBarTheme: base.bottomNavigationBarTheme.copyWith(
         elevation: 0,
@@ -112,7 +128,9 @@ class AppTheme {
         ),
       ),
       textTheme: base.textTheme.copyWith(
-        titleLarge: base.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+        titleLarge: base.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
       ),
       cardTheme: base.cardTheme.copyWith(
         elevation: 2,
@@ -122,7 +140,10 @@ class AppTheme {
       inputDecorationTheme: base.inputDecorationTheme.copyWith(
         filled: true,
         fillColor: const Color(0xFF303134),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 18,
+          vertical: 16,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
           borderSide: BorderSide.none,
@@ -136,7 +157,9 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           elevation: 0,
           minimumSize: const Size.fromHeight(52),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
           backgroundColor: primary,
           foregroundColor: Colors.white,
         ),

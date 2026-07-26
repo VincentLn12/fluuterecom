@@ -40,7 +40,7 @@
       "servings": 2,
       "difficulty": "ง่าย",
       "rating": 4.8,
-      "isFavorite": false,
+      "isFavorite": true,
       "ownerId": "user-1",
       "ownerName": "นักศึกษา Flutter",
       "ingredients": [
@@ -342,21 +342,26 @@
       "name": "นักศึกษา Flutter",
       "email": "student@example.com",
       "password": "123456",
-      "role": "user"
+      "role": "user",
+      "favoriteRecipeIds": []
     },
     {
       "id": "user-2",
       "name": "ผู้ใช้ตัวอย่าง",
       "email": "cook@example.com",
       "password": "123456",
-      "role": "user"
+      "role": "user",
+      "favoriteRecipeIds": [
+        2
+      ]
     },
     {
       "id": "admin-1",
       "name": "ผู้ดูแลระบบ",
       "email": "admin@example.com",
       "password": "admin123",
-      "role": "admin"
+      "role": "admin",
+      "favoriteRecipeIds": []
     }
   ]
 }

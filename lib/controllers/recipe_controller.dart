@@ -27,6 +27,11 @@ class RecipeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    ever(_authController.currentUser, (_) {
+      applyFavoriteState();
+      filterRecipes();
+      refreshFavoriteRecipes();
+    });
     fetchCategories();
     fetchRecipes();
   }
@@ -37,6 +42,7 @@ class RecipeController extends GetxController {
       errorMessage.value = '';
       final result = await _service.fetchRecipes();
       recipes.assignAll(result);
+      applyFavoriteState();
       filterRecipes();
       refreshFavoriteRecipes();
     } catch (error) {
@@ -59,6 +65,7 @@ class RecipeController extends GetxController {
     } else {
       recipes[index] = recipe;
     }
+    applyFavoriteState();
     filterRecipes();
     refreshFavoriteRecipes();
     return recipe;
@@ -78,6 +85,7 @@ class RecipeController extends GetxController {
       isLoading.value = true;
       final created = await _service.addRecipe(recipe);
       recipes.add(created);
+      applyFavoriteState();
       filterRecipes();
       refreshFavoriteRecipes();
     } catch (error) {
@@ -100,6 +108,7 @@ class RecipeController extends GetxController {
       if (index != -1) {
         recipes[index] = updated;
       }
+      applyFavoriteState();
       filterRecipes();
       refreshFavoriteRecipes();
     } catch (error) {
@@ -162,21 +171,41 @@ class RecipeController extends GetxController {
   }
 
   Future<void> toggleFavorite(Recipe recipe) async {
-    final updated = recipe.copyWith(isFavorite: !recipe.isFavorite);
-    final index = recipes.indexWhere((item) => item.id == recipe.id);
-    if (index != -1) {
-      recipes[index] = updated;
+    final currentUser = _authController.currentUser.value;
+    if (currentUser == null) {
+      Get.snackbar('กรุณาเข้าสู่ระบบ', 'ต้องเข้าสู่ระบบก่อนเพิ่มรายการโปรด');
+      return;
+    }
+    final recipeId = recipe.id;
+    if (recipeId == null) {
+      return;
+    }
+
+    final previousUser = currentUser;
+    final favoriteIds = currentUser.favoriteRecipeIds.toList();
+    if (favoriteIds.contains(recipeId)) {
+      favoriteIds.remove(recipeId);
+    } else {
+      favoriteIds.add(recipeId);
+    }
+
+    final updatedUser = currentUser.copyWith(favoriteRecipeIds: favoriteIds);
+    _authController.updateCurrentUser(updatedUser);
+    applyFavoriteState();
+    filterRecipes();
+    refreshFavoriteRecipes();
+
+    try {
+      final savedUser = await _service.updateUser(updatedUser);
+      _authController.updateCurrentUser(savedUser);
+      applyFavoriteState();
       filterRecipes();
       refreshFavoriteRecipes();
-    }
-    try {
-      await _service.updateRecipe(updated);
     } catch (error) {
-      if (index != -1) {
-        recipes[index] = recipe;
-        filterRecipes();
-        refreshFavoriteRecipes();
-      }
+      _authController.updateCurrentUser(previousUser);
+      applyFavoriteState();
+      filterRecipes();
+      refreshFavoriteRecipes();
       _showError(error);
     }
   }
@@ -213,7 +242,7 @@ class RecipeController extends GetxController {
       final matchesDifficulty =
           selectedDifficulty.value.isEmpty ||
           recipe.difficulty == selectedDifficulty.value;
-      final matchesFavorite = onlyFavorites != true || recipe.isFavorite;
+      final matchesFavorite = onlyFavorites != true || isFavorite(recipe);
       return matchesText &&
           matchesCategory &&
           matchesDifficulty &&
@@ -231,7 +260,27 @@ class RecipeController extends GetxController {
   }
 
   void refreshFavoriteRecipes() {
-    favoriteRecipes.assignAll(recipes.where((recipe) => recipe.isFavorite));
+    favoriteRecipes.assignAll(recipes.where(isFavorite));
+  }
+
+  bool isFavorite(Recipe recipe) {
+    final currentUser = _authController.currentUser.value;
+    final recipeId = recipe.id;
+    if (currentUser == null || recipeId == null) {
+      return false;
+    }
+    return currentUser.favoriteRecipeIds.contains(recipeId);
+  }
+
+  void applyFavoriteState() {
+    final favoriteIds =
+        _authController.currentUser.value?.favoriteRecipeIds ?? const <int>[];
+    for (var index = 0; index < recipes.length; index++) {
+      final recipe = recipes[index];
+      recipes[index] = recipe.copyWith(
+        isFavorite: recipe.id != null && favoriteIds.contains(recipe.id),
+      );
+    }
   }
 
   Category? categoryById(int? id) {

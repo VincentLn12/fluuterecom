@@ -22,46 +22,53 @@ class ProfilePage extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.all(20.w),
           children: [
-            Obx(
-              () {
-                final user = authController.currentUser.value;
-                return Align(
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 48.r,
-                        backgroundImage: const AssetImage(AppConstants.defaultProfileAsset),
+            Obx(() {
+              final user = authController.currentUser.value;
+              return Align(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 48.r,
+                      backgroundImage: const AssetImage(
+                        AppConstants.boy,
                       ),
-                      SizedBox(height: 12.h),
-                      Text(
-                        user?.name ?? 'ยังไม่ได้เข้าสู่ระบบ',
-                        style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w800),
+                    ),
+                    SizedBox(height: 12.h),
+                    Text(
+                      user?.name ?? 'ยังไม่ได้เข้าสู่ระบบ',
+                      style: TextStyle(
+                        fontSize: 22.sp,
+                        fontWeight: FontWeight.w800,
                       ),
-                      Text(
-                        user?.email ?? 'กรุณาเข้าสู่ระบบ',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
-                      SizedBox(height: 8.h),
-                      if (user != null)
-                        Chip(
-                          avatar: Icon(
-                            user.isAdmin ? Icons.admin_panel_settings : Icons.person,
-                          ),
-                          label: Text(user.isAdmin ? 'Admin' : 'User'),
+                    ),
+                    Text(
+                      user?.email ?? 'ใช้งานแบบไม่ล็อกอิน',
+                      style: TextStyle(fontSize: 14.sp),
+                    ),
+                    SizedBox(height: 8.h),
+                    if (user != null)
+                      Chip(
+                        avatar: Icon(
+                          user.isAdmin
+                              ? Icons.admin_panel_settings
+                              : Icons.person,
                         ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                        label: Text(user.isAdmin ? 'Admin' : 'User'),
+                      ),
+                  ],
+                ),
+              );
+            }),
             SizedBox(height: 24.h),
             Obx(
               () => Row(
                 children: [
                   Expanded(
                     child: _StatBox(
-                      label: authController.currentUser.value?.isAdmin == true ? 'จัดการได้ทั้งหมด' : 'สูตรของฉัน',
+                      label: authController.currentUser.value?.isAdmin == true
+                          ? 'จัดการได้ทั้งหมด'
+                          : 'สูตรของฉัน',
                       value: recipeController.myRecipeCount().toString(),
                     ),
                   ),
@@ -76,26 +83,47 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.h),
-            Text(
-              'สลับบัญชีสำหรับทดสอบสิทธิ์',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800),
-            ),
-            SizedBox(height: 8.h),
-            Obx(
-              () => Column(
-                children: authController.users.map((user) {
-                  final selected = user.id == authController.currentUser.value?.id;
-                  return ListTile(
-                    onTap: () => authController.switchUser(user),
-                    leading: Icon(
-                      selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+            Obx(() {
+              if (!authController.isLoggedIn) {
+                return ElevatedButton.icon(
+                  onPressed: () => Get.toNamed(AppRoutes.auth),
+                  icon: const Icon(Icons.login),
+                  label: const Text('เข้าสู่ระบบ'),
+                );
+              }
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'สลับบัญชีสำหรับทดสอบสิทธิ์',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w800,
                     ),
-                    title: Text(user.name),
-                    subtitle: Text(user.isAdmin ? 'Admin: CRUD ได้ทุกสูตร' : 'User: CRUD ได้เฉพาะสูตรตัวเอง'),
-                  );
-                }).toList(),
-              ),
-            ),
+                  ),
+                  SizedBox(height: 8.h),
+                  ...authController.users.map((user) {
+                    final selected =
+                        user.id == authController.currentUser.value?.id;
+                    return ListTile(
+                      onTap: () => authController.switchUser(user),
+                      leading: Icon(
+                        selected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                      ),
+                      title: Text(user.name),
+                      subtitle: Text(
+                        user.isAdmin
+                            ? 'Admin: CRUD ได้ทุกสูตร'
+                            : 'User: CRUD ได้เฉพาะสูตรตัวเอง',
+                      ),
+                    );
+                  }),
+                ],
+              );
+            }),
             const Divider(),
             Obx(
               () => SwitchListTile(
@@ -119,14 +147,23 @@ class ProfilePage extends StatelessWidget {
               onTap: recipeController.fetchRecipes,
             ),
             const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('ออกจากระบบ'),
-              subtitle: const Text('กลับไปหน้า Login'),
-              onTap: () {
-                authController.logout();
-                Get.offAllNamed(AppRoutes.auth);
-              },
+            Obx(
+              () => authController.isLoggedIn
+                  ? ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('ออกจากระบบ'),
+                      subtitle: const Text('กลับไปใช้งานแบบไม่ล็อกอิน'),
+                      onTap: () {
+                        authController.logout();
+                        Get.offAllNamed(AppRoutes.home);
+                      },
+                    )
+                  : ListTile(
+                      leading: const Icon(Icons.login),
+                      title: const Text('เข้าสู่ระบบ'),
+                      subtitle: const Text('ล็อกอินเพื่อจัดการสูตรของฉัน'),
+                      onTap: () => Get.toNamed(AppRoutes.auth),
+                    ),
             ),
           ],
         ),
@@ -151,7 +188,10 @@ class _StatBox extends StatelessWidget {
       ),
       child: Column(
         children: [
-          Text(value, style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w800)),
+          Text(
+            value,
+            style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w800),
+          ),
           SizedBox(height: 4.h),
           Text(label),
         ],

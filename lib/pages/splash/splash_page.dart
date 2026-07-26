@@ -24,7 +24,7 @@ class _SplashPageState extends State<SplashPage> {
       if (!mounted) {
         return;
       }
-      Get.offNamed(AppRoutes.auth);
+      Get.offNamed(AppRoutes.home);
     });
   }
 
@@ -62,10 +62,13 @@ class _SplashPageState extends State<SplashPage> {
                   SizedBox(height: 20.h),
                   Text(
                     AppConstants.appName,
-                    style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w800),
+                    style: TextStyle(
+                      fontSize: 28.sp,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                   SizedBox(height: 8.h),
-                  Text(
+                  Text( 
                     AppConstants.appTagline,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 15.sp),

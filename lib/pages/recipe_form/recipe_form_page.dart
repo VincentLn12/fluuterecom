@@ -271,7 +271,10 @@ class _RecipeFormPageState extends State<RecipeFormPage> {
                       )
                     : Text(_isEditing ? 'บันทึกการแก้ไข' : 'เพิ่มสูตรอาหาร'),
               ),
-              TextButton(onPressed: Get.back, child: const Text('ยกเลิก')),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('ยกเลิก'),
+              ),
             ],
           ),
         ),

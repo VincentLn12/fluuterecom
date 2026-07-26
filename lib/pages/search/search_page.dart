@@ -37,7 +37,8 @@ class SearchPage extends GetView<RecipeController> {
                       ChoiceChip(
                         label: const Text('ทั้งหมด'),
                         selected: controller.selectedCategoryId.value == null,
-                        onSelected: (_) => controller.filterRecipes(categoryId: 0),
+                        onSelected: (_) =>
+                            controller.filterRecipes(categoryId: 0),
                       ),
                       SizedBox(width: 8.w),
                       ...controller.categories.map(
@@ -45,8 +46,12 @@ class SearchPage extends GetView<RecipeController> {
                           padding: EdgeInsets.only(right: 8.w),
                           child: ChoiceChip(
                             label: Text(category.name),
-                            selected: controller.selectedCategoryId.value == category.id,
-                            onSelected: (_) => controller.filterRecipes(categoryId: category.id),
+                            selected:
+                                controller.selectedCategoryId.value ==
+                                category.id,
+                            onSelected: (_) => controller.filterRecipes(
+                              categoryId: category.id,
+                            ),
                           ),
                         ),
                       ),
@@ -60,14 +65,21 @@ class SearchPage extends GetView<RecipeController> {
                   Expanded(
                     child: Obx(
                       () => DropdownButtonFormField<String>(
-                        initialValue: controller.selectedDifficulty.value.isEmpty
+                        initialValue:
+                            controller.selectedDifficulty.value.isEmpty
                             ? null
                             : controller.selectedDifficulty.value,
                         hint: const Text('ระดับความยาก'),
                         items: AppConstants.difficulties
-                            .map((item) => DropdownMenuItem(value: item, child: Text(item)))
+                            .map(
+                              (item) => DropdownMenuItem(
+                                value: item,
+                                child: Text(item),
+                              ),
+                            )
                             .toList(),
-                        onChanged: (value) => controller.filterRecipes(difficulty: value ?? ''),
+                        onChanged: (value) =>
+                            controller.filterRecipes(difficulty: value ?? ''),
                       ),
                     ),
                   ),
@@ -94,8 +106,9 @@ class SearchPage extends GetView<RecipeController> {
                       final recipe = controller.filteredRecipes[index];
                       return RecipeCard(
                         recipe: recipe,
-                        onTap: () => _openDetail(recipe),
-                        onFavoritePressed: () => controller.toggleFavorite(recipe),
+                        onTap: () => _openDetail(context, recipe),
+                        onFavoritePressed: () =>
+                            controller.toggleFavorite(recipe),
                       );
                     },
                   );
@@ -108,7 +121,7 @@ class SearchPage extends GetView<RecipeController> {
     );
   }
 
-  void _openDetail(Recipe recipe) {
-    AppNavigator.openRecipeDetail(recipe);
+  void _openDetail(BuildContext context, Recipe recipe) {
+    AppNavigator.openRecipeDetail(context, recipe);
   }
 }

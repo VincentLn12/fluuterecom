@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/navigation_controller.dart';
 import '../models/recipe.dart';
+import '../pages/recipe_detail/recipe_detail_page.dart';
 import 'app_routes.dart';
 
 class AppNavigator {
@@ -35,8 +37,11 @@ class AppNavigator {
     Get.toNamed(route);
   }
 
-  static void openRecipeDetail(Recipe recipe) {
-    Get.toNamed(AppRoutes.recipeDetail, arguments: recipe);
+  static void openRecipeDetail(BuildContext context, Recipe recipe) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(builder: (_) => RecipeDetailPage(recipe: recipe)),
+    );
   }
 
   static bool _isInsideMainTabs() => mainTabs.contains(Get.currentRoute);

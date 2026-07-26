@@ -4,7 +4,7 @@
 
 ## Feature
 
-- Splash Screen พร้อม `initState()` และ `Navigator.pushReplacement()`
+- Splash Screen พร้อม `initState()` และเปลี่ยนหน้าเข้า Home อัตโนมัติ
 - หน้าหลัก 5 เมนูด้วย `BottomNavigationBar` และ `IndexedStack`
 - หน้า `สูตรของฉัน` แสดงรายการสูตรที่ผู้ใช้จัดการได้ พร้อมปุ่มเพิ่มสูตรอาหาร
 - โหลดสูตรอาหารและหมวดหมู่จาก REST API
@@ -15,6 +15,30 @@
 - Favorite, Empty State, Error State, Loading State
 - Light/Dark Mode ด้วย GetX
 - Responsive UI ด้วย `flutter_screenutil`
+- มีตัวอย่าง `Navigator.push()` สำหรับเปิดหน้ารายละเอียดเมนู และ `Navigator.pop()` สำหรับกลับหน้าก่อนหน้า
+
+## การใช้งาน Navigator.push / Navigator.pop
+
+โปรเจคนี้ใช้ GetX สำหรับ route หลัก แต่มีตัวอย่าง `Navigator` ตาม requirement ดังนี้:
+
+- `Navigator.push()` อยู่ใน `lib/routes/app_navigator.dart` เมธอด `openRecipeDetail()` ใช้เปิดหน้า `RecipeDetailPage`
+- `Navigator.pop()` อยู่ใน `lib/pages/recipe_detail/recipe_detail_page.dart` ใช้กับปุ่มย้อนกลับของหน้ารายละเอียด
+- `Navigator.pop()` อยู่ใน `lib/pages/recipe_form/recipe_form_page.dart` ใช้กับปุ่ม `ยกเลิก` ในฟอร์มเพิ่ม/แก้ไขสูตร
+
+ตัวอย่าง:
+
+```dart
+Navigator.push(
+  context,
+  MaterialPageRoute<void>(
+    builder: (_) => RecipeDetailPage(recipe: recipe),
+  ),
+);
+```
+
+```dart
+Navigator.pop(context);
+```
 
 ## โครงสร้างโปรเจค
 
@@ -133,11 +157,11 @@ static const String localBaseUrl = 'http://localhost:3000';
 24. `TextButton` - `lib/pages/recipe_form/recipe_form_page.dart`, `lib/controllers/recipe_controller.dart`
 25. `IconButton` - `lib/widgets/recipe_card.dart`, `lib/pages/recipe_detail/recipe_detail_page.dart`
 26. `BottomNavigationBar` - `lib/pages/main/main_page.dart`
-27. `Navigator.push()` - `lib/pages/home/home_page.dart`, `lib/pages/search/search_page.dart`
+27. `Navigator.push()` - `lib/routes/app_navigator.dart`
 28. `Navigator.pop()` - `lib/pages/recipe_detail/recipe_detail_page.dart`, `lib/pages/recipe_form/recipe_form_page.dart`
 29. `setState()` - `lib/pages/recipe_detail/recipe_detail_page.dart`, `lib/pages/recipe_form/recipe_form_page.dart`
 30. `initState()` - `lib/pages/splash/splash_page.dart`, `lib/pages/recipe_form/recipe_form_page.dart`
-31. `didChangeDependencies()` - `lib/pages/recipe_detail/recipe_detail_page.dart`
+31. `addPostFrameCallback()` - `lib/pages/main/main_page.dart`
 32. `GetxController` - `lib/controllers/recipe_controller.dart`
 33. `.obs` - `lib/controllers/recipe_controller.dart`, `lib/controllers/navigation_controller.dart`
 34. `VoidCallback` - `lib/widgets/recipe_card.dart`, `lib/widgets/empty_state.dart`

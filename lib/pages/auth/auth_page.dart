@@ -55,10 +55,14 @@ class _AuthPageState extends State<AuthPage> {
                 child: Container(
                   padding: EdgeInsets.all(22.w),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.92),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.surface.withValues(alpha: 0.92),
                     borderRadius: BorderRadius.circular(30.r),
                     border: Border.all(
-                      color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.45),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outlineVariant.withValues(alpha: 0.45),
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -78,12 +82,16 @@ class _AuthPageState extends State<AuthPage> {
                           child: Container(
                             padding: EdgeInsets.all(5.w),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.12),
                               shape: BoxShape.circle,
                             ),
                             child: CircleAvatar(
                               radius: 42.r,
-                              backgroundColor: Theme.of(context).colorScheme.primary,
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
                               child: Icon(
                                 Icons.restaurant_menu,
                                 size: 42.sp,
@@ -96,7 +104,10 @@ class _AuthPageState extends State<AuthPage> {
                         Text(
                           AppConstants.appName,
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 28.sp, fontWeight: FontWeight.w900),
+                          style: TextStyle(
+                            fontSize: 28.sp,
+                            fontWeight: FontWeight.w900,
+                          ),
                         ),
                         SizedBox(height: 6.h),
                         Text(
@@ -105,15 +116,25 @@ class _AuthPageState extends State<AuthPage> {
                               : 'เข้าสู่ระบบเพื่อจัดการสูตรอาหาร',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurfaceVariant,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                         SizedBox(height: 24.h),
                         SegmentedButton<bool>(
                           segments: const [
-                            ButtonSegment(value: false, label: Text('ล็อกอิน'), icon: Icon(Icons.login)),
-                            ButtonSegment(value: true, label: Text('สมัครสมาชิก'), icon: Icon(Icons.person_add)),
+                            ButtonSegment(
+                              value: false,
+                              label: Text('ล็อกอิน'),
+                              icon: Icon(Icons.login),
+                            ),
+                            ButtonSegment(
+                              value: true,
+                              label: Text('สมัครสมาชิก'),
+                              icon: Icon(Icons.person_add),
+                            ),
                           ],
                           selected: {_isRegisterMode},
                           onSelectionChanged: (value) {
@@ -166,9 +187,15 @@ class _AuthPageState extends State<AuthPage> {
                             prefixIcon: const Icon(Icons.lock_outline),
                             suffixIcon: IconButton(
                               onPressed: () {
-                                setState(() => _obscurePassword = !_obscurePassword);
+                                setState(
+                                  () => _obscurePassword = !_obscurePassword,
+                                );
                               },
-                              icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                              icon: Icon(
+                                _obscurePassword
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
                             ),
                           ),
                           validator: (value) {
@@ -181,21 +208,38 @@ class _AuthPageState extends State<AuthPage> {
                         SizedBox(height: 18.h),
                         Obx(
                           () => ElevatedButton(
-                            onPressed: authController.isLoading.value ? null : _submit,
+                            onPressed: authController.isLoading.value
+                                ? null
+                                : _submit,
                             child: authController.isLoading.value
                                 ? SizedBox(
                                     width: 20.w,
                                     height: 20.w,
-                                    child: const CircularProgressIndicator(strokeWidth: 2),
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
                                   )
-                                : Text(_isRegisterMode ? 'สมัครสมาชิก' : 'เข้าสู่ระบบ'),
+                                : Text(
+                                    _isRegisterMode
+                                        ? 'สมัครสมาชิก'
+                                        : 'เข้าสู่ระบบ',
+                                  ),
                           ),
+                        ),
+                        SizedBox(height: 10.h),
+                        TextButton.icon(
+                          onPressed: _openMainPage,
+                          icon: const Icon(Icons.restaurant_menu_outlined),
+                          label: const Text('เข้าใช้งานโดยไม่ล็อกอิน'),
                         ),
                         SizedBox(height: 18.h),
                         Text(
                           'เข้าแบบไว',
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w800),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w800,
+                          ),
                         ),
                         SizedBox(height: 10.h),
                         Row(
@@ -268,7 +312,9 @@ class _AuthPageState extends State<AuthPage> {
     if (authController.users.isEmpty) {
       await authController.fetchUsers();
     }
-    final user = authController.users.firstWhereOrNull((item) => item.role == role);
+    final user = authController.users.firstWhereOrNull(
+      (item) => item.role == role,
+    );
     if (user == null) {
       Get.snackbar('ไม่พบบัญชี', 'กรุณาเปิด json-server แล้วลองใหม่');
       return;

@@ -26,13 +26,27 @@ class MyRecipesPage extends GetView<RecipeController> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _openForm,
-        icon: const Icon(Icons.add),
-        label: const Text('เพิ่มสูตรอาหาร'),
+      floatingActionButton: Obx(
+        () => authController.isLoggedIn
+            ? FloatingActionButton.extended(
+                onPressed: _openForm,
+                icon: const Icon(Icons.add),
+                label: const Text('เพิ่มสูตรอาหาร'),
+              )
+            : const SizedBox.shrink(),
       ),
       body: SafeArea(
         child: Obx(() {
+          if (!authController.isLoggedIn) {
+            return EmptyState(
+              icon: Icons.lock_outline,
+              title: 'กรุณาเข้าสู่ระบบ',
+              message: 'ต้องเข้าสู่ระบบก่อนดูและจัดการสูตรของฉัน',
+              buttonText: 'เข้าสู่ระบบ',
+              onPressed: () => Get.toNamed(AppRoutes.auth),
+            );
+          }
+
           final recipes = controller.manageableRecipes();
           if (recipes.isEmpty) {
             return EmptyState(
@@ -96,7 +110,7 @@ class MyRecipesPage extends GetView<RecipeController> {
   }
 
   void _openDetail(BuildContext context, Recipe recipe) {
-    AppNavigator.openRecipeDetail(recipe);
+    AppNavigator.openRecipeDetail(context, recipe);
   }
 }
 

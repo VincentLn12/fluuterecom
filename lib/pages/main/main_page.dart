@@ -9,15 +9,30 @@ import '../profile/profile_page.dart';
 import '../recipe_form/my_recipes_page.dart';
 import '../search/search_page.dart';
 
-class MainPage extends GetView<NavigationController> {
+class MainPage extends StatefulWidget {
   const MainPage({required this.initialIndex, super.key});
 
   final int initialIndex;
 
   @override
-  Widget build(BuildContext context) {
-    controller.setIndex(initialIndex);
+  State<MainPage> createState() => _MainPageState();
+}
 
+class _MainPageState extends State<MainPage> {
+  final NavigationController controller = Get.find<NavigationController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        controller.setIndex(widget.initialIndex);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final pages = [
       const HomePage(),
       const SearchPage(),
@@ -49,11 +64,26 @@ class MainPage extends GetView<NavigationController> {
               onTap: AppNavigator.goToTab,
               type: BottomNavigationBarType.fixed,
               items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'หน้าแรก'),
-                BottomNavigationBarItem(icon: Icon(Icons.search_rounded), label: 'ค้นหา'),
-                BottomNavigationBarItem(icon: Icon(Icons.menu_book_rounded), label: 'สูตรของฉัน'),
-                BottomNavigationBarItem(icon: Icon(Icons.favorite_rounded), label: 'รายการโปรด'),
-                BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'โปรไฟล์'),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.home_rounded),
+                  label: 'หน้าแรก',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.search_rounded),
+                  label: 'ค้นหา',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.menu_book_rounded),
+                  label: 'สูตรของฉัน',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite_rounded),
+                  label: 'รายการโปรด',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.person_rounded),
+                  label: 'โปรไฟล์',
+                ),
               ],
             ),
           ),

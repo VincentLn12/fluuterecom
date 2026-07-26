@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../controllers/auth_controller.dart';
 import '../../controllers/recipe_controller.dart';
+import '../../routes/app_routes.dart';
 import '../../routes/app_navigator.dart';
 import '../../models/recipe.dart';
 import '../../widgets/empty_state.dart';
@@ -13,10 +15,20 @@ class FavoritePage extends GetView<RecipeController> {
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
     return Scaffold(
       appBar: AppBar(title: const Text('รายการโปรด')),
       body: SafeArea(
         child: Obx(() {
+          if (!authController.isLoggedIn) {
+            return EmptyState(
+              icon: Icons.favorite_border,
+              title: 'เข้าสู่ระบบเพื่อใช้รายการโปรด',
+              message: 'รายการโปรดจะแยกตามบัญชีของแต่ละคน',
+              buttonText: 'เข้าสู่ระบบ',
+              onPressed: () => Get.toNamed(AppRoutes.auth),
+            );
+          }
           if (controller.favoriteRecipes.isEmpty) {
             return EmptyState(
               icon: Icons.favorite_border,
@@ -33,7 +45,7 @@ class FavoritePage extends GetView<RecipeController> {
               final recipe = controller.favoriteRecipes[index];
               return RecipeCard(
                 recipe: recipe,
-                onTap: () => _openDetail(recipe),
+                onTap: () => _openDetail(context, recipe),
                 onFavoritePressed: () => controller.toggleFavorite(recipe),
               );
             },
@@ -43,7 +55,7 @@ class FavoritePage extends GetView<RecipeController> {
     );
   }
 
-  void _openDetail(Recipe recipe) {
-    AppNavigator.openRecipeDetail(recipe);
+  void _openDetail(BuildContext context, Recipe recipe) {
+    AppNavigator.openRecipeDetail(context, recipe);
   }
 }

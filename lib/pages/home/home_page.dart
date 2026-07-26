@@ -33,7 +33,7 @@ class HomePage extends GetView<RecipeController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Discover',
+                'ค้นพบ',
                 style: TextStyle(
                   color: colorScheme.primary,
                   fontSize: 13.sp,
@@ -42,7 +42,7 @@ class HomePage extends GetView<RecipeController> {
                 ),
               ),
               Text(
-                'Home Kitchen',
+                'สูตรอาหารง่ายๆ',
                 style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w900),
               ),
             ],
@@ -114,20 +114,12 @@ class HomePage extends GetView<RecipeController> {
                 ),
 
                 SizedBox(height: 16.h),
+
                 _SearchBar(
                   onTap: () {
                     AppNavigator.goToTab(1);
                   },
-                ),
-
-                SizedBox(height: 18.h),
-
-                _InsightStrip(
-                  totalRecipes: controller.recipes.length,
-                  favoriteRecipes: controller.favoriteRecipes.length,
-                  categories: controller.categories.length,
-                  onOpenFavorites: () => AppNavigator.goToTab(3),
-                ),
+                ),      
 
                 SizedBox(height: 20.h),
 
@@ -230,7 +222,7 @@ class HomePage extends GetView<RecipeController> {
 
   // เปิดหน้ารายละเอียดสูตรอาหาร
   void _openDetail(BuildContext context, Recipe recipe) {
-    AppNavigator.openRecipeDetail(recipe);
+    AppNavigator.openRecipeDetail(context, recipe);
   }
 
   // ตัวอย่างเปิดหน้าเพิ่มสูตรอาหาร
@@ -368,7 +360,7 @@ class _Banner extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     Text(
-                      'Recommended',
+                      'สูตรอาหารแนะนำ',
                       style: TextStyle(
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w800,
@@ -648,133 +640,6 @@ class _HeaderMetric extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InsightStrip extends StatelessWidget {
-  const _InsightStrip({
-    required this.totalRecipes,
-    required this.favoriteRecipes,
-    required this.categories,
-    required this.onOpenFavorites,
-  });
-
-  final int totalRecipes;
-  final int favoriteRecipes;
-  final int categories;
-  final VoidCallback onOpenFavorites;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: EdgeInsets.all(16.w),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(24.r),
-        border: Border.all(
-          color: colorScheme.outlineVariant.withValues(alpha: 0.4),
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: _MiniInsight(
-              icon: Icons.auto_awesome_rounded,
-              title: 'พร้อมทำ',
-              value: '$totalRecipes เมนู',
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: _MiniInsight(
-              icon: Icons.grid_view_rounded,
-              title: 'หมวดหมู่',
-              value: '$categories แบบ',
-            ),
-          ),
-          SizedBox(width: 10.w),
-          Expanded(
-            child: InkWell(
-              onTap: onOpenFavorites,
-              borderRadius: BorderRadius.circular(18.r),
-              child: _MiniInsight(
-                icon: Icons.favorite_rounded,
-                title: 'Favorite',
-                value: '$favoriteRecipes รายการ',
-                highlight: true,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MiniInsight extends StatelessWidget {
-  const _MiniInsight({
-    required this.icon,
-    required this.title,
-    required this.value,
-    this.highlight = false,
-  });
-
-  final IconData icon;
-  final String title;
-  final String value;
-  final bool highlight;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final background = highlight
-        ? colorScheme.primary.withValues(alpha: 0.10)
-        : colorScheme.surfaceContainerHighest.withValues(alpha: 0.55);
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(18.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 34.w,
-            height: 34.w,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.78),
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(icon, color: colorScheme.primary, size: 18.sp),
-          ),
-          SizedBox(height: 10.h),
-          Text(
-            title,
-            style: TextStyle(
-              color: colorScheme.onSurfaceVariant,
-              fontSize: 11.sp,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          SizedBox(height: 2.h),
-          Text(
-            value,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 13.sp, fontWeight: FontWeight.w900),
           ),
         ],
       ),

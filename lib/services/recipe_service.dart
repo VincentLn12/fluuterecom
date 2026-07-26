@@ -71,6 +71,21 @@ class RecipeService {
     return AppUser.fromJson(jsonDecode(response.body) as Map<String, Object?>);
   }
 
+  Future<AppUser> updateUser(AppUser user) async {
+    if (user.id == null) {
+      throw Exception('ไม่พบรหัสผู้ใช้สำหรับแก้ไข');
+    }
+    final response = await _client
+        .put(
+          _uri('/users/${user.id}'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(user.toJson()),
+        )
+        .timeout(_timeout);
+    _checkResponse(response, 'บันทึกรายการโปรดไม่สำเร็จ');
+    return AppUser.fromJson(jsonDecode(response.body) as Map<String, Object?>);
+  }
+
   Future<Recipe> addRecipe(Recipe recipe) async {
     final response = await _client
         .post(
@@ -103,7 +118,9 @@ class RecipeService {
     if (response.statusCode == 404) {
       final serverId = await _findServerRecipeId(id.toString());
       if (serverId != null) {
-        response = await _client.delete(_uri('/recipes/$serverId')).timeout(_timeout);
+        response = await _client
+            .delete(_uri('/recipes/$serverId'))
+            .timeout(_timeout);
       }
     }
     _checkResponse(response, 'ลบสูตรอาหารไม่สำเร็จ');
@@ -120,7 +137,9 @@ class RecipeService {
   }
 
   Future<String?> _findServerRecipeId(String id) async {
-    final response = await _client.get(_uri('/recipes?id=$id')).timeout(_timeout);
+    final response = await _client
+        .get(_uri('/recipes?id=$id'))
+        .timeout(_timeout);
     if (response.statusCode != 200) {
       return null;
     }

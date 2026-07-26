@@ -61,7 +61,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
         slivers: [
           _DetailHeader(
             recipe: recipe,
-            onBack: Get.back,
+            onBack: () => Navigator.pop(context),
             onFavorite: () => _toggleFavorite(recipe),
           ),
           SliverToBoxAdapter(
@@ -71,9 +71,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   _TitleBlock(recipe: recipe),
-                  const SizedBox(height: 14),
-                  _InfoGrid(recipe: recipe, servings: _servings),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
+                  _QuickStats(recipe: recipe, servings: _servings),
+                  const SizedBox(height: 16),
                   _ServingsControl(
                     servings: _servings,
                     baseServings: baseServings,
@@ -93,6 +93,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   const SizedBox(height: 22),
                   _Section(
                     title: 'วัตถุดิบ',
+                    subtitle: '${recipe.ingredients.length} รายการ',
                     icon: Icons.shopping_basket_outlined,
                     child: recipe.ingredients.isEmpty
                         ? const _EmptyPanel('ยังไม่มีข้อมูลวัตถุดิบ')
@@ -104,6 +105,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   const SizedBox(height: 22),
                   _Section(
                     title: 'ขั้นตอนการทำ',
+                    subtitle: '${recipe.steps.length} ขั้นตอน',
                     icon: Icons.format_list_numbered_rounded,
                     child: recipe.steps.isEmpty
                         ? const _EmptyPanel('ยังไม่มีข้อมูลขั้นตอนการทำ')
@@ -315,10 +317,10 @@ class _DetailHeader extends StatelessWidget {
                     text: recipe.rating.toStringAsFixed(1),
                   ),
                   _HeaderChip(
-                    icon: Icons.local_fire_department_rounded,
-                    text: recipe.difficulty.isEmpty
-                        ? 'ไม่ระบุระดับ'
-                        : recipe.difficulty,
+                    icon: Icons.person_rounded,
+                    text: recipe.ownerName.isEmpty
+                        ? 'ไม่ระบุผู้สร้าง'
+                        : recipe.ownerName,
                   ),
                 ],
               ),
@@ -465,66 +467,61 @@ class _TitleBlock extends StatelessWidget {
   }
 }
 
-class _InfoGrid extends StatelessWidget {
-  const _InfoGrid({required this.recipe, required this.servings});
+class _QuickStats extends StatelessWidget {
+  const _QuickStats({required this.recipe, required this.servings});
 
   final Recipe recipe;
   final int servings;
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      _InfoTile(
-        icon: Icons.schedule_rounded,
-        label: 'เวลารวม',
-        value: '${recipe.totalTime} นาที',
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFFFDEC8)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE85D24).withValues(alpha: 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
-      _InfoTile(
-        icon: Icons.restaurant_rounded,
-        label: 'จำนวนเสิร์ฟ',
-        value: '$servings คน',
+      child: Row(
+        children: [
+          Expanded(
+            child: _StatPill(
+              icon: Icons.schedule_rounded,
+              label: 'เวลา',
+              value: '${recipe.totalTime} นาที',
+            ),
+          ),
+          const _StatDivider(),
+          Expanded(
+            child: _StatPill(
+              icon: Icons.restaurant_rounded,
+              label: 'เสิร์ฟ',
+              value: '$servings คน',
+            ),
+          ),
+          const _StatDivider(),
+          Expanded(
+            child: _StatPill(
+              icon: Icons.local_fire_department_rounded,
+              label: 'ระดับ',
+              value: recipe.difficulty.isEmpty ? 'ไม่ระบุ' : recipe.difficulty,
+            ),
+          ),
+        ],
       ),
-      _InfoTile(
-        icon: Icons.timer_outlined,
-        label: 'เตรียม',
-        value: '${recipe.prepTime} นาที',
-      ),
-      _InfoTile(
-        icon: Icons.soup_kitchen_outlined,
-        label: 'ปรุง',
-        value: '${recipe.cookTime} นาที',
-      ),
-      _InfoTile(
-        icon: Icons.person_outline_rounded,
-        label: 'ผู้สร้าง',
-        value: recipe.ownerName.isEmpty ? 'ไม่ระบุ' : recipe.ownerName,
-      ),
-      _InfoTile(
-        icon: Icons.bookmark_border_rounded,
-        label: 'หมวดหมู่',
-        value: recipe.categoryName.isEmpty ? 'ไม่ระบุ' : recipe.categoryName,
-      ),
-    ];
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columns = constraints.maxWidth >= 560 ? 3 : 2;
-        return GridView.count(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisCount: columns,
-          childAspectRatio: columns == 3 ? 2.35 : 2.15,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          children: items,
-        );
-      },
     );
   }
 }
 
-class _InfoTile extends StatelessWidget {
-  const _InfoTile({
+class _StatPill extends StatelessWidget {
+  const _StatPill({
     required this.icon,
     required this.label,
     required this.value,
@@ -536,56 +533,47 @@ class _InfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: const Color(0xFFE85D24), size: 22),
+        const SizedBox(height: 6),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Color(0xFF24160F),
+            fontSize: 14,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Color(0xFF8C7465),
+            fontSize: 11,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StatDivider extends StatelessWidget {
+  const _StatDivider();
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEAD7C7)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFD8BF),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, color: const Color(0xFFE85D24), size: 21),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF8C7465),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF24160F),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+      width: 1,
+      height: 46,
+      margin: const EdgeInsets.symmetric(horizontal: 8),
+      color: const Color(0xFFFFE4D3),
     );
   }
 }
@@ -606,20 +594,29 @@ class _ServingsControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.fromLTRB(14, 12, 10, 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF25312C),
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFFFFF3EA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFFFD8BF)),
       ),
       child: Row(
         children: [
-          const Icon(Icons.groups_rounded, color: Colors.white),
+          Container(
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: Color(0xFFFFD8BF),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.groups_rounded, color: Color(0xFFE85D24)),
+          ),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               'ปรับจำนวนเสิร์ฟ\nสูตรต้นฉบับ $baseServings คน',
               style: const TextStyle(
-                color: Colors.white,
+                color: Color(0xFF8A3A18),
                 fontWeight: FontWeight.w800,
                 height: 1.3,
               ),
@@ -628,7 +625,7 @@ class _ServingsControl extends StatelessWidget {
           IconButton(
             tooltip: 'ลดจำนวนเสิร์ฟ',
             onPressed: onDecrease,
-            color: Colors.white,
+            color: const Color(0xFFE85D24),
             icon: const Icon(Icons.remove_circle_outline_rounded),
           ),
           SizedBox(
@@ -637,7 +634,7 @@ class _ServingsControl extends StatelessWidget {
               '$servings',
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Colors.white,
+                color: Color(0xFF24160F),
                 fontSize: 19,
                 fontWeight: FontWeight.w900,
               ),
@@ -646,7 +643,7 @@ class _ServingsControl extends StatelessWidget {
           IconButton(
             tooltip: 'เพิ่มจำนวนเสิร์ฟ',
             onPressed: onIncrease,
-            color: Colors.white,
+            color: const Color(0xFFE85D24),
             icon: const Icon(Icons.add_circle_outline_rounded),
           ),
         ],
@@ -672,36 +669,36 @@ class _VideoCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF7F0),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFCBECDD)),
+        color: const Color(0xFFFFF3EA),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFFFD8BF)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(14, 10, 6, 8),
+            padding: const EdgeInsets.fromLTRB(14, 10, 8, 8),
             child: Row(
               children: [
                 const Icon(
                   Icons.play_circle_fill_rounded,
-                  color: Color(0xFF2D9C6A),
+                  color: Color(0xFFE85D24),
                 ),
                 const SizedBox(width: 8),
                 const Expanded(
                   child: Text(
                     'วิดีโอสอนทำ',
                     style: TextStyle(
-                      color: Color(0xFF183C2B),
+                      color: Color(0xFF8A3A18),
                       fontWeight: FontWeight.w900,
                     ),
                   ),
                 ),
                 IconButton(
-                  tooltip: 'เปิดแบบเต็มหน้า',
+                  tooltip: 'เปิดวิดีโอ',
                   onPressed: onOpen,
-                  icon: const Icon(Icons.open_in_new_rounded),
+                  icon: const Icon(Icons.play_arrow_rounded),
                 ),
                 IconButton(
                   tooltip: 'คัดลอกลิงก์',
@@ -719,13 +716,13 @@ class _VideoCard extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   if (thumbnailUrl == null)
-                    const ColoredBox(color: Color(0xFF183C2B))
+                    const ColoredBox(color: Color(0xFF8A3A18))
                   else
                     Image.network(
                       thumbnailUrl,
                       fit: BoxFit.cover,
                       errorBuilder: (_, _, _) =>
-                          const ColoredBox(color: Color(0xFF183C2B)),
+                          const ColoredBox(color: Color(0xFF8A3A18)),
                     ),
                   DecoratedBox(
                     decoration: BoxDecoration(
@@ -759,7 +756,7 @@ class _VideoCard extends StatelessWidget {
                     right: 14,
                     bottom: 14,
                     child: Text(
-                      'แตะเพื่อเปิดวิดีโอในแอป',
+                      'แตะเพื่อดูวิดีโอ',
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w900,
@@ -777,7 +774,7 @@ class _VideoCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: Color(0xFF315644),
+                color: Color(0xFF8A3A18),
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
@@ -835,11 +832,13 @@ class _VideoUrlParser {
 class _Section extends StatelessWidget {
   const _Section({
     required this.title,
+    required this.subtitle,
     required this.icon,
     required this.child,
   });
 
   final String title;
+  final String subtitle;
   final IconData icon;
   final Widget child;
 
@@ -850,14 +849,31 @@ class _Section extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(icon, color: const Color(0xFFE85D24)),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFD8BF),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: const Color(0xFFE85D24), size: 20),
+            ),
             const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF24160F),
+                  fontSize: 22,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+            ),
             Text(
-              title,
+              subtitle,
               style: const TextStyle(
-                color: Color(0xFF24160F),
-                fontSize: 22,
-                fontWeight: FontWeight.w900,
+                color: Color(0xFF8C7465),
+                fontWeight: FontWeight.w800,
               ),
             ),
           ],
@@ -880,8 +896,8 @@ class _IngredientList extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEAD7C7)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFFFDEC8)),
       ),
       child: Column(
         children: [
@@ -913,16 +929,25 @@ class _IngredientTile extends StatelessWidget {
         : amount.toStringAsFixed(1);
 
     return ListTile(
-      leading: const Icon(Icons.check_circle_rounded, color: Color(0xFF2D9C6A)),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+      leading: const Icon(Icons.check_circle_rounded, color: Color(0xFFE85D24)),
       title: Text(
         ingredient.name,
         style: const TextStyle(fontWeight: FontWeight.w800),
       ),
-      trailing: Text(
-        '$amountText ${ingredient.unit}',
-        style: const TextStyle(
-          color: Color(0xFFE85D24),
-          fontWeight: FontWeight.w900,
+      trailing: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFF3EA),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          '$amountText ${ingredient.unit}',
+          style: const TextStyle(
+            color: Color(0xFFE85D24),
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+          ),
         ),
       ),
     );
@@ -939,56 +964,76 @@ class _StepList extends StatelessWidget {
     return Column(
       children: [
         for (var index = 0; index < steps.length; index++)
-          _StepTile(index: index + 1, text: steps[index]),
+          _StepTile(
+            index: index + 1,
+            text: steps[index],
+            isLast: index == steps.length - 1,
+          ),
       ],
     );
   }
 }
 
 class _StepTile extends StatelessWidget {
-  const _StepTile({required this.index, required this.text});
+  const _StepTile({
+    required this.index,
+    required this.text,
+    required this.isLast,
+  });
 
   final int index;
   final String text;
+  final bool isLast;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFEAD7C7)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 17,
-            backgroundColor: const Color(0xFFE85D24),
-            child: Text(
-              '$index',
-              style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: const Color(0xFFE85D24),
+              child: Text(
+                '$index',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
+            if (!isLast)
+              Container(
+                width: 2,
+                height: 58,
+                margin: const EdgeInsets.symmetric(vertical: 4),
+                color: const Color(0xFFFFD8BF),
+              ),
+          ],
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: isLast ? 0 : 12),
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFFFDEC8)),
+            ),
             child: Text(
               text,
               style: const TextStyle(
                 color: Color(0xFF3E332B),
                 fontSize: 15,
-                height: 1.45,
+                height: 1.5,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
