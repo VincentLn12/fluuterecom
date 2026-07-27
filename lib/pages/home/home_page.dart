@@ -51,7 +51,7 @@ class HomePage extends GetView<RecipeController> {
             _AppBarAction(
               tooltip: 'รายการโปรด',
               onPressed: () {
-                AppNavigator.goToTab(3);
+                AppNavigator.goToRoute(AppRoutes.favorite);
               },
               icon: Icons.favorite_outline,
             ),
@@ -109,7 +109,7 @@ class HomePage extends GetView<RecipeController> {
                   recipeCount: controller.recipes.length,
                   favoriteCount: controller.favoriteRecipes.length,
                   onProfileTap: () {
-                    AppNavigator.goToTab(4);
+                    AppNavigator.goToRoute(AppRoutes.profile);
                   },
                 ),
 
@@ -117,9 +117,9 @@ class HomePage extends GetView<RecipeController> {
 
                 _SearchBar(
                   onTap: () {
-                    AppNavigator.goToTab(1);
+                    AppNavigator.goToRoute(AppRoutes.search);
                   },
-                ),      
+                ),
 
                 SizedBox(height: 20.h),
 
@@ -139,7 +139,7 @@ class HomePage extends GetView<RecipeController> {
                   title: 'สูตรอาหารโปรด',
                   subtitle: 'รวมเมนูที่คุณเซฟไว้อ่านต่อได้ทันที',
                   onTap: () {
-                    AppNavigator.goToTab(3);
+                    AppNavigator.goToRoute(AppRoutes.favorite);
                   },
                 ),
 
@@ -162,7 +162,7 @@ class HomePage extends GetView<RecipeController> {
                         category: category,
                         onTap: () {
                           controller.filterRecipes(categoryId: category.id);
-                          AppNavigator.goToTab(1);
+                          AppNavigator.goToRoute(AppRoutes.search);
                         },
                       );
                     },
@@ -197,7 +197,7 @@ class HomePage extends GetView<RecipeController> {
                   subtitle: 'เลือกดูทุกเมนูหรือเปิดหน้าค้นหาเพื่อกรองเพิ่ม',
                   onPressed: () {
                     controller.clearFilters();
-                    AppNavigator.goToTab(1);
+                    AppNavigator.goToRoute(AppRoutes.search);
                   },
                 ),
 

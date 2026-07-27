@@ -35,7 +35,7 @@ class FavoritePage extends GetView<RecipeController> {
               title: 'ยังไม่มีรายการโปรด',
               message: 'กดหัวใจบนสูตรอาหารเพื่อเก็บไว้ดูภายหลัง',
               buttonText: 'ไปหน้าแรก',
-              onPressed: () => AppNavigator.goToTab(0),
+              onPressed: () => AppNavigator.goToRoute(AppRoutes.home),
             );
           }
           return ListView.builder(

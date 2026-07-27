@@ -34,6 +34,12 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // จัดการข้อมูลที่ขึ้นกับ Context หรือ Theme เมื่อมีการเปลี่ยนสถานะ
+  }
+
+  @override
   Widget build(BuildContext context) {
     final recipe = _latestRecipe;
 
