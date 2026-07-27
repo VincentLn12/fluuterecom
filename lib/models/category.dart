@@ -21,7 +21,7 @@ class Category {
 
   Map<String, Object?> toJson() {
     return {
-      if (id != null) 'id': id,
+      if (id != null) 'id': id.toString(),
       'name': name,
       'imageUrl': imageUrl,
     };

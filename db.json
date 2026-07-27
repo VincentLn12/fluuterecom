@@ -190,12 +190,15 @@
       "categoryId": 3,
       "categoryName": "ของหวาน",
       "imageUrl": "https://images.unsplash.com/photo-1528207776546-365bb710ee93?auto=format&fit=crop&w=500&q=80",
+      "videoUrl": "",
       "prepTime": 10,
       "cookTime": 15,
       "servings": 3,
       "difficulty": "ปานกลาง",
       "rating": 4.6,
       "isFavorite": false,
+      "ownerId": "user-2",
+      "ownerName": "ผู้ใช้ตัวอย่าง",
       "ingredients": [
         {
           "name": "แป้งแพนเค้ก",
@@ -217,9 +220,7 @@
         "ผสมแป้ง นม และไข่",
         "พักแป้ง 5 นาที",
         "ทอดบนกระทะไฟอ่อนจนเหลือง"
-      ],
-      "ownerId": "user-2",
-      "ownerName": "ผู้ใช้ตัวอย่าง"
+      ]
     },
     {
       "id": "6",

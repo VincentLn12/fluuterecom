@@ -124,6 +124,24 @@ class ProfilePage extends StatelessWidget {
                 ],
               );
             }),
+            Obx(() {
+              final user = authController.currentUser.value;
+              if (user != null && user.isAdmin) {
+                return Column(
+                  children: [
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(Icons.admin_panel_settings_outlined),
+                      title: const Text('Admin Panel'),
+                      subtitle: const Text('จัดการสูตรอาหาร และ หมวดหมู่'),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () => Get.toNamed(AppRoutes.admin),
+                    ),
+                  ],
+                );
+              }
+              return const SizedBox.shrink();
+            }),
             const Divider(),
             Obx(
               () => SwitchListTile(

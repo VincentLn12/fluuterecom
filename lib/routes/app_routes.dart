@@ -8,4 +8,5 @@ abstract class AppRoutes {
   static const profile = '/profile';
   static const recipeDetail = '/recipe-detail';
   static const recipeForm = '/recipe-form';
+  static const admin = '/admin';
 }

@@ -29,6 +29,19 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // โหลด Asset รูปภาพล่วงหน้า (Pre-cache) ห่อด้วย try-catch เพื่อป้องกันแอปแครชหาก Asset นั้นยังไม่ได้บันเดิลใน Build ปัจจุบัน
+    try {
+      precacheImage(const AssetImage(AppConstants.logoAsset), context);
+      precacheImage(const AssetImage(AppConstants.placeholderFoodAsset), context);
+      precacheImage(const AssetImage(AppConstants.defaultProfileAsset), context);
+    } catch (e) {
+      // ข้ามหากไม่พบไฟล์หรือยังไม่ได้สั่ง Rebuild แอป
+    }
+  }
+
+  @override
   void dispose() {
     _timer?.cancel();
     super.dispose();

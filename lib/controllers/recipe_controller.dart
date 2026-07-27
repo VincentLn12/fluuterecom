@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'auth_controller.dart';
+import 'category_controller.dart';
 import '../models/category.dart';
 import '../models/recipe.dart';
 import '../services/recipe_service.dart';
@@ -14,7 +15,7 @@ class RecipeController extends GetxController {
 
   final recipes = <Recipe>[].obs;
   final filteredRecipes = <Recipe>[].obs;
-  final categories = <Category>[].obs;
+  List<Category> get categories => Get.find<CategoryController>().categories;
   final favoriteRecipes = <Recipe>[].obs;
   final isLoading = false.obs;
   final searchText = ''.obs;
@@ -32,7 +33,6 @@ class RecipeController extends GetxController {
       filterRecipes();
       refreshFavoriteRecipes();
     });
-    fetchCategories();
     fetchRecipes();
   }
 
@@ -71,14 +71,7 @@ class RecipeController extends GetxController {
     return recipe;
   }
 
-  Future<void> fetchCategories() async {
-    try {
-      final result = await _service.fetchCategories();
-      categories.assignAll(result);
-    } catch (error) {
-      errorMessage.value = error.toString();
-    }
-  }
+
 
   Future<void> addRecipe(Recipe recipe) async {
     try {

@@ -6,6 +6,7 @@ import '../pages/main/main_page.dart';
 import '../pages/recipe_detail/recipe_detail_page.dart';
 import '../pages/recipe_form/recipe_form_page.dart';
 import '../pages/splash/splash_page.dart';
+import '../pages/admin/admin_page.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -30,6 +31,10 @@ class AppPages {
     GetPage(
       name: AppRoutes.recipeForm,
       page: () => RecipeFormPage(recipe: Get.arguments as Recipe?),
+    ),
+    GetPage(
+      name: AppRoutes.admin,
+      page: () => const AdminPage(),
     ),
   ];
 }
