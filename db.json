@@ -335,6 +335,39 @@
       ],
       "ownerId": "user-2",
       "ownerName": "ผู้ใช้ตัวอย่าง"
+    },
+    {
+      "id": "2bfd",
+      "name": "ต้มยำกุ้ง",
+      "description": "",
+      "categoryId": 1,
+      "categoryName": "อาหารไทย",
+      "imageUrl": "https://www.unileverfoodsolutions.co.th/dam/global-ufs/mcos/grit/italy/calcmenu/recipes/IT-recipes/%E0%B8%95%E0%B9%89%E0%B8%A1%E0%B8%A2%E0%B8%B3%E0%B8%81%E0%B8%B8%E0%B9%89%E0%B8%87/LINE-ALBUM-preview.jpg",
+      "videoUrl": "https://www.youtube.com/watch?v=Tz7jH-XijB4",
+      "prepTime": 10,
+      "cookTime": 10,
+      "servings": 2,
+      "difficulty": "ปานกลาง",
+      "rating": 4.5,
+      "isFavorite": false,
+      "ownerId": "admin-1",
+      "ownerName": "ผู้ดูแลระบบ",
+      "ingredients": [
+        {
+          "name": "กุ้ง",
+          "amount": 5,
+          "unit": "ตัว"
+        },
+        {
+          "name": "ตระไคร้",
+          "amount": 3,
+          "unit": "ชิ้น"
+        }
+      ],
+      "steps": [
+        "หั่นกุ้ง",
+        "ก็"
+      ]
     }
   ],
   "users": [
