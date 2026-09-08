@@ -10,8 +10,8 @@
 * สินค้า
 * เนื้อหา / บทความ
 * ตะกร้าสินค้า
+* ชำระเงิน / Checkout
 * คำสั่งซื้อ
-* ชำระเงิน
 * โปรไฟล์
 * Authentication (เข้าสู่ระบบ / สมัครสมาชิก)
 * Merchant / My Shop
@@ -157,24 +157,29 @@ kanchanaburi_platform/
 │       │   └── views/
 │       │       └── cart_page.dart
 │       │
+│       ├── checkout/
+│       │   ├── controllers/
+│       │   │   └── checkout_controller.dart
+│       │   ├── bindings/
+│       │   │   └── checkout_binding.dart
+│       │   └── views/
+│       │       ├── checkout_page.dart
+│       │       ├── payment_page.dart
+│       │       └── payment_success_page.dart
+│       │
 │       ├── orders/
 │       │   ├── controllers/
 │       │   │   └── order_controller.dart
+│       │   ├── bindings/
+│       │   │   └── order_binding.dart
 │       │   ├── models/
-│       │   │   └── order_model.dart
+│       │   │   ├── order_model.dart
+│       │   │   └── user_address_model.dart
 │       │   ├── repositories/
 │       │   │   └── order_repository.dart
 │       │   └── views/
 │       │       ├── orders_page.dart
 │       │       └── order_detail_page.dart
-│       │
-│       ├── checkout/
-│       │   ├── controllers/
-│       │   │   └── checkout_controller.dart
-│       │   └── views/
-│       │       ├── checkout_page.dart
-│       │       ├── payment_page.dart
-│       │       └── payment_success_page.dart
 │       │
 │       ├── profile/
 │       │   ├── controllers/
@@ -253,12 +258,17 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **In-App Video Player (`content_video_player.dart`)**: ตัวเล่นวิดีโอ YouTube ในแอป (`youtube_player_flutter`) วางในตำแหน่ง Top Header พร้อมระบบ AutoPlay เมื่อเข้าดูรายละเอียดบทความ
 
 4. **ตะกร้าสินค้า (Shopping Cart System)**
-   * `cart_page.dart`, `cart_controller.dart` & `cart_item_model.dart`
+   * `cart_page.dart`, `cart_controller.dart`, `cart_repository.dart` & `cart_item_model.dart`
+   * **Live OpenAPI Cart Integration**: ดึงและซิงค์ข้อมูลตะกร้าสินค้าส่วนตัวของผู้ใช้กับ Backend Database โดยตรง:
+     - `GET /api/cart`: ดึงตะกร้าสินค้าของผู้ใช้แต่ละบัญชีแยกกันเป็นเอกเทศ
+     - `POST /api/cart/items`: เพิ่มสินค้าลงในตะกร้าบนฐานข้อมูล
+     - `PUT /api/cart/items/{id}`: ปรับเปลี่ยนจำนวนสินค้าในตะกร้าบนเซิร์ฟเวอร์
+     - `DELETE /api/cart/items/{id}`: ลบสินค้าออกจากตะกร้าบนเซิร์ฟเวอร์
    * **Shop-Grouped Display**: จัดกลุ่มรายการสินค้าในตะกร้าแยกตามร้านค้าอัตโนมัติ
    * **Item & Shop Selection**: ระบบเลือกสินค้าแบบ Checkbox รายชิ้น, เลือกทั้งร้านค้า หรือเลือกสินค้าทั้งหมดในตะกร้า
    * **Quantity Stepper & Instant Recalculation**: ปุ่มปรับเพิ่ม/ลดจำนวนสินค้า พร้อมคำนวณราคาย่อย (Subtotal) และราคารวมทั้งหมด (Total Price) แบบ Real-time
-   * **Global Permanent State**: เรียกใช้งาน `CartController` ได้จากทุกหน้า (`ProductCard`, `ProductDetailPage`, Bottom Bar)
-   * **Empty Cart View & Checkout Navigation**: หน้าการ์ดแจ้งเตือนตะกร้าว่างพร้อมปุ่มทางลัดไปเลือกซื้อสินค้า และแถบสั่งซื้อสินค้าลอยด้านล่าง (Bottom Checkout Bar)
+   * **Auth-Gated Cart Protection**: หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ จะไม่อนุญาตให้เห็นหรือเข้าถึงตะกร้าสินค้า โดยแสดงหน้าแจ้งเตือนล็อกอิน "กรุณาเข้าสู่ระบบก่อนใช้งานตะกร้าสินค้า" พร้อมปุ่มทางลัดเข้าสู่ระบบ
+   * **Auto Sync on Auth Session Change**: โหลดและซิงค์ข้อมูลตะกร้าใหม่อัตโนมัติเมื่อมีการเข้าสู่ระบบ/สลับบัญชีผู้ใช้
 
 5. **โปรไฟล์ & ระบบสมาชิก (Profile & Authentication System)**
    * `profile_page.dart`, `login_page.dart` & `register_page.dart`
@@ -266,37 +276,17 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **Automatic Bearer Token Header**: ระบบแนบ `Authorization: Bearer <accessToken>` อัตโนมัติทุก Request ผ่าน `ApiClient` Request Modifier
    * **Dynamic Session Management**: จัดการเซสชันผู้ใช้งานด้วย `AuthService` แสดงผลข้อมูลผู้ใช้, สิทธิ์ (`Role`), ปุ่มแก้ไขโปรไฟล์, ประวัติคำสั่งซื้อ และปุ่มออกจากระบบ
 
-## Navbar Structure
+## Checkout & Payment System Feature Highlights
 
-```text
-MainPage
-│
-├── HomePage
-├── ShopsPage
-├── ContentsPage
-├── CartPage
-└── ProfilePage
-```
+- **Live Checkout API**: เชื่อมต่อ API `POST /api/orders/checkout` ส่งรายการสั่งซื้อ ชนิดการจัดส่ง (`shippingMethod`), ค่าจัดส่ง (`shippingFee`), ข้อมูลผู้รับ และที่อยู่จัดส่ง
+- **Saved User Address Picker**: ดึงที่อยู่อิสระของผู้ใช้จาก `GET /api/user-addresses` พร้อมระบบเลือกเติมข้อมูลอัตโนมัติ
+- **Dynamic Shipping Options**: เลือกรูปแบบการจัดส่ง (Standard Delivery ฿40 vs Express Delivery ฿60) พร้อมคำนวณยอดสุทธิตามจริง
+- **Official Stripe SDK (`flutter_stripe`)**: รวม UI หลักอย่างเป็นทางการของ Stripe:
+  - **Stripe PaymentSheet (Native UI)**: หน้าต่างป็อปอัปชำระเงินของ Stripe Native Sheet (`Stripe.instance.presentPaymentSheet()`)
+  - **Stripe CardFormField Widget**: Component กรอกข้อมูลบัตรเครดิต/เดบิตอย่างเป็นทางการของ Stripe SDK (`CardFormField`)
+- **Stripe Credit/Debit Card Gateway (`PaymentPage`)**: เชื่อมต่อ `POST /api/payments/orders/{orderId}/intent` และ `POST /api/payments/orders/{orderId}/sync` พร้อมระบบความปลอดภัย SSL 256-bit
+- **Real Image Picker Slip Upload (`image_picker`)**: ปุ่มเลือกสลิปจริงจากคลังรูปภาพในเครื่อง (`ImageSource.gallery`) พร้อมการ์ดแสดงตัวอย่างรูปสลิปและเวลาอัปโหลด
+- **Admin Verification Flow**: ส่งรูปสลิปและอัปเดตสถานะออเดอร์ไปยัง `PATCH /api/orders/{id}/status` เป็น `PendingVerify` สำหรับ Admin ตรวจสอบผ่าน `GET /api/orders/admin/pending-slips` & `POST /api/orders/admin/verify-slip`
+- **Payment Success View (`PaymentSuccessPage`)**: หน้าแสดงความยินดีทำรายการสำเร็จ พร้อมปุ่มไปดูประวัติคำสั่งซื้อ (`OrdersPage`)
+- **My Orders & Order Detail (`OrdersPage` & `OrderDetailPage`)**: หน้าติดตามประวัติคำสั่งซื้อพร้อมป้ายสถานะออเดอร์ (`StatusBadge`)
 
-ควบคุม Navbar ด้วย
-
-```text
-features/navigation/controllers/navigation_controller.dart
-```
-
-## GetX Route Structure
-
-Route หลักเก็บไว้ที่
-
-```text
-lib/app/routes/
-├── app_routes.dart
-└── app_pages.dart
-```
-
-## Authentication System Feature Highlights
-
-- **OpenAPI Integration**: เชื่อมต่อกับ backend API ความปลอดภัยมาตรฐาน ASP.NET Core Identity (`/api/login`, `/api/register`, `/api/account/me`, `/api/account/profile`)
-- **Automated Authorization Headers**: `ApiClient` แนบ Bearer Token ทุก HTTP Call โดยอัตโนมัติเมื่อผู้ใช้เข้าสู่ระบบแล้ว
-- **Shared Reusable Form Components**: ใช้ `AppTextField` และ `AppButton` พร้อมฟีเจอร์สลับการมองเห็นรหัสผ่าน (Obscure Password Toggle) และ Loading Indicator
-- **Global Auth State (`AuthService`)**: ซิงค์สถานะการล็อกอิน สิทธิ์ผู้ใช้งาน และเปลี่ยนหน้าตาโปรไฟล์แบบ Real-time ข้ามทุกหน้าในแอป

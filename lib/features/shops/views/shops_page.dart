@@ -36,23 +36,26 @@ class ShopsPage extends GetView<ShopController> {
               ),
             ),
             const SizedBox(width: 10),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'KANCHANABURI',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    color: Color(0xFFE9C46A),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'KANCHANABURI',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      color: Color(0xFFE9C46A),
+                    ),
                   ),
-                ),
-                Text(
-                  'ร้านค้า & สินค้าชุมชน OTOP',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ],
+                  Text(
+                    'ร้านค้า & สินค้าชุมชน',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

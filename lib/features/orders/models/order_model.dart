@@ -1,6 +1,135 @@
-class OrderModel {
-  final String id;
+import '../../../../app/config/api_config.dart';
+
+class OrderItemModel {
+  final String orderItemId;
+  final String productId;
+  final String productName;
+  final String? imageUrl;
+  final int quantity;
+  final double unitPrice;
   final double totalPrice;
 
-  OrderModel({required this.id, required this.totalPrice});
+  OrderItemModel({
+    required this.orderItemId,
+    required this.productId,
+    required this.productName,
+    this.imageUrl,
+    required this.quantity,
+    required this.unitPrice,
+    required this.totalPrice,
+  });
+
+  factory OrderItemModel.fromJson(Map<String, dynamic> json) {
+    String? img = json['imageUrl']?.toString();
+    if (img != null && img.startsWith('/uploads')) {
+      img = ApiConfig.baseUrl.replaceAll('/api', '') + img;
+    }
+
+    return OrderItemModel(
+      orderItemId: json['orderItemId']?.toString() ?? '',
+      productId: json['productId']?.toString() ?? '',
+      productName: json['productName']?.toString() ?? 'สินค้า',
+      imageUrl: img,
+      quantity: int.tryParse(json['quantity']?.toString() ?? '1') ?? 1,
+      unitPrice: double.tryParse(json['unitPrice']?.toString() ?? '0') ?? 0.0,
+      totalPrice: double.tryParse(json['totalPrice']?.toString() ?? '0') ?? 0.0,
+    );
+  }
+}
+
+class OrderModel {
+  final String orderId;
+  final String? shopId;
+  final String? shopName;
+  final String? shopLogoUrl;
+  final String? orderNumber;
+  final double subtotal;
+  final double shippingFee;
+  final double totalAmount;
+  final String? shippingMethod;
+  final String orderStatus;
+  final String paymentStatus;
+  final String? receiverName;
+  final String? receiverPhone;
+  final String? shippingAddress;
+  final String? slipImageUrl;
+  final DateTime? createdAt;
+  final List<OrderItemModel> items;
+
+  OrderModel({
+    required this.orderId,
+    this.shopId,
+    this.shopName,
+    this.shopLogoUrl,
+    this.orderNumber,
+    this.subtotal = 0.0,
+    this.shippingFee = 0.0,
+    required this.totalAmount,
+    this.shippingMethod,
+    this.orderStatus = 'Pending',
+    this.paymentStatus = 'Pending',
+    this.receiverName,
+    this.receiverPhone,
+    this.shippingAddress,
+    this.slipImageUrl,
+    this.createdAt,
+    this.items = const [],
+  });
+
+  factory OrderModel.fromJson(Map<String, dynamic> json) {
+    String? resolveUrl(dynamic val) {
+      if (val == null) return null;
+      String str = val.toString();
+      if (str.startsWith('/uploads')) {
+        return ApiConfig.baseUrl.replaceAll('/api', '') + str;
+      }
+      return str;
+    }
+
+    List<OrderItemModel> parsedItems = [];
+    if (json['items'] is List) {
+      parsedItems = (json['items'] as List)
+          .map((e) => OrderItemModel.fromJson(e as Map<String, dynamic>))
+          .toList();
+    }
+
+    return OrderModel(
+      orderId: json['orderId']?.toString() ?? json['id']?.toString() ?? '',
+      shopId: json['shopId']?.toString(),
+      shopName: json['shopName']?.toString() ?? 'ร้านค้าชุมชน',
+      shopLogoUrl: resolveUrl(json['shopLogoUrl']),
+      orderNumber: json['orderNumber']?.toString() ?? 'ORD-${DateTime.now().millisecondsSinceEpoch}',
+      subtotal: double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0.0,
+      shippingFee: double.tryParse(json['shippingFee']?.toString() ?? '0') ?? 0.0,
+      totalAmount: double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
+      shippingMethod: json['shippingMethod']?.toString() ?? 'Standard Delivery',
+      orderStatus: json['orderStatus']?.toString() ?? 'Pending',
+      paymentStatus: json['paymentStatus']?.toString() ?? 'Pending',
+      receiverName: json['receiverName']?.toString(),
+      receiverPhone: json['receiverPhone']?.toString(),
+      shippingAddress: json['shippingAddress']?.toString(),
+      slipImageUrl: resolveUrl(json['slipImageUrl']),
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
+      items: parsedItems,
+    );
+  }
+
+  String get statusLabel {
+    switch (orderStatus.toLowerCase()) {
+      case 'pending':
+        return 'รอชำระเงิน / รอยืนยัน';
+      case 'paid':
+        return 'ชำระเงินแล้ว';
+      case 'processing':
+        return 'กำลังเตรียมจัดส่ง';
+      case 'shipped':
+        return 'จัดส่งแล้ว';
+      case 'completed':
+        return 'สำเร็จแล้ว';
+      case 'cancelled':
+        return 'ยกเลิกแล้ว';
+      default:
+        return orderStatus;
+    }
+  }
 }

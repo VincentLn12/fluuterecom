@@ -20,12 +20,43 @@ class CartItemModel {
   String get effectiveShopId =>
       product.shopId.isNotEmpty ? product.shopId : 'unknown_shop';
 
-  String get effectiveShopName =>
-      (shopName != null && shopName!.isNotEmpty)
-          ? shopName!
-          : (product.shopName != null && product.shopName!.isNotEmpty)
-              ? product.shopName!
-              : 'ร้านค้าชุมชน';
+  String get effectiveShopName => (shopName != null && shopName!.isNotEmpty)
+      ? shopName!
+      : (product.shopName != null && product.shopName!.isNotEmpty)
+      ? product.shopName!
+      : 'ร้านค้าชุมชน';
+
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    final productId = json['productId']?.toString() ?? '';
+    final productName = json['productName']?.toString() ?? 'สินค้า';
+    final shopId = json['shopId']?.toString() ?? '';
+    final shopName = json['shopName']?.toString();
+    final imageUrl = json['imageUrl']?.toString() ?? '';
+    final unitPrice = (json['unitPrice'] as num?)?.toDouble() ?? 0.0;
+    final quantity = (json['quantity'] as num?)?.toInt() ?? 1;
+
+    final product = ProductModel(
+      id: productId,
+      name: productName,
+      description: '',
+      price: unitPrice,
+      quantity: (json['availableQuantity'] as num?)?.toInt() ?? 100,
+      imageUrl: imageUrl,
+      shopId: shopId,
+      shopName: shopName,
+    );
+
+    return CartItemModel(
+      id:
+          json['cartItemId']?.toString() ??
+          json['id']?.toString() ??
+          DateTime.now().millisecondsSinceEpoch.toString(),
+      product: product,
+      shopName: shopName,
+      quantity: quantity,
+      isSelected: true,
+    );
+  }
 
   CartItemModel copyWith({
     String? id,

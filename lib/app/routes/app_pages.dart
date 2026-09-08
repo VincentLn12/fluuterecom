@@ -15,9 +15,11 @@ import '../../features/contents/views/contents_page.dart';
 import '../../features/contents/views/content_detail_page.dart';
 import '../../features/cart/bindings/cart_binding.dart';
 import '../../features/cart/views/cart_page.dart';
+import '../../features/checkout/bindings/checkout_binding.dart';
 import '../../features/checkout/views/checkout_page.dart';
 import '../../features/checkout/views/payment_page.dart';
 import '../../features/checkout/views/payment_success_page.dart';
+import '../../features/orders/bindings/order_binding.dart';
 import '../../features/orders/views/orders_page.dart';
 import '../../features/orders/views/order_detail_page.dart';
 import '../../features/profile/bindings/profile_binding.dart';
@@ -84,13 +86,21 @@ class AppPages {
       page: () => const CartPage(),
       binding: CartBinding(),
     ),
-    GetPage(name: AppRoutes.checkout, page: () => const CheckoutPage()),
+    GetPage(
+      name: AppRoutes.checkout,
+      page: () => const CheckoutPage(),
+      binding: CheckoutBinding(),
+    ),
     GetPage(name: AppRoutes.payment, page: () => const PaymentPage()),
     GetPage(
       name: AppRoutes.paymentSuccess,
       page: () => const PaymentSuccessPage(),
     ),
-    GetPage(name: AppRoutes.orders, page: () => const OrdersPage()),
+    GetPage(
+      name: AppRoutes.orders,
+      page: () => const OrdersPage(),
+      binding: OrderBinding(),
+    ),
     GetPage(name: AppRoutes.orderDetail, page: () => const OrderDetailPage()),
     GetPage(
       name: AppRoutes.profile,

@@ -249,32 +249,35 @@ class ProfilePage extends StatelessWidget {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return ListTile(
-      onTap: onTap,
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(10),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        onTap: onTap,
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: iconColor.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, color: iconColor, size: 20),
         ),
-        child: Icon(icon, color: iconColor, size: 20),
-      ),
-      title: Text(
-        title,
-        style: GoogleFonts.krub(
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-          color: const Color(0xFF2B1F17),
+        title: Text(
+          title,
+          style: GoogleFonts.krub(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF2B1F17),
+          ),
         ),
-      ),
-      subtitle: Text(
-        subtitle,
-        style: GoogleFonts.krub(
-          fontSize: 12,
-          color: Colors.grey[600],
+        subtitle: Text(
+          subtitle,
+          style: GoogleFonts.krub(
+            fontSize: 12,
+            color: Colors.grey[600],
+          ),
         ),
+        trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey, size: 20),
       ),
-      trailing: const Icon(Icons.chevron_right_rounded, color: Colors.grey, size: 20),
     );
   }
 
