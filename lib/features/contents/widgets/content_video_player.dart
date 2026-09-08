@@ -78,7 +78,10 @@ class _ContentVideoPlayerState extends State<ContentVideoPlayer> {
             const SizedBox(height: 12),
             const Text(
               'ไม่สามารถเล่นวิดีโอนี้ในแอปได้',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 12),
             ElevatedButton.icon(
@@ -132,7 +135,11 @@ class _ContentVideoPlayerState extends State<ContentVideoPlayer> {
             icon: const Icon(Icons.open_in_new, size: 16, color: Colors.red),
             label: const Text(
               'เปิดเล่นบนแอป YouTube',
-              style: TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.w600),
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ),
         ),

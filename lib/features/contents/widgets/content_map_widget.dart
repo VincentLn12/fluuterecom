@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class _Palette {
+  static const ink = Color(0xFF241A12);
+  static const stone = Color(0xFFF7F0E6); // must match the page it sits on
+  static const river = Color(0xFF1F5F58);
+  static const brass = Color(0xFFC8952F);
+}
+
+/// A location card styled like a railway boarding pass — coordinates as a
+/// "ticket code", a torn perforation before the action, one bold CTA.
 class ContentMapWidget extends StatelessWidget {
   final double? latitude;
   final double? longitude;
@@ -18,16 +28,13 @@ class ContentMapWidget extends StatelessWidget {
   });
 
   bool get hasValidCoordinates =>
-      latitude != null &&
-      longitude != null &&
-      latitude != 0 &&
-      longitude != 0;
+      latitude != null && longitude != null && latitude != 0 && longitude != 0;
 
   Future<void> _openGoogleMaps() async {
     if (!hasValidCoordinates) return;
-    final googleMapsUrl =
-        'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
-    final uri = Uri.parse(googleMapsUrl);
+    final uri = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
+    );
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
@@ -35,134 +42,150 @@ class ContentMapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!hasValidCoordinates) {
-      return const SizedBox.shrink();
-    }
+    if (!hasValidCoordinates) return const SizedBox.shrink();
 
     final locationText = [
       if (shopName != null && shopName!.isNotEmpty) shopName,
       if (districtName != null && districtName!.isNotEmpty) 'อ.$districtName',
       'จ.กาญจนบุรี',
-    ].join(' ');
+    ].join(' · ');
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFF332820),
-        borderRadius: BorderRadius.circular(16),
+        color: _Palette.ink,
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: _Palette.ink.withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Map Background Decoration Pattern
-          Positioned(
-            right: -20,
-            bottom: -20,
-            child: Icon(
-              Icons.map_outlined,
-              size: 140,
-              color: Colors.white.withValues(alpha: 0.06),
-            ),
-          ),
           Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD96C2C),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.location_on_rounded,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'ตำแหน่งสถานที่ / หมุดแผนที่',
-                            style: TextStyle(
-                              color: Color(0xFFE8D9C9),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            locationText,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 14),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.all(9),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(8),
+                    color: _Palette.brass,
+                    borderRadius: BorderRadius.circular(11),
                   ),
-                  child: Row(
+                  child: const Icon(
+                    Icons.confirmation_number_rounded,
+                    color: _Palette.ink,
+                    size: 20,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.explore_outlined,
-                          size: 16, color: Color(0xFFE9C46A)),
-                      const SizedBox(width: 6),
                       Text(
-                        'พิกัด: ${latitude!.toStringAsFixed(6)}, ${longitude!.toStringAsFixed(6)}',
-                        style: const TextStyle(
-                          color: Colors.white70,
-                          fontSize: 12,
-                          fontFamily: 'monospace',
+                        'พิกัดนำทาง',
+                        style: GoogleFonts.kanit(
+                          color: Colors.white60,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        locationText,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.taviraj(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 14),
+              ],
+            ),
+          ),
+
+          // Ticket-tear perforation
+          SizedBox(
+            height: 16,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                const Positioned(
+                  left: 18,
+                  right: 18,
+                  top: 8,
+                  child: _DashedLine(),
+                ),
+                const Positioned(left: -8, top: 1, child: _Notch()),
+                const Positioned(right: -8, top: 1, child: _Notch()),
+              ],
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.white24),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.explore_outlined,
+                        size: 15,
+                        color: _Palette.brass,
+                      ),
+                      const SizedBox(width: 7),
+                      Text(
+                        '${latitude!.toStringAsFixed(6)}, ${longitude!.toStringAsFixed(6)}',
+                        style: GoogleFonts.robotoMono(
+                          color: Colors.white70,
+                          fontSize: 12,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
                     onPressed: _openGoogleMaps,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD96C2C),
+                      backgroundColor: _Palette.river,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       elevation: 0,
                     ),
                     icon: const Icon(Icons.near_me_rounded, size: 18),
-                    label: const Text(
+                    label: Text(
                       'เปิดนำทางด้วย Google Maps',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                      style: GoogleFonts.kanit(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.5,
                       ),
                     ),
                   ),
@@ -174,4 +197,55 @@ class ContentMapWidget extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Notch extends StatelessWidget {
+  const _Notch();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 16,
+      height: 16,
+      decoration: const BoxDecoration(
+        color: _Palette.stone,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+}
+
+class _DashedLine extends StatelessWidget {
+  const _DashedLine();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      painter: _DashedLinePainter(color: Colors.white24),
+      size: const Size(double.infinity, 1),
+    );
+  }
+}
+
+class _DashedLinePainter extends CustomPainter {
+  final Color color;
+  _DashedLinePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..strokeWidth = 1;
+    const dashWidth = 5.0;
+    const dashSpace = 4.0;
+    double startX = 0;
+    while (startX < size.width) {
+      canvas.drawLine(Offset(startX, 0), Offset(startX + dashWidth, 0), paint);
+      startX += dashWidth + dashSpace;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _DashedLinePainter oldDelegate) =>
+      oldDelegate.color != color;
 }

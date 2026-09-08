@@ -80,23 +80,48 @@ class ContentsPage extends GetView<ContentController> {
           children: [
             // 1. HERO SEARCH BANNER & VIEW TYPE TOGGLE
             Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
               decoration: const BoxDecoration(
-                color: Color(0xFF332820),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
+                gradient: LinearGradient(
+                  colors: [Color(0xFF2B1F17), Color(0xFF3D2D23)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(28),
+                  bottomRight: Radius.circular(28),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    'ค้นพบเรื่องราวเมืองกาญจน์ ✨',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'แหล่งท่องเที่ยว ประวัติศาสตร์ คาเฟ่เด็ด และวิถีชีวิตท้องถิ่น',
+                    style: TextStyle(color: Color(0xFFE8D9C9), fontSize: 13),
+                  ),
+                  const SizedBox(height: 14),
                   // Reusable Search Field
                   AppSearchField(
-                    hintText: 'ค้นหาชื่อบทความ สถานที่ หรือคีย์เวิร์ด...',
+                    hintText: 'ค้นหาบทความ สถานที่ หรือคีย์เวิร์ด...',
                     onChanged: controller.setSearch,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
 
                   // Reusable View Switcher Toggle
                   AppViewToggle<String>(

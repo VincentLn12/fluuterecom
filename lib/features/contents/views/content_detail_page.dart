@@ -89,7 +89,7 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                       children: [
                         if (item.categoryName != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
                               color: const Color(0xFFD96C2C),
                               borderRadius: BorderRadius.circular(20),
@@ -98,7 +98,7 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                               item.categoryName!,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -106,20 +106,20 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                         if (item.districtName != null) ...[
                           const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                             decoration: BoxDecoration(
                               color: const Color(0xFF332820),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
                               children: [
-                                const Icon(Icons.location_on, size: 12, color: Colors.white),
-                                const SizedBox(width: 3),
+                                const Icon(Icons.location_on, size: 13, color: Colors.white),
+                                const SizedBox(width: 4),
                                 Text(
                                   item.districtName!,
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -135,29 +135,29 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                     Text(
                       item.title,
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF332820),
-                        height: 1.3,
+                        height: 1.35,
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
 
                     // Rating & Stats
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 16, color: Color(0xFFE9C46A)),
+                        const Icon(Icons.star, size: 18, color: Color(0xFFE9C46A)),
                         const SizedBox(width: 4),
                         Text(
                           item.rating.toStringAsFixed(1),
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                         ),
                         const SizedBox(width: 16),
-                        Icon(Icons.visibility_outlined, size: 16, color: Colors.grey[700]),
+                        Icon(Icons.visibility_outlined, size: 18, color: Colors.grey[700]),
                         const SizedBox(width: 4),
                         Text(
                           '${item.viewCount} เข้าชม',
-                          style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                          style: TextStyle(color: Colors.grey[700], fontSize: 14),
                         ),
                       ],
                     ),
@@ -167,36 +167,36 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                     if (item.description != null && item.description!.isNotEmpty)
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
                           color: const Color(0xFFFFF9F2),
                           borderRadius: BorderRadius.circular(16),
                           border: const Border(
-                            left: BorderSide(color: Color(0xFFD96C2C), width: 4),
+                            left: BorderSide(color: Color(0xFFD96C2C), width: 4.5),
                           ),
                         ),
                         child: Text(
                           item.description!,
                           style: const TextStyle(
-                            fontSize: 14,
+                            fontSize: 15.5,
                             fontWeight: FontWeight.w500,
                             color: Color(0xFF332820),
-                            height: 1.5,
+                            height: 1.55,
                           ),
                         ),
                       ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 22),
 
                     // Main Text Body
                     Text(
                       item.body ?? item.description ?? 'ไม่มีรายละเอียดเนื้อหาเพิ่มเติม',
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 17,
                         color: Color(0xFF332820),
-                        height: 1.7,
+                        height: 1.75,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 26),
 
                     // Map & Directions Section
                     if (item.latitude != null && item.longitude != null) ...[
@@ -207,14 +207,14 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                         shopName: item.shopName,
                         districtName: item.districtName,
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 26),
                     ],
 
                     // Tags
                     if (item.tags.isNotEmpty) ...[
                       const Text(
                         'แท็กที่เกี่ยวข้อง:',
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                       const SizedBox(height: 8),
                       Wrap(
@@ -226,7 +226,7 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                             backgroundColor: Colors.white,
                             side: const BorderSide(color: Color(0xFFE8D9C9)),
                             labelStyle: const TextStyle(
-                              fontSize: 12,
+                              fontSize: 13,
                               color: Color(0xFFD96C2C),
                               fontWeight: FontWeight.w600,
                             ),

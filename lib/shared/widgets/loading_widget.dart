@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({super.key});
+  final String? message;
+
+  const LoadingWidget({super.key, this.message});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: CircularProgressIndicator(),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: Color(0xFFD96C2C)),
+          if (message != null) ...[
+            const SizedBox(height: 12),
+            Text(
+              message!,
+              style: GoogleFonts.krub(
+                fontSize: 14,
+                color: const Color(0xFF2B1F17),
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

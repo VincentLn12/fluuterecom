@@ -21,13 +21,13 @@ class ContentCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE8D9C9), width: 1.5),
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFEADCCF), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF332820).withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
+              color: const Color(0xFF332820).withValues(alpha: 0.08),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -38,6 +38,9 @@ class ContentCard extends StatelessWidget {
   }
 
   Widget _buildGridContent(ThemeData theme) {
+    final hasVideo =
+        item.youtubeUrl != null && item.youtubeUrl!.trim().isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -45,56 +48,87 @@ class ContentCard extends StatelessWidget {
         Stack(
           children: [
             AspectRatio(aspectRatio: 16 / 9, child: _buildImage()),
+            // Video Indicator Icon Overlay
+            if (hasVideo)
+              Positioned.fill(
+                child: Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.45),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white70, width: 1.5),
+                    ),
+                    child: const Icon(
+                      Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                ),
+              ),
+            // Category Badge
             if (item.categoryName != null)
               Positioned(
                 top: 12,
                 left: 12,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                    horizontal: 12,
+                    vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD96C2C),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFE07A3B), Color(0xFFC45A1B)],
+                    ),
                     borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
                   child: Text(
                     item.categoryName!,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 11,
+                      fontSize: 12.5,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
               ),
+            // District Badge
             if (item.districtName != null)
               Positioned(
                 bottom: 10,
                 right: 12,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 3,
+                    horizontal: 10,
+                    vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.65),
+                    color: const Color(0xFF231B15).withValues(alpha: 0.75),
                     borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white12),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 12,
+                        Icons.location_on_rounded,
+                        color: Color(0xFFE9C46A),
+                        size: 13,
                       ),
                       const SizedBox(width: 3),
                       Text(
                         item.districtName!,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -107,7 +141,7 @@ class ContentCard extends StatelessWidget {
 
         // Body Text
         Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -116,63 +150,106 @@ class ContentCard extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 15,
+                  fontSize: 17,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF332820),
-                  height: 1.3,
+                  color: Color(0xFF2B1F17),
+                  height: 1.35,
                 ),
               ),
               if (item.description != null) ...[
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   item.description!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: 14,
                     color: Colors.grey[700],
-                    height: 1.3,
+                    height: 1.4,
                   ),
                 ),
               ],
-              const SizedBox(height: 12),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.star,
-                        size: 14,
-                        color: Color(0xFFE9C46A),
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        item.rating.toStringAsFixed(1),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF7E6),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: const Color(0xFFF3DEB2)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.star_rounded,
+                              size: 15,
+                              color: Color(0xFFD9A01C),
+                            ),
+                            const SizedBox(width: 3),
+                            Text(
+                              item.rating.toStringAsFixed(1),
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF5C4310),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Icon(
-                        Icons.visibility_outlined,
-                        size: 14,
-                        color: Colors.grey[600],
-                      ),
-                      const SizedBox(width: 3),
-                      Text(
-                        '${item.viewCount}',
-                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.visibility_outlined,
+                            size: 15,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${item.viewCount}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  const Text(
-                    'อ่านต่อ →',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFD96C2C),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFF3EC),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Row(
+                      children: [
+                        Text(
+                          'อ่านต่อ',
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFD96C2C),
+                          ),
+                        ),
+                        SizedBox(width: 2),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 14,
+                          color: Color(0xFFD96C2C),
+                        ),
+                      ],
                     ),
                   ),
                 ],
@@ -185,14 +262,42 @@ class ContentCard extends StatelessWidget {
   }
 
   Widget _buildListContent(ThemeData theme) {
+    final hasVideo =
+        item.youtubeUrl != null && item.youtubeUrl!.trim().isNotEmpty;
+
     return SizedBox(
-      height: 120,
+      height: 136,
       child: Row(
         children: [
-          SizedBox(width: 130, height: double.infinity, child: _buildImage()),
+          Stack(
+            children: [
+              SizedBox(
+                width: 140,
+                height: double.infinity,
+                child: _buildImage(),
+              ),
+              if (hasVideo)
+                Positioned.fill(
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.45),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(14.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,20 +309,21 @@ class ContentCard extends StatelessWidget {
                         Text(
                           item.categoryName!,
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                             color: Color(0xFFD96C2C),
                           ),
                         ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         item.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 14,
+                          fontSize: 15.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF332820),
+                          color: Color(0xFF2B1F17),
+                          height: 1.3,
                         ),
                       ),
                     ],
@@ -229,27 +335,36 @@ class ContentCard extends StatelessWidget {
                         Row(
                           children: [
                             const Icon(
-                              Icons.location_on,
-                              size: 12,
-                              color: Colors.grey,
+                              Icons.location_on_rounded,
+                              size: 13,
+                              color: Color(0xFFD96C2C),
                             ),
-                            const SizedBox(width: 2),
+                            const SizedBox(width: 3),
                             Text(
                               item.districtName!,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                color: Colors.grey,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[700],
                               ),
                             ),
                           ],
                         ),
-                      const Text(
-                        'อ่านต่อ →',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFD96C2C),
-                        ),
+                      const Row(
+                        children: [
+                          Text(
+                            'อ่านต่อ',
+                            style: TextStyle(
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFD96C2C),
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            size: 16,
+                            color: Color(0xFFD96C2C),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -286,7 +401,11 @@ class ContentCard extends StatelessWidget {
         ),
       ),
       child: const Center(
-        child: Icon(Icons.travel_explore, size: 36, color: Colors.white70),
+        child: Icon(
+          Icons.travel_explore_rounded,
+          size: 38,
+          color: Colors.white70,
+        ),
       ),
     );
   }

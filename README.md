@@ -61,6 +61,10 @@ kanchanaburi_platform/
 │   │   ├── widgets/
 │   │   │   ├── app_button.dart
 │   │   │   ├── app_text_field.dart
+│   │   │   ├── app_search_field.dart
+│   │   │   ├── app_category_chip.dart
+│   │   │   ├── app_view_toggle.dart
+│   │   │   ├── status_badge.dart
 │   │   │   ├── loading_widget.dart
 │   │   │   ├── empty_widget.dart
 │   │   │   └── error_widget.dart
@@ -102,7 +106,8 @@ kanchanaburi_platform/
 │       ├── shops/
 │       │   ├── controllers/
 │       │   │   ├── shop_controller.dart
-│       │   │   └── shop_detail_controller.dart
+│       │   │   ├── shop_detail_controller.dart
+│       │   │   └── product_detail_controller.dart
 │       │   ├── bindings/
 │       │   │   └── shop_binding.dart
 │       │   ├── models/
@@ -117,6 +122,9 @@ kanchanaburi_platform/
 │       │   │   ├── products_page.dart
 │       │   │   └── product_detail_page.dart
 │       │   └── widgets/
+│       │       ├── shop_card.dart
+│       │       ├── product_card.dart
+│       │       └── shop_interactive_map_view.dart
 │       │
 │       ├── contents/
 │       │   ├── controllers/
@@ -228,13 +236,13 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * สินค้าแนะนำ
    * เนื้อหา / ข่าวสารล่าสุด
 
-2. **ร้านค้า**
-   * `shops_page.dart`
-   * รายการร้านค้า
-   * ค้นหาร้าน
-   * Filter ร้านตามหมวดหมู่
-   * ดูรายละเอียดร้าน
-   * ดูสินค้า
+2. **ร้านค้า & ระบบสินค้า (Shops & Product System)**
+   * `shops_page.dart`, `shop_detail_page.dart` & `product_detail_page.dart`
+   * **Live API Integration**: ดึงข้อมูลร้านค้า หมวดหมู่สินค้า และอำเภอจาก API จริง (`https://coms.kru.ac.th/boatapi/api`)
+   * **Dual View Switcher**: สลับการแสดงผลแบบ `📋 รายการร้านค้า` (Grid/List View) และ `🗺️ แผนที่ร้านค้า` (Interactive OpenStreetMap)
+   * **Shop Operating Status**: คำนวณเวลาเปิด-ปิดร้านอัตโนมัติ (`isOpenNow`) แสดงสถานะ เปิดบริการอยู่ / ปิดให้บริการ แบบ Real-time
+   * **Shop Detail Showcase**: แสดง Banner ปก, โทรออกตรง (`tel:`), ดูตำแหน่งที่ตั้ง และสินค้าทั้งหมดภายในร้าน
+   * **Product Detail Page**: แสดงแกลเลอรีรูปภาพสินค้า, ป้ายสถานะคลังสินค้า, ข้อมูลร้านค้าผู้ขาย, เครื่องมือเลือกจำนวน และปุ่มเพิ่มลงตะกร้าพร้อมคำนวณราคารวม
 
 3. **เนื้อหา & แผนที่ท่องเที่ยว (Content & Map)**
    * `contents_page.dart` & `content_detail_page.dart`
@@ -244,13 +252,13 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **Marker BottomSheet & Navigation**: กดที่หมุดบนแผนที่เพื่อดูการ์ดพรีวิว และเปิดนำทางด้วย Google Maps / Apple Maps ได้ทันที
    * **In-App Video Player (`content_video_player.dart`)**: ตัวเล่นวิดีโอ YouTube ในแอป (`youtube_player_flutter`) วางในตำแหน่ง Top Header พร้อมระบบ AutoPlay เมื่อเข้าดูรายละเอียดบทความ
 
-4. **ตะกร้า**
-   * `cart_page.dart`
-   * รายการสินค้าในตะกร้า
-   * เพิ่ม / ลดจำนวน
-   * ลบสินค้า
-   * Checkout
-   * Payment
+4. **ตะกร้าสินค้า (Shopping Cart System)**
+   * `cart_page.dart`, `cart_controller.dart` & `cart_item_model.dart`
+   * **Shop-Grouped Display**: จัดกลุ่มรายการสินค้าในตะกร้าแยกตามร้านค้าอัตโนมัติ
+   * **Item & Shop Selection**: ระบบเลือกสินค้าแบบ Checkbox รายชิ้น, เลือกทั้งร้านค้า หรือเลือกสินค้าทั้งหมดในตะกร้า
+   * **Quantity Stepper & Instant Recalculation**: ปุ่มปรับเพิ่ม/ลดจำนวนสินค้า พร้อมคำนวณราคาย่อย (Subtotal) และราคารวมทั้งหมด (Total Price) แบบ Real-time
+   * **Global Permanent State**: เรียกใช้งาน `CartController` ได้จากทุกหน้า (`ProductCard`, `ProductDetailPage`, Bottom Bar)
+   * **Empty Cart View & Checkout Navigation**: หน้าการ์ดแจ้งเตือนตะกร้าว่างพร้อมปุ่มทางลัดไปเลือกซื้อสินค้า และแถบสั่งซื้อสินค้าลอยด้านล่าง (Bottom Checkout Bar)
 
 5. **โปรไฟล์**
    * `profile_page.dart`
@@ -288,10 +296,10 @@ lib/app/routes/
 └── app_pages.dart
 ```
 
-## Content & Interactive Map Feature Highlights
+## Shopping Cart Feature Highlights
 
-- **API Integration**: ดึงข้อมูลจาก API จริง (`/contents`, `/content-categories`, `/locations/districts`) ไม่ใช้ mock data
-- **AutoPlay YouTube Player**: วิดีโอหลักถูกย้ายขึ้นมาอยู่ส่วน Top Header ในหน้ารายละเอียด (`ContentDetailPage`) พร้อมตั้งค่า AutoPlay ทันทีเมื่อกดเข้ามา
-- **Dual View Modes**: สลับระหว่าง `📋 รายการบทความ` และ `🗺️ แผนที่ท่องเที่ยว` ในหน้า `ContentsPage`
-- **Interactive OpenStreetMap**: แสดงหมุดสถานที่ปักบนพิกัดจริง (`latitude`, `longitude`) พร้อมระบบ Bottom Sheet Preview และปุ่มนำทาง Google Maps
-
+- **Permanent Reactive Controller**: `CartController` ลงทะเบียนไว้ที่ `InitialBinding` ทำงานแบบ Reactive อัปเดตข้อมูลตะกร้าข้ามทุกหน้าแบบ Real-time
+- **Shop Grouping UI**: แยกรายการสินค้าตามร้านค้าชัดเจน
+- **Flexible Item Selection**: สามารถเลือกเฉพาะสินค้าที่ต้องการสั่งซื้อเพื่อคำนวณยอดเงินรวมได้
+- **Interactive Quantity Stepper**: ปรับจำนวนสินค้าในตะกร้า หรือกดลบออกเมื่อจำนวนเหลือ 0
+- **Direct Add to Cart**: กดไอคอนตะกร้าในการ์ดสินค้าหรือหน้ารายละเอียดเพื่อเพิ่มลงตะกร้าพร้อมแสดง Snackbar
