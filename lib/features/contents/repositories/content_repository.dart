@@ -20,7 +20,9 @@ class ContentRepository {
         } else if (data is List) {
           items = data;
         }
-        return items.map((e) => ContentCategory.fromJson(e as Map<String, dynamic>)).toList();
+        return items
+            .map((e) => ContentCategory.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     } catch (e) {
       debugPrint('Error fetching categories from API: $e');
@@ -36,10 +38,14 @@ class ContentRepository {
         List items = [];
         if (data is List) {
           items = data;
-        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+        } else if (data is Map &&
+            data.containsKey('items') &&
+            data['items'] is List) {
           items = data['items'] as List;
         }
-        return items.map((e) => District.fromJson(e as Map<String, dynamic>)).toList();
+        return items
+            .map((e) => District.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     } catch (e) {
       debugPrint('Error fetching districts from API: $e');
@@ -78,7 +84,9 @@ class ContentRepository {
         } else if (data is List) {
           items = data;
         }
-        return items.map((e) => ContentModel.fromJson(e as Map<String, dynamic>)).toList();
+        return items
+            .map((e) => ContentModel.fromJson(e as Map<String, dynamic>))
+            .toList();
       }
     } catch (e) {
       debugPrint('Error fetching contents from API: $e');

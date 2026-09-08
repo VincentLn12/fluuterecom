@@ -132,6 +132,10 @@ kanchanaburi_platform/
 │       │   │   ├── contents_page.dart
 │       │   │   └── content_detail_page.dart
 │       │   └── widgets/
+│       │       ├── content_card.dart
+│       │       ├── content_video_player.dart
+│       │       ├── content_map_widget.dart
+│       │       └── content_interactive_map_view.dart
 │       │
 │       ├── cart/
 │       │   ├── controllers/
@@ -232,12 +236,13 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * ดูรายละเอียดร้าน
    * ดูสินค้า
 
-3. **เนื้อหา**
-   * `contents_page.dart`
-   * บทความ
-   * ข่าวสาร
-   * กิจกรรม
-   * Content Detail
+3. **เนื้อหา & แผนที่ท่องเที่ยว (Content & Map)**
+   * `contents_page.dart` & `content_detail_page.dart`
+   * **API Integration**: ดึงข้อมูลคอนเทนต์ หมวดหมู่ และอำเภอ จาก API จริง (`https://coms.kru.ac.th/boatapi/api`) โดยตรง
+   * **Segmented View Switcher**: ปุ่มสลับมุมมองระหว่าง **`📋 รายการบทความ`** (Grid/List Card View) และ **`🗺️ แผนที่ท่องเที่ยว`** (Full Interactive Map View)
+   * **Interactive Map View (`content_interactive_map_view.dart`)**: ปักหมุดพิกัดสถานที่จริง (`latitude`, `longitude`) บนแผนที่ OpenStreetMap แบบโต้ตอบได้
+   * **Marker BottomSheet & Navigation**: กดที่หมุดบนแผนที่เพื่อดูการ์ดพรีวิว และเปิดนำทางด้วย Google Maps / Apple Maps ได้ทันที
+   * **In-App Video Player (`content_video_player.dart`)**: ตัวเล่นวิดีโอ YouTube ในแอป (`youtube_player_flutter`) วางในตำแหน่ง Top Header พร้อมระบบ AutoPlay เมื่อเข้าดูรายละเอียดบทความ
 
 4. **ตะกร้า**
    * `cart_page.dart`
@@ -282,3 +287,11 @@ lib/app/routes/
 ├── app_routes.dart
 └── app_pages.dart
 ```
+
+## Content & Interactive Map Feature Highlights
+
+- **API Integration**: ดึงข้อมูลจาก API จริง (`/contents`, `/content-categories`, `/locations/districts`) ไม่ใช้ mock data
+- **AutoPlay YouTube Player**: วิดีโอหลักถูกย้ายขึ้นมาอยู่ส่วน Top Header ในหน้ารายละเอียด (`ContentDetailPage`) พร้อมตั้งค่า AutoPlay ทันทีเมื่อกดเข้ามา
+- **Dual View Modes**: สลับระหว่าง `📋 รายการบทความ` และ `🗺️ แผนที่ท่องเที่ยว` ในหน้า `ContentsPage`
+- **Interactive OpenStreetMap**: แสดงหมุดสถานที่ปักบนพิกัดจริง (`latitude`, `longitude`) พร้อมระบบ Bottom Sheet Preview และปุ่มนำทาง Google Maps
+

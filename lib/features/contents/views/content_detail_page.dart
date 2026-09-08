@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/content_detail_controller.dart';
 import '../widgets/content_video_player.dart';
+import '../widgets/content_map_widget.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../../shared/widgets/empty_widget.dart';
 
@@ -195,7 +196,19 @@ class ContentDetailPage extends GetView<ContentDetailController> {
                         height: 1.7,
                       ),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: 24),
+
+                    // Map & Directions Section
+                    if (item.latitude != null && item.longitude != null) ...[
+                      ContentMapWidget(
+                        latitude: item.latitude,
+                        longitude: item.longitude,
+                        title: item.title,
+                        shopName: item.shopName,
+                        districtName: item.districtName,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
 
                     // Tags
                     if (item.tags.isNotEmpty) ...[

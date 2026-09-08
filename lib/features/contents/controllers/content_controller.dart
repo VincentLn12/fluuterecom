@@ -4,7 +4,7 @@ import '../repositories/content_repository.dart';
 
 class ContentController extends GetxController {
   ContentController({ContentRepository? repository})
-      : _repository = repository ?? ContentRepository();
+    : _repository = repository ?? ContentRepository();
 
   final ContentRepository _repository;
 
@@ -18,6 +18,11 @@ class ContentController extends GetxController {
 
   final isLoading = false.obs;
   final displayMode = 'grid'.obs; // 'grid' | 'list'
+  final viewType = 'list'.obs; // 'list' | 'map'
+
+  void setViewType(String type) {
+    viewType.value = type;
+  }
 
   @override
   void onInit() {

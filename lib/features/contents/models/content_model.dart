@@ -43,6 +43,11 @@ class ContentModel {
   final String? categoryName;
   final String? districtId;
   final String? districtName;
+  final String? subDistrictName;
+  final String? shopId;
+  final String? shopName;
+  final double? latitude;
+  final double? longitude;
   final int viewCount;
   final double rating;
   final List<String> tags;
@@ -59,6 +64,11 @@ class ContentModel {
     this.categoryName,
     this.districtId,
     this.districtName,
+    this.subDistrictName,
+    this.shopId,
+    this.shopName,
+    this.latitude,
+    this.longitude,
     this.viewCount = 0,
     this.rating = 5.0,
     this.tags = const [],
@@ -75,6 +85,12 @@ class ContentModel {
       }).where((t) => t.isNotEmpty).toList();
     }
 
+    double? parseCoord(dynamic val) {
+      if (val == null) return null;
+      if (val is num) return val.toDouble();
+      return double.tryParse(val.toString());
+    }
+
     return ContentModel(
       id: json['contentId']?.toString() ?? json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? 'ไม่มีชื่อเรื่อง',
@@ -86,6 +102,11 @@ class ContentModel {
       categoryName: json['categoryName']?.toString() ?? json['category']?['categoryName']?.toString(),
       districtId: json['districtId']?.toString(),
       districtName: json['districtName']?.toString() ?? json['district']?['districtName']?.toString(),
+      subDistrictName: json['subDistrictName']?.toString(),
+      shopId: json['shopId']?.toString(),
+      shopName: json['shopName']?.toString(),
+      latitude: parseCoord(json['latitude']),
+      longitude: parseCoord(json['longitude']),
       viewCount: int.tryParse(json['viewCount']?.toString() ?? '0') ?? 0,
       rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
       tags: parsedTags,
