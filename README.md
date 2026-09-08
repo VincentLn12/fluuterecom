@@ -13,7 +13,7 @@
 * คำสั่งซื้อ
 * ชำระเงิน
 * โปรไฟล์
-* Authentication
+* Authentication (เข้าสู่ระบบ / สมัครสมาชิก)
 * Merchant / My Shop
 * Admin
 
@@ -260,13 +260,11 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **Global Permanent State**: เรียกใช้งาน `CartController` ได้จากทุกหน้า (`ProductCard`, `ProductDetailPage`, Bottom Bar)
    * **Empty Cart View & Checkout Navigation**: หน้าการ์ดแจ้งเตือนตะกร้าว่างพร้อมปุ่มทางลัดไปเลือกซื้อสินค้า และแถบสั่งซื้อสินค้าลอยด้านล่าง (Bottom Checkout Bar)
 
-5. **โปรไฟล์**
-   * `profile_page.dart`
-   * ข้อมูลผู้ใช้งาน
-   * แก้ไขโปรไฟล์
-   * ประวัติคำสั่งซื้อ
-   * จัดการร้านค้า
-   * Login / Logout
+5. **โปรไฟล์ & ระบบสมาชิก (Profile & Authentication System)**
+   * `profile_page.dart`, `login_page.dart` & `register_page.dart`
+   * **Live OpenAPI Authentication**: เชื่อมต่อ API `/api/login`, `/api/register`, `/api/account/me`, `/api/account/profile`
+   * **Automatic Bearer Token Header**: ระบบแนบ `Authorization: Bearer <accessToken>` อัตโนมัติทุก Request ผ่าน `ApiClient` Request Modifier
+   * **Dynamic Session Management**: จัดการเซสชันผู้ใช้งานด้วย `AuthService` แสดงผลข้อมูลผู้ใช้, สิทธิ์ (`Role`), ปุ่มแก้ไขโปรไฟล์, ประวัติคำสั่งซื้อ และปุ่มออกจากระบบ
 
 ## Navbar Structure
 
@@ -296,10 +294,9 @@ lib/app/routes/
 └── app_pages.dart
 ```
 
-## Shopping Cart Feature Highlights
+## Authentication System Feature Highlights
 
-- **Permanent Reactive Controller**: `CartController` ลงทะเบียนไว้ที่ `InitialBinding` ทำงานแบบ Reactive อัปเดตข้อมูลตะกร้าข้ามทุกหน้าแบบ Real-time
-- **Shop Grouping UI**: แยกรายการสินค้าตามร้านค้าชัดเจน
-- **Flexible Item Selection**: สามารถเลือกเฉพาะสินค้าที่ต้องการสั่งซื้อเพื่อคำนวณยอดเงินรวมได้
-- **Interactive Quantity Stepper**: ปรับจำนวนสินค้าในตะกร้า หรือกดลบออกเมื่อจำนวนเหลือ 0
-- **Direct Add to Cart**: กดไอคอนตะกร้าในการ์ดสินค้าหรือหน้ารายละเอียดเพื่อเพิ่มลงตะกร้าพร้อมแสดง Snackbar
+- **OpenAPI Integration**: เชื่อมต่อกับ backend API ความปลอดภัยมาตรฐาน ASP.NET Core Identity (`/api/login`, `/api/register`, `/api/account/me`, `/api/account/profile`)
+- **Automated Authorization Headers**: `ApiClient` แนบ Bearer Token ทุก HTTP Call โดยอัตโนมัติเมื่อผู้ใช้เข้าสู่ระบบแล้ว
+- **Shared Reusable Form Components**: ใช้ `AppTextField` และ `AppButton` พร้อมฟีเจอร์สลับการมองเห็นรหัสผ่าน (Obscure Password Toggle) และ Loading Indicator
+- **Global Auth State (`AuthService`)**: ซิงค์สถานะการล็อกอิน สิทธิ์ผู้ใช้งาน และเปลี่ยนหน้าตาโปรไฟล์แบบ Real-time ข้ามทุกหน้าในแอป
