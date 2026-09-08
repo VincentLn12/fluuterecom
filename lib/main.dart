@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'pages/main_page.dart';
+import 'app/bindings/initial_binding.dart';
+import 'app/config/app_config.dart';
+import 'app/routes/app_pages.dart';
+import 'app/routes/app_routes.dart';
+import 'app/theme/app_theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(const KanchanaburiApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class KanchanaburiApp extends StatelessWidget {
+  const KanchanaburiApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter App',
+      title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        useMaterial3: true,
-      ),
-      home: const MainPage(),
+      initialBinding: InitialBinding(),
+      theme: AppTheme.lightTheme,
+      initialRoute: AppRoutes.initial,
+      getPages: AppPages.routes,
     );
   }
 }

@@ -1,0 +1,103 @@
+import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
+import '../../../core/network/api_client.dart';
+import '../models/content_model.dart';
+
+class ContentRepository {
+  final ApiClient _apiClient = Get.find<ApiClient>();
+
+  Future<List<ContentCategory>> fetchCategories() async {
+    try {
+      final response = await _apiClient.get(
+        '/content-categories',
+        query: {'page': '1', 'pageSize': '100'},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        } else if (data is List) {
+          items = data;
+        }
+        return items.map((e) => ContentCategory.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching categories from API: $e');
+    }
+    return [];
+  }
+
+  Future<List<District>> fetchDistricts() async {
+    try {
+      final response = await _apiClient.get('/locations/districts');
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is List) {
+          items = data;
+        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        }
+        return items.map((e) => District.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching districts from API: $e');
+    }
+    return [];
+  }
+
+  Future<List<ContentModel>> fetchContents({
+    String? search,
+    String? categoryId,
+    String? districtId,
+    int page = 1,
+    int pageSize = 50,
+  }) async {
+    try {
+      final query = <String, String>{
+        'page': page.toString(),
+        'pageSize': pageSize.toString(),
+      };
+      if (search != null && search.trim().isNotEmpty) {
+        query['search'] = search.trim();
+      }
+      if (categoryId != null && categoryId.isNotEmpty) {
+        query['categoryId'] = categoryId;
+      }
+      if (districtId != null && districtId.isNotEmpty) {
+        query['districtId'] = districtId;
+      }
+
+      final response = await _apiClient.get('/contents', query: query);
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        } else if (data is List) {
+          items = data;
+        }
+        return items.map((e) => ContentModel.fromJson(e as Map<String, dynamic>)).toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching contents from API: $e');
+    }
+    return [];
+  }
+
+  Future<ContentModel?> fetchContentById(String id) async {
+    try {
+      final response = await _apiClient.get('/contents/$id');
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        if (data is Map<String, dynamic>) {
+          return ContentModel.fromJson(data);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching content detail from API: $e');
+    }
+    return null;
+  }
+}

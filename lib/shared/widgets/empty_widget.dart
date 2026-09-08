@@ -1,0 +1,14 @@
+import 'package:flutter/material.dart';
+
+class EmptyWidget extends StatelessWidget {
+  final String message;
+
+  const EmptyWidget({super.key, this.message = 'ไม่พบข้อมูล'});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(message),
+    );
+  }
+}
