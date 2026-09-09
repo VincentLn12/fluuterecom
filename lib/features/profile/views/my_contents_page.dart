@@ -431,12 +431,9 @@ class MyContentsPage extends StatelessWidget {
                           ),
                           tooltip: 'แก้ไข',
                           onPressed: () {
-                            Get.snackbar(
-                              'แก้ไขคอนเทนต์',
-                              'กำลังนำคุณไปยังหน้าแก้ไข ${content.title}',
-                              snackPosition: SnackPosition.TOP,
-                              backgroundColor: const Color(0xFF2B1F17),
-                              colorText: Colors.white,
+                            Get.toNamed(
+                              AppRoutes.createContent,
+                              arguments: content,
                             );
                           },
                         ),
@@ -594,15 +591,7 @@ class MyContentsPage extends StatelessWidget {
   }
 
   void _handleCreateNewContent() {
-    Get.snackbar(
-      'สร้างคอนเทนต์ใหม่',
-      'ระบบกำลังเปิดฟอร์มสร้างคอนเทนต์บทความท่องเที่ยว',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: const Color(0xFF2B1F17),
-      colorText: Colors.white,
-      margin: const EdgeInsets.all(12),
-      borderRadius: 12,
-    );
+    Get.toNamed(AppRoutes.createContent);
   }
 
   String _formatDate(String isoDate) {

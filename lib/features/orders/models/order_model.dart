@@ -56,6 +56,8 @@ class OrderModel {
   final DateTime? createdAt;
   final List<OrderItemModel> items;
 
+  String get id => orderId;
+
   OrderModel({
     required this.orderId,
     this.shopId,

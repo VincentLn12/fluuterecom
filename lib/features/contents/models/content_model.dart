@@ -30,6 +30,34 @@ class District {
   }
 }
 
+class SubDistrict {
+  final String id;
+  final String name;
+
+  SubDistrict({required this.id, required this.name});
+
+  factory SubDistrict.fromJson(Map<String, dynamic> json) {
+    return SubDistrict(
+      id: json['subDistrictId']?.toString() ?? json['id']?.toString() ?? '',
+      name: json['subDistrictName']?.toString() ?? json['name']?.toString() ?? '',
+    );
+  }
+}
+
+class ContentShopOption {
+  final String id;
+  final String name;
+
+  ContentShopOption({required this.id, required this.name});
+
+  factory ContentShopOption.fromJson(Map<String, dynamic> json) {
+    return ContentShopOption(
+      id: json['shopId']?.toString() ?? json['id']?.toString() ?? '',
+      name: json['shopName']?.toString() ?? json['name']?.toString() ?? '',
+    );
+  }
+}
+
 class ContentModel {
   final String id;
   final String title;
@@ -41,6 +69,7 @@ class ContentModel {
   final String? categoryName;
   final String? districtId;
   final String? districtName;
+  final String? subDistrictId;
   final String? subDistrictName;
   final String? shopId;
   final String? shopName;
@@ -63,6 +92,7 @@ class ContentModel {
     this.categoryName,
     this.districtId,
     this.districtName,
+    this.subDistrictId,
     this.subDistrictName,
     this.shopId,
     this.shopName,
@@ -130,6 +160,7 @@ class ContentModel {
       districtName:
           json['districtName']?.toString() ??
           json['district']?['districtName']?.toString(),
+      subDistrictId: json['subDistrictId']?.toString(),
       subDistrictName: json['subDistrictName']?.toString(),
       shopId: json['shopId']?.toString(),
       shopName: json['shopName']?.toString(),

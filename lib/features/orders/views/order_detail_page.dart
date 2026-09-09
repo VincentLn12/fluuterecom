@@ -18,16 +18,8 @@ class OrderDetailPage extends StatelessWidget {
         backgroundColor: const Color(0xFF2B1F17),
         foregroundColor: Colors.white,
         elevation: 0,
-        title: Text(
-          'รายละเอียดคำสั่งซื้อ',
-          style: GoogleFonts.krub(
-            fontWeight: FontWeight.bold,
-            fontSize: 19,
-            color: Colors.white,
-          ),
-        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
           onPressed: () {
             if (Navigator.canPop(context)) {
               Get.back();
@@ -36,13 +28,19 @@ class OrderDetailPage extends StatelessWidget {
             }
           },
         ),
+        title: Text(
+          'รายละเอียดคำสั่งซื้อ',
+          style: GoogleFonts.krub(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.white,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.home_rounded, color: Colors.white),
             tooltip: 'กลับสู่หน้าหลัก',
-            onPressed: () {
-              Get.offAllNamed(AppRoutes.initial);
-            },
+            onPressed: () => Get.offAllNamed(AppRoutes.initial),
           ),
         ],
       ),
@@ -50,48 +48,79 @@ class OrderDetailPage extends StatelessWidget {
           ? Center(
               child: Text(
                 'ไม่พบข้อมูลคำสั่งซื้อ',
-                style: GoogleFonts.krub(fontSize: 16),
+                style: GoogleFonts.krub(
+                  fontSize: 16,
+                  color: const Color(0xFF332820),
+                ),
               ),
             )
           : SingleChildScrollView(
-              padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+              padding: const EdgeInsets.fromLTRB(16, 18, 16, 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // 1. Status Banner Header Box
-                  _buildStatusBanner(context, order),
+                  // 1. Status Banner Header
+                  _buildStatusBanner(order),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // 2. Shipping Address Card
                   _buildShippingAddressCard(order),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
                   // 3. Shop & Ordered Items Card
-                  _buildShopAndItemsCard(context, order),
+                  _buildShopAndItemsCard(order),
 
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
 
-                  // 4. Payment & Price Breakdown Card
+                  // 4. Payment & Price Summary Card
                   _buildPaymentSummaryCard(context, order),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 24),
+
+                  // 5. Payment Button if Pending
+                  if (order.orderStatus.toLowerCase() == 'pending')
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          Get.toNamed(AppRoutes.payment, arguments: order);
+                        },
+                        icon: const Icon(Icons.payment_rounded, size: 20),
+                        label: Text(
+                          'ดำเนินการชำระเงิน',
+                          style: GoogleFonts.krub(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFD96C2C),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 2,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
     );
   }
 
-  Widget _buildStatusBanner(BuildContext context, OrderModel order) {
+  Widget _buildStatusBanner(OrderModel order) {
     Color bannerBg;
     IconData bannerIcon;
     String statusDesc;
 
     switch (order.orderStatus.toLowerCase()) {
       case 'pending':
-        bannerBg = const Color(0xFFD96C2C);
-        bannerIcon = Icons.access_time_filled_rounded;
+        bannerBg = const Color(0xFFE76F51);
+        bannerIcon = Icons.hourglass_empty_rounded;
         statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
         break;
       case 'paid':
@@ -106,31 +135,31 @@ class OrderDetailPage extends StatelessWidget {
         statusDesc = 'พัสดุของคุณอยู่ระหว่างการจัดส่งไปยังที่อยู่ระบุ';
         break;
       case 'completed':
-        bannerBg = const Color(0xFF2E7D32);
+        bannerBg = const Color(0xFF059669);
         bannerIcon = Icons.check_circle_rounded;
         statusDesc = 'คำสั่งซื้อสำเร็จ ขอบคุณที่ร่วมอุดหนุนสินค้าโอทอปกาญจนบุรี';
         break;
       case 'cancelled':
-        bannerBg = Colors.grey[700]!;
+        bannerBg = const Color(0xFF786B62);
         bannerIcon = Icons.cancel_rounded;
         statusDesc = 'คำสั่งซื้อนี้ถูกยกเลิกเรียบร้อยแล้ว';
         break;
       default:
-        bannerBg = const Color(0xFF2A9D8F);
+        bannerBg = const Color(0xFFD96C2C);
         bannerIcon = Icons.info_rounded;
         statusDesc = 'สถานะคำสั่งซื้อปัจจุบันของคุณ';
     }
 
     final dateStr = order.createdAt != null
-        ? '${order.createdAt!.day}/${order.createdAt!.month}/${order.createdAt!.year} ${order.createdAt!.hour}:${order.createdAt!.minute.toString().padLeft(2, '0')} น.'
+        ? _formatDate(order.createdAt!)
         : '-';
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: bannerBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
             color: bannerBg.withValues(alpha: 0.3),
@@ -158,23 +187,23 @@ class OrderDetailPage extends StatelessWidget {
                   statusDesc,
                   style: GoogleFonts.krub(
                     fontSize: 13,
-                    color: Colors.white.withValues(alpha: 0.9),
-                    height: 1.3,
+                    color: Colors.white.withValues(alpha: 0.92),
+                    height: 1.35,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Text(
                   'สั่งซื้อเมื่อ: $dateStr',
                   style: GoogleFonts.krub(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: Colors.white.withValues(alpha: 0.85),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 12),
-          Icon(bannerIcon, size: 48, color: Colors.white.withValues(alpha: 0.9)),
+          Icon(bannerIcon, size: 44, color: Colors.white.withValues(alpha: 0.9)),
         ],
       ),
     );
@@ -182,16 +211,16 @@ class OrderDetailPage extends StatelessWidget {
 
   Widget _buildShippingAddressCard(OrderModel order) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0EAE6), width: 1.1),
-        boxShadow: [
+        color: const Color(0xFFFFF9F2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE8D9C9), width: 1.5),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Color(0x0A000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -200,25 +229,38 @@ class OrderDetailPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.location_on_rounded, color: Color(0xFFD96C2C), size: 20),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD96C2C).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.location_on_rounded,
+                  color: Color(0xFFD96C2C),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
               Text(
                 'ที่อยู่สำหรับจัดส่งสินค้า',
                 style: GoogleFonts.krub(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF0D2B22),
+                  color: const Color(0xFF332820),
                 ),
               ),
             ],
           ),
-          const Divider(height: 20, color: Color(0xFFEEF4F1)),
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFE8D9C9)),
+          const SizedBox(height: 12),
           Text(
             '${order.receiverName ?? "ผู้รับสินค้า"} (${order.receiverPhone ?? "N/A"})',
             style: GoogleFonts.krub(
-              fontSize: 15,
+              fontSize: 14.5,
               fontWeight: FontWeight.bold,
-              color: const Color(0xFF0D2B22),
+              color: const Color(0xFF332820),
             ),
           ),
           const SizedBox(height: 4),
@@ -226,7 +268,7 @@ class OrderDetailPage extends StatelessWidget {
             order.shippingAddress ?? 'ไม่ได้ระบุที่อยู่',
             style: GoogleFonts.krub(
               fontSize: 13.5,
-              color: Colors.grey[700],
+              color: const Color(0xFF786B62),
               height: 1.4,
             ),
           ),
@@ -235,17 +277,17 @@ class OrderDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildShopAndItemsCard(BuildContext context, OrderModel order) {
+  Widget _buildShopAndItemsCard(OrderModel order) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0EAE6), width: 1.1),
-        boxShadow: [
+        color: const Color(0xFFFFF9F2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE8D9C9), width: 1.5),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Color(0x0A000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -254,24 +296,35 @@ class OrderDetailPage extends StatelessWidget {
         children: [
           // Shop Title Header
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Row(
                     children: [
-                      const Icon(Icons.storefront_rounded, size: 20, color: Color(0xFF2A9D8F)),
-                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.all(7),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFD96C2C).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.storefront_rounded,
+                          size: 18,
+                          color: Color(0xFFD96C2C),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          order.shopName ?? 'ร้านค้าชุมชน',
+                          order.shopName ?? 'ร้านค้าชุมชนกาญจนบุรี',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.krub(
-                            fontSize: 16,
+                            fontSize: 15.5,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF0D2B22),
+                            color: const Color(0xFF332820),
                           ),
                         ),
                       ),
@@ -279,15 +332,17 @@ class OrderDetailPage extends StatelessWidget {
                   ),
                 ),
                 if (order.shopId != null && order.shopId!.isNotEmpty)
-                  GestureDetector(
+                  InkWell(
                     onTap: () {
                       Get.toNamed(AppRoutes.shopDetail, arguments: order.shopId);
                     },
+                    borderRadius: BorderRadius.circular(10),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEEF4F1),
-                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFE8D9C9)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -295,12 +350,16 @@ class OrderDetailPage extends StatelessWidget {
                           Text(
                             'ดูร้านค้า',
                             style: GoogleFonts.krub(
-                              fontSize: 12.5,
+                              fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF2A9D8F),
+                              color: const Color(0xFFD96C2C),
                             ),
                           ),
-                          const Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF2A9D8F)),
+                          const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 16,
+                            color: Color(0xFFD96C2C),
+                          ),
                         ],
                       ),
                     ),
@@ -309,11 +368,11 @@ class OrderDetailPage extends StatelessWidget {
             ),
           ),
 
-          const Divider(height: 1, color: Color(0xFFEEF4F1)),
+          const Divider(height: 1, color: Color(0xFFE8D9C9)),
 
           // Items List
           Padding(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(16),
             child: Column(
               children: order.items.map((item) {
                 return Padding(
@@ -321,19 +380,27 @@ class OrderDetailPage extends StatelessWidget {
                   child: Row(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(12),
                         child: Container(
                           width: 58,
                           height: 58,
-                          color: const Color(0xFFF4F6F5),
+                          color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
                           child: item.imageUrl != null && item.imageUrl!.isNotEmpty
                               ? Image.network(
                                   item.imageUrl!,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(Icons.shopping_bag_outlined, color: Colors.grey),
+                                      const Icon(
+                                    Icons.shopping_bag_outlined,
+                                    color: Color(0xFF786B62),
+                                    size: 26,
+                                  ),
                                 )
-                              : const Icon(Icons.shopping_bag_outlined, color: Colors.grey),
+                              : const Icon(
+                                  Icons.shopping_bag_outlined,
+                                  color: Color(0xFF786B62),
+                                  size: 26,
+                                ),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -347,8 +414,8 @@ class OrderDetailPage extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: GoogleFonts.krub(
                                 fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: const Color(0xFF0D2B22),
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF332820),
                                 height: 1.25,
                               ),
                             ),
@@ -357,7 +424,7 @@ class OrderDetailPage extends StatelessWidget {
                               '฿${item.unitPrice.toStringAsFixed(2)} x ${item.quantity}',
                               style: GoogleFonts.krub(
                                 fontSize: 13,
-                                color: Colors.grey[600],
+                                color: const Color(0xFF786B62),
                               ),
                             ),
                           ],
@@ -369,7 +436,7 @@ class OrderDetailPage extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF0D2B22),
+                          color: const Color(0xFF332820),
                         ),
                       ),
                     ],
@@ -385,16 +452,16 @@ class OrderDetailPage extends StatelessWidget {
 
   Widget _buildPaymentSummaryCard(BuildContext context, OrderModel order) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE0EAE6), width: 1.1),
-        boxShadow: [
+        color: const Color(0xFFFFF9F2),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: const Color(0xFFE8D9C9), width: 1.5),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
+            color: Color(0x0A000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -403,20 +470,33 @@ class OrderDetailPage extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.receipt_rounded, color: Color(0xFF2A9D8F), size: 20),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD96C2C).withValues(alpha: 0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.receipt_rounded,
+                  color: Color(0xFFD96C2C),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
               Text(
-                'ข้อมูลการชำระเงิน',
+                'สรุปยอดการชำระเงิน',
                 style: GoogleFonts.krub(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF0D2B22),
+                  color: const Color(0xFF332820),
                 ),
               ),
             ],
           ),
-          const Divider(height: 20, color: Color(0xFFEEF4F1)),
-          _buildRow('หมายเลขคำสั่งซื้อ', order.orderNumber ?? 'N/A'),
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFE8D9C9)),
+          const SizedBox(height: 14),
+          _buildRow('หมายเลขคำสั่งซื้อ', '#${order.orderNumber ?? order.id}'),
           const SizedBox(height: 8),
           _buildRow('ยอดรวมสินค้า', '฿${order.subtotal.toStringAsFixed(2)}'),
           const SizedBox(height: 8),
@@ -424,22 +504,24 @@ class OrderDetailPage extends StatelessWidget {
             'ค่าจัดส่ง (${order.shippingMethod ?? "Standard"})',
             '฿${order.shippingFee.toStringAsFixed(2)}',
           ),
-          const Divider(height: 20, color: Color(0xFFEEF4F1)),
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFE8D9C9)),
+          const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'ยอดชำระสุทธิ',
                 style: GoogleFonts.krub(
-                  fontSize: 16,
+                  fontSize: 15.5,
                   fontWeight: FontWeight.bold,
-                  color: const Color(0xFF0D2B22),
+                  color: const Color(0xFF332820),
                 ),
               ),
               Text(
                 '฿${order.totalAmount.toStringAsFixed(2)}',
                 style: GoogleFonts.krub(
-                  fontSize: 22,
+                  fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: const Color(0xFFD96C2C),
                 ),
@@ -448,13 +530,15 @@ class OrderDetailPage extends StatelessWidget {
           ),
 
           if (order.slipImageUrl != null && order.slipImageUrl!.isNotEmpty) ...[
-            const Divider(height: 24, color: Color(0xFFEEF4F1)),
+            const SizedBox(height: 16),
+            const Divider(height: 1, color: Color(0xFFE8D9C9)),
+            const SizedBox(height: 14),
             Text(
               'หลักฐานการชำระเงิน (สลิป)',
               style: GoogleFonts.krub(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF0D2B22),
+                color: const Color(0xFF332820),
               ),
             ),
             const SizedBox(height: 8),
@@ -463,17 +547,23 @@ class OrderDetailPage extends StatelessWidget {
                 _showImageModal(context, order.slipImageUrl!);
               },
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 child: Image.network(
                   order.slipImageUrl!,
-                  height: 140,
+                  height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
                     height: 80,
-                    color: const Color(0xFFF4F6F5),
-                    child: const Center(
-                      child: Text('ไม่สามารถโหลดรูปสลิปได้'),
+                    color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
+                    child: Center(
+                      child: Text(
+                        'ไม่สามารถโหลดรูปสลิปได้',
+                        style: GoogleFonts.krub(
+                          fontSize: 13,
+                          color: const Color(0xFF786B62),
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -490,20 +580,23 @@ class OrderDetailPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: GoogleFonts.krub(fontSize: 14, color: Colors.grey[700]),
+        Flexible(
+          child: Text(
+            label,
+            style: GoogleFonts.krub(
+              fontSize: 13.5,
+              color: const Color(0xFF786B62),
+            ),
+          ),
         ),
         const SizedBox(width: 12),
-        Expanded(
-          child: Text(
-            value,
-            textAlign: TextAlign.end,
-            style: GoogleFonts.krub(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: const Color(0xFF0D2B22),
-            ),
+        Text(
+          value,
+          textAlign: TextAlign.end,
+          style: GoogleFonts.krub(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xFF332820),
           ),
         ),
       ],
@@ -535,5 +628,26 @@ class OrderDetailPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDate(DateTime dt) {
+    const months = [
+      'ม.ค.',
+      'ก.พ.',
+      'มี.ค.',
+      'เม.ย.',
+      'พ.ค.',
+      'มิ.ย.',
+      'ก.ค.',
+      'ส.ค.',
+      'ก.ย.',
+      'ต.ค.',
+      'พ.ย.',
+      'ธ.ค.',
+    ];
+    final monthName = months[dt.month - 1];
+    final yearThai = dt.year + 543;
+    final minuteStr = dt.minute.toString().padLeft(2, '0');
+    return '${dt.day} $monthName $yearThai - ${dt.hour}:$minuteStr น.';
   }
 }

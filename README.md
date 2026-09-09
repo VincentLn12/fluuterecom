@@ -128,7 +128,8 @@ kanchanaburi_platform/
 │       │
 │       ├── contents/
 │       │   ├── controllers/
-│       │   │   └── content_controller.dart
+│       │   │   ├── content_controller.dart
+│       │   │   └── create_content_controller.dart
 │       │   ├── bindings/
 │       │   │   └── content_binding.dart
 │       │   ├── models/
@@ -136,7 +137,8 @@ kanchanaburi_platform/
 │       │   ├── repositories/
 │       │   │   └── content_repository.dart
 │       │   ├── views/
-│       │   │   └── contents_page.dart
+│       │   │   ├── contents_page.dart
+│       │   │   └── create_content_page.dart
 │       │   └── widgets/
 │       │       ├── content_card.dart
 │       │       ├── content_video_player.dart
@@ -274,10 +276,6 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **Photo Pin Markers (`shop_interactive_map_view.dart`)**: แสดงหมุดปักรูปภาพร้านค้าจริงบนแผนที่ OpenStreetMap พร้อมปลายหมุดชี้พิกัด และการ์ดพรีวิวร้านค้าเมื่อแตะหมุด
    * **Shop Operating Status**: คำนวณเวลาเปิด-ปิดร้านอัตโนมัติ (`isOpenNow`) แสดงสถานะ เปิดบริการอยู่ / ปิดให้บริการ แบบ Real-time
    * **Shop Detail Showcase**: แสดง Banner ปก, โทรออกตรง (`tel:`), ดูตำแหน่งที่ตั้ง และสินค้าทั้งหมดภายในร้าน
-   * **Product Detail Page**: แสดงแกลเลอรีรูปภาพสินค้า, ป้ายสถานะคลังสินค้า, ข้อมูลร้านค้าผู้ขาย, เครื่องมือเลือกจำนวน และปุ่มเพิ�5. **โปรไฟล์ & ระบบสมาชิก (Profile & Authentication System)**
-   * `profile_page.dart`, `login_page.dart` & `register_page.dart`
-   * **Live OpenAPI Authentication**: เชื่อมต่อ API `/api/login`, `/api/register`, `/api/account/me`, `/api/account/profile`
-   * **Automatic Bearer Token Header**: ระบบแนบ `Authorization: Bearer <accessToken>` อัตโนมัติทุก Request ผ่าน `ApiClient` Request Modifier
    * **Full Alignment with Web Repository (`VincentLn12/fronendKanchanaburiPlatform`)**:
      - **Top Breadcrumb Navigation**: แถบนำทาง `หน้าแรก` > `บัญชีของฉัน` พร้อมป้าย `🛡️ ระบบจัดการบัญชี`
      - **Initials Gradient Avatar**: ภาพโปรไฟล์วงกลมแบบไล่เฉดสีแอมเบอร์คอรัล แสดงอักษรย่อชื่อผู้ใช้ (Initials) พร้อมป้ายยืนยันสีเขียว `✓`
@@ -285,13 +283,27 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * **Product Detail Page**: แสดงแกลเลอรีรูปภาพสินค้า, ป้ายสถานะคลังสินค้า, ข้อมูลร้านค้าผู้ขาย, เครื่องมือเลือกจำนวน และปุ่มเพิ่มสินค้าลงตะกร้า
 
 3. **ระบบเนื้อหา & ข่าวสาร (Content System)**
-   * `contents_page.dart` & `content_detail_page.dart`
-   * **Live Content API**: เชื่อมต่อบทความท่องเที่ยวจาก API
+   * `contents_page.dart`, `content_detail_page.dart` & `create_content_page.dart`
+   * **Live Content API**: เชื่อมต่อบทความท่องเที่ยวและระบบสร้าง/แก้ไขบทความจาก API จริง (`POST /api/contents` & `PUT /api/contents/{id}`)
+   * **ระบบสร้างและแก้ไขคอนเทนต์บทความ (`create_content_page.dart`, `create_content_controller.dart`)**:
+     - **Full Alignment with Web Repository (`UserContentFormView.vue`)**:
+     - **Live OpenAPI Integration**:
+       - `POST /api/contents`: สร้างคอนเทนต์ใหม่พร้อมฟิลด์ `CreateContentDto`
+       - `PUT /api/contents/{id}`: บันทึกแก้ไขคอนเทนต์เดิมผ่าน Live API
+       - `GET /api/content-categories`: โหลดรายชื่อหมวดหมู่บทความ
+       - `GET /api/districts`: โหลดรายชื่ออำเภอในจังหวัดกาญจนบุรี
+       - `GET /api/locations/districts/{districtId}/sub-districts`: โหลดรายชื่อตำบลแบบ Cascading ตามอำเภอที่เลือก
+       - `GET /api/shops`: โหลดตัวเลือกร้านค้าชุมชนที่เกี่ยวข้อง
+     - **Dual Mode Support**: รองรับทั้ง **สร้างบทความใหม่** และ **แก้ไขบทความเดิม** โดยเมื่อกดปุ่ม [แก้ไข] ในหน้า *กิจกรรมและคอนเทนต์ของคุณ* ระบบจะดึงข้อมูลเดิม (ชื่อเรื่อง, เรื่องย่อ, หมวดหมู่, ตำบล/อำเภอ, พิกัด, ลิงก์ YouTube) มาใส่ฟอร์มให้อัตโนมัติ
+     - **Prominent Quick CTA**: เพิ่มปุ่ม **Floating Action Button (FAB) ลอยสีส้ม `+ ลงคอนเทนต์`** มุมขวาล่าง และไอคอนทางลัดบน AppBar ในหน้า **เนื้อหาท่องเที่ยว (ContentsPage)** ทำให้ผู้ใช้กดลงบทความ/สถานที่แนะนำได้จากทุกมุมมอง
+     - **YouTube Live Preview**: ตรวจจับ YouTube URL และแสดงภาพพรีวิวหน้าปกคลิปสดทันทีเมื่อใส่/แก้ไขลิงก์
+     - **Status Selector**: เลือกสถานะการเผยแพร่ทันที (Published) หรือบันทึกเป็นร่าง (Draft)
+     - **Warm Sand/Ivory Theme**: ดีไซน์คุมโทนพรีเมียม `#F7F0E6`, `#FFF9F2`, `#E8D9C9`, `#D96C2C`
    * **Map Integration (`content_interactive_map_view.dart`)**: ปักหมุดสถานที่ท่องเที่ยวบนแผนที่ พร้อม Pop-up ข้อมูลสั้นๆ และปุ่มนำทาง
    * **Enhanced Content Detail Redesign (`content_detail_page.dart` & Modular Widgets)**:
      - **16:9 AspectRatio Video Hero (`content_detail_hero.dart`)**: วิดีโอ YouTube อัตราส่วน 16:9 มุมโค้งมน พร้อมระบบ AutoPlay เล่นวิดีโออัตโนมัติเมื่อเข้าสู่บทความ
      - **Magazine Typography Header (`content_detail_header.dart`)**: แสดงหมวดหมู่, เวลาที่ใช้ในการอ่าน, ยอดเข้าชม และวันที่เผยแพร่
-     - **Prominent Navigation CTA (`content_action_buttons.dart`)**: ปุ่มเฉดสีส้มไล่ระดับ `นำทางไปยังสถานที่ 📍`, ปุ่มถูกใจ และปุ่มแชร์
+     - **Prominent Navigation CTA (`content_action_buttons.dart`)**: ปุ่มเฉดสีส้มไล่ระดับ `นำทางไปยังสถานที่ 📍`, ปุ่มถูกใจ (กดซ้ำเพื่อบันทึก/ยกเลิกรายการโปรดลง Live API อัตโนมัติ) และปุ่มแชร์
      - **Quote Callout Summary (`content_summary_card.dart`)**: การ์ดสรุปเนื้อหาสไตล์บทความนิตยสาร
      - **Schedule Timeline (`content_schedule_section.dart`)**: กำหนดการและช่วงเวลาจัดกิจกรรม
      - **Related Shops Slider (`content_shop_section.dart`)**: สไลเดอร์เลื่อนดูร้านค้าชุมชนที่เกี่ยวข้อง พร้อมป้ายสถานะ `🟢 เปิดบริการ`
@@ -346,26 +358,29 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
 
 ## Checkout & Payment System Feature Highlights
 
+- **Redesigned Payment Selection Gateway (`PaymentPage`)**:
+  - **Hero Order Summary Banner**: การ์ดสรุปหมายเลขคำสั่งซื้อ ยอดสุทธิต้องชำระ และป้ายยืนยันความปลอดภัย 🔒 *SSL 256-Bit Encrypted*
+  - **Interactive Payment Method Cards**: การ์ดเลือกช่องทางชำระเงินคุมโทนพรีเมียม `#FFF9F2`, `#E8D9C9`, `#D96C2C`, `#1F5F58` พร้อม Radio Button และป้าย Badge ยืนยันสิทธิ์
+  - **Option 1: 💳 Stripe Credit Card Gateway (Direct Form Entry)**:
+    - **Direct On-Screen CardFormField**: ฟอร์มกรอกหมายเลขบัตร, วันหมดอายุ, CVC (`CardFormField`) และชื่อบนหน้าบัตร (`cardHolderController`) บนหน้าจอโดยตรง สะดวก รวดเร็ว ไม่ผ่าน Native Sheet ป๊อบอัป
+  - **Option 2: 📱 PromptPay QR & Bank Transfer (โอนเงิน & แนบสลิป)**:
+    - **PromptPay QR Showcase**: กรอบแสดง QR Code ดีไซน์สไตล์แอปธนาคาร
+    - **One-Tap Copy Account Number**: ปุ่มกด [คัดลอกเลขบัญชี] ธนาคารกรุงไทย `701-0-98214-5` ลง Clipboard พร้อมแจ้งเตือน Snackbar
+    - **Real Image Picker Slip Upload (`image_picker`)**: เลือกรูปสลิปจริงจากคลังรูปภาพ พร้อมพรีวิวรูปสลิปและเวลาอัปโหลด
+  - **Sticky Bottom Action Bar**: แถบสรุปยอดเงินและปุ่มยืนยันชำระเงินแบบยึดติดด้านล่างสุดของจอเพื่อความสะดวกสูงสุด
 - **Live Checkout API**: เชื่อมต่อ API `POST /api/orders/checkout` ส่งรายการสั่งซื้อ ชนิดการจัดส่ง (`shippingMethod`), ค่าจัดส่ง (`shippingFee`), ข้อมูลผู้รับ และที่อยู่จัดส่ง
-- **Saved User Address Picker**: ดึงที่อยู่อิสระของผู้ใช้จาก `GET /api/user-addresses` พร้อมระบบเลือกเติมข้อมูลอัตโนมัติ
-- **Dynamic Shipping Options**: เลือกรูปแบบการจัดส่ง (Standard Delivery ฿40 vs Express Delivery ฿60) พร้อมคำนวณยอดสุทธิตามจริง
-- **Official Stripe SDK (`flutter_stripe`)**: รวม UI หลักอย่างเป็นทางการของ Stripe:
-  - **Stripe PaymentSheet (Native UI)**: หน้าต่างป็อปอัปชำระเงินของ Stripe Native Sheet (`Stripe.instance.presentPaymentSheet()`)
-  - **Stripe CardFormField Widget**: Component กรอกข้อมูลบัตรเครดิต/เดบิตอย่างเป็นทางการของ Stripe SDK (`CardFormField`)
-- **Stripe Credit/Debit Card Gateway (`PaymentPage`)**: เชื่อมต่อ `POST /api/payments/orders/{orderId}/intent` และ `POST /api/payments/orders/{orderId}/sync` พร้อมระบบความปลอดภัย SSL 256-bit
-- **Real Image Picker Slip Upload (`image_picker`)**: ปุ่มเลือกสลิปจริงจากคลังรูปภาพในเครื่อง (`ImageSource.gallery`) พร้อมการ์ดแสดงตัวอย่างรูปสลิปและเวลาอัปโหลด
-- **Admin Verification Flow**: ส่งรูปสลิปและอัปเดตสถานะออเดอร์ไปยัง `PATCH /api/orders/{id}/status` เป็น `PendingVerify` สำหรับ Admin ตรวจสอบผ่าน `GET /api/orders/admin/pending-slips` & `POST /api/orders/admin/verify-slip`
 - **Payment Success View (`PaymentSuccessPage`)**: หน้าแสดงความยินดีทำรายการสำเร็จ พร้อมปุ่มไปดูประวัติคำสั่งซื้อ (`OrdersPage`)
 
 ## Orders & Order Details System Redesign Highlights
 
-- **Shopee-Style Order Status Tabs (`OrdersPage`)**:
-  - แถบสลับสถานะคำสั่งซื้อแบบแนวนอน 6 แท็บ: `ทั้งหมด`, `รอชำระเงิน`, `กำลังจัดเตรียม`, `จัดส่งแล้ว`, `สำเร็จ`, `ยกเลิก`
-  - ป้ายแสดงจำนวนออเดอร์ (Count Badge) ประจำแต่ละแท็บแบบ Real-time
-  - การ์ดคำสั่งซื้อดีไซน์ E-Commerce แยกส่วนหัวร้านค้า, รายการสินค้าย่อย, สถานะออเดอร์, และปุ่มทางลัด "ดูรายละเอียด" / "ชำระเงิน"
+- **Shopee-Style Horizontal Status Filter Bar (`OrdersPage`)**:
+  - แถบสลับสถานะคำสั่งซื้อแบบแนวนอน 6 แท็บคุมโทนพรีเมียม `#FFF9F2`, `#E8D9C9`, `#D96C2C`: `ทั้งหมด`, `ที่ต้องชำระ`, `ที่ต้องจัดส่ง`, `ที่ต้องได้รับ`, `สำเร็จแล้ว`, `ยกเลิกแล้ว`
+  - ป้ายแสดงจำนวนออเดอร์ (Count Badge) ประจำแต่ละแท็บแบบ Real-time พร้อมไอคอนบอกประเภทสถานะ
+  - **Warm Ivory Order Card**: การ์ดแสดงคำสั่งซื้อเฉดสีครีมอุ่น `#FFF9F2` พร้อมป้ายสถานะ (🟢 *สำเร็จแล้ว*, 🟠 *ที่ต้องชำระ*, 🟦 *กำลังจัดส่ง*, ⚪️ *ยกเลิก*)
+  - **Dynamic Action CTA**: ปุ่มทางลัด **"ชำระเงิน"** (สำหรับออเดอร์ที่รอชำระ) และปุ่ม **"ดูรายละเอียด"** นำทางไปยังหน้ารายละเอียดคำสั่งซื้อ
 - **Modern Order Detail Page (`OrderDetailPage`)**:
-  - **Contextual Status Banner**: แถบป้ายสถานะด้านบนปรับเปลี่ยนสี ไอคอน และคำอธิบายตามสถานะคำสั่งซื้อจริง พร้อมแสดงเวลาสั่งซื้อ
-  - **Recipient Shipping Address**: แสดงชื่อผู้รับ, เบอร์โทรศัพท์ติดต่อ และที่อยู่จัดส่งแบบการ์ดสะอาดตา
+  - **Contextual Status Banner**: แถบป้ายสถานะด้านบนปรับเปลี่ยนสี ไอคอน และคำอธิบายตามสถานะคำสั่งซื้อจริง พร้อมแสดงเวลาสั่งซื้อภาษาไทย
+  - **Recipient Shipping Address**: แสดงชื่อผู้รับ, เบอร์โทรศัพท์ติดต่อ และที่อยู่จัดส่งแบบการ์ดสะอาดตา พร้อมไอคอนหมุดสถานที่
   - **Shop & Ordered Items Breakdown**: แสดงชื่อร้านค้า พร้อมปุ่มกด **"ดูร้านค้า"** นำทางไปยังหน้าร้านค้านั้นๆ ได้ทันที และแสดงรูปภาพ/ราคาสินค้าแต่ละรายการ
-  - **Payment Breakdown & Slip Preview**: สรุปยอดรวมสินค้า ค่าจัดส่ง ยอดชำระสุทธิ และป็อปอัปสไลด์เปิดดูรูปสลิปหลักฐานการชำระเงินขนาดใหญ่
+  - **Payment Breakdown & Slip Modal Preview**: สรุปยอดรวมสินค้า ค่าจัดส่ง ยอดชำระสุทธิ และป็อปอัปสไลด์เปิดดูรูปสลิปหลักฐานการชำระเงินขนาดใหญ่พร้อมปุ่มปิดเรียบร้อย
 

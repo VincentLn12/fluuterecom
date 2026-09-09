@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../app/routes/app_routes.dart';
 import '../controllers/content_controller.dart';
 import '../widgets/content_card.dart';
 import '../widgets/content_interactive_map_view.dart';
@@ -31,27 +33,39 @@ class ContentsPage extends GetView<ContentController> {
               child: const Icon(Icons.explore, size: 20, color: Colors.white),
             ),
             const SizedBox(width: 10),
-            const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'KANCHANABURI',
-                  style: TextStyle(
-                    fontSize: 11.5,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    color: Color(0xFFE9C46A),
+            const Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'KANCHANABURI',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      color: Color(0xFFE9C46A),
+                    ),
                   ),
-                ),
-                Text(
-                  'เนื้อหา & บทความท่องเที่ยว',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
+                  Text(
+                    'เนื้อหา & บทความท่องเที่ยว',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
         actions: [
+          IconButton(
+            tooltip: 'ลงคอนเทนต์ใหม่',
+            icon: const Icon(Icons.post_add_rounded, color: Color(0xFFE9C46A)),
+            onPressed: () => Get.toNamed(AppRoutes.createContent),
+          ),
           Obx(
             () => controller.viewType.value == 'list'
                 ? IconButton(
@@ -74,6 +88,17 @@ class ContentsPage extends GetView<ContentController> {
           ),
           const SizedBox(width: 6),
         ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () => Get.toNamed(AppRoutes.createContent),
+        backgroundColor: const Color(0xFFD96C2C),
+        foregroundColor: Colors.white,
+        elevation: 4,
+        icon: const Icon(Icons.post_add_rounded, size: 20),
+        label: Text(
+          'ลงคอนเทนต์',
+          style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 14),
+        ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {

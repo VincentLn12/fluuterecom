@@ -8,6 +8,7 @@ abstract class AppRoutes {
   static const productDetail = '/products/:id';
 
   static const contents = '/contents';
+  static const createContent = '/contents/create';
   static const contentDetail = '/contents/:id';
 
   static const cart = '/cart';
