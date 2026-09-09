@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../cart/controllers/cart_controller.dart';
 import '../models/product_model.dart';
@@ -21,10 +20,10 @@ class ProductCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEADCCF), width: 1.2),
+          border: Border.all(color: const Color(0xFFE0EAE6), width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF332820).withValues(alpha: 0.06),
+              color: const Color(0xFF0F382C).withValues(alpha: 0.06),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -50,20 +49,20 @@ class ProductCard extends StatelessWidget {
             // Product Details Column
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                padding: const EdgeInsets.fromLTRB(9, 7, 9, 7),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       item.name,
-                      maxLines: 2,
+                      maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.krub(
-                        fontSize: 13.5,
+                      style: const TextStyle(
+                        fontSize: 14.5,
                         fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2B1F17),
-                        height: 1.25,
+                        color: Color(0xFF0D2B22),
+                        height: 1.2,
                       ),
                     ),
                     Row(
@@ -75,30 +74,38 @@ class ProductCard extends StatelessWidget {
                             '฿${item.price.toStringAsFixed(0)}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.krub(
-                              fontSize: 15,
+                            style: const TextStyle(
+                              fontSize: 16,
                               fontWeight: FontWeight.w800,
-                              color: const Color(0xFFD96C2C),
+                              color: Color(0xFFE76F51),
                             ),
                           ),
                         ),
                         InkWell(
-                          onTap:
-                              onAddToCart ??
+                          onTap: onAddToCart ??
                               () {
                                 Get.find<CartController>().addToCart(item);
                               },
                           borderRadius: BorderRadius.circular(10),
                           child: Container(
-                            padding: const EdgeInsets.all(6),
+                            padding: const EdgeInsets.all(7),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF332820),
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF2A9D8F), Color(0xFF1B4D3E)],
+                              ),
                               borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF2A9D8F).withValues(alpha: 0.3),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
                             ),
                             child: const Icon(
                               Icons.add_shopping_cart_rounded,
                               color: Colors.white,
-                              size: 15,
+                              size: 16,
                             ),
                           ),
                         ),
@@ -118,7 +125,7 @@ class ProductCard extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFD96C2C), Color(0xFF8C3818)],
+          colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -126,7 +133,7 @@ class ProductCard extends StatelessWidget {
       child: const Center(
         child: Icon(
           Icons.shopping_bag_outlined,
-          size: 36,
+          size: 38,
           color: Colors.white70,
         ),
       ),

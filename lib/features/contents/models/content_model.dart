@@ -1,3 +1,5 @@
+import '../../../app/config/api_config.dart';
+
 class ContentCategory {
   final String id;
   final String name;
@@ -91,12 +93,25 @@ class ContentModel {
       return double.tryParse(val.toString());
     }
 
+    String? resolveUrl(dynamic val) {
+      if (val == null) return null;
+      String str = val.toString().trim();
+      if (str.isEmpty) return null;
+      if (str.startsWith('http://') || str.startsWith('https://')) {
+        return str;
+      }
+      if (str.startsWith('/')) {
+        return ApiConfig.baseUrl.replaceAll('/api', '') + str;
+      }
+      return '${ApiConfig.baseUrl.replaceAll('/api', '')}/$str';
+    }
+
     return ContentModel(
       id: json['contentId']?.toString() ?? json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? 'ไม่มีชื่อเรื่อง',
       description: json['description']?.toString() ?? json['summary']?.toString(),
       body: json['content']?.toString() ?? json['body']?.toString() ?? json['details']?.toString(),
-      coverImageUrl: json['coverImageUrl']?.toString() ?? json['imageUrl']?.toString(),
+      coverImageUrl: resolveUrl(json['coverImageUrl'] ?? json['imageUrl']),
       youtubeUrl: json['youtubeUrl']?.toString(),
       categoryId: json['contentCategoryId']?.toString() ?? json['categoryId']?.toString(),
       categoryName: json['categoryName']?.toString() ?? json['category']?['categoryName']?.toString(),
@@ -181,6 +196,19 @@ class ContentShopProduct {
   });
 
   factory ContentShopProduct.fromJson(Map<String, dynamic> json) {
+    String? resolveUrl(dynamic val) {
+      if (val == null) return null;
+      String str = val.toString().trim();
+      if (str.isEmpty) return null;
+      if (str.startsWith('http://') || str.startsWith('https://')) {
+        return str;
+      }
+      if (str.startsWith('/')) {
+        return ApiConfig.baseUrl.replaceAll('/api', '') + str;
+      }
+      return '${ApiConfig.baseUrl.replaceAll('/api', '')}/$str';
+    }
+
     return ContentShopProduct(
       productId: json['productId']?.toString() ?? '',
       shopId: json['shopId']?.toString() ?? '',
@@ -188,7 +216,7 @@ class ContentShopProduct {
       productName: json['productName']?.toString() ?? 'สินค้าชุมชน',
       description: json['description']?.toString(),
       price: double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
-      imageUrl: json['imageUrl']?.toString() ?? json['coverImageUrl']?.toString(),
+      imageUrl: resolveUrl(json['imageUrl'] ?? json['coverImageUrl']),
     );
   }
 }

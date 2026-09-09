@@ -5,6 +5,7 @@ import '../../contents/models/content_model.dart';
 import '../models/category_model.dart';
 import '../models/product_model.dart';
 import '../models/shop_model.dart';
+import '../models/shop_review_model.dart';
 
 class ShopRepository {
   final ApiClient _apiClient = Get.find<ApiClient>();
@@ -168,5 +169,53 @@ class ShopRepository {
       debugPrint('Error fetching product by id: $e');
     }
     return null;
+  }
+
+  Future<List<ContentModel>> fetchShopContents(String shopId) async {
+    try {
+      final response = await _apiClient.get(
+        '/contents',
+        query: {'shopId': shopId, 'page': '1', 'pageSize': '20'},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        } else if (data is List) {
+          items = data;
+        }
+        return items
+            .map((e) => ContentModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching shop contents: $e');
+    }
+    return [];
+  }
+
+  Future<List<ShopReviewModel>> fetchShopReviews(String shopId) async {
+    try {
+      final response = await _apiClient.get(
+        '/shops/$shopId/reviews',
+        query: {'page': '1', 'pageSize': '50'},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        } else if (data is List) {
+          items = data;
+        }
+        return items
+            .map((e) => ShopReviewModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching shop reviews: $e');
+    }
+    return [];
   }
 }
