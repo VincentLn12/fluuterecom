@@ -108,4 +108,65 @@ class ContentRepository {
     }
     return null;
   }
+
+  Future<List<ContentSchedule>> fetchContentSchedules(String contentId) async {
+    try {
+      final response = await _apiClient.get(
+        '/schedules',
+        query: {'contentId': contentId},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        if (data is List) {
+          return data
+              .map((e) => ContentSchedule.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching schedules from API: $e');
+    }
+    return [];
+  }
+
+  Future<List<ContentShopProduct>> fetchContentShopProducts(
+    String contentId,
+  ) async {
+    try {
+      final response = await _apiClient.get(
+        '/contents/$contentId/shop-products',
+        query: {'take': '4'},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        if (data is List) {
+          return data
+              .map((e) => ContentShopProduct.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching shop products from API: $e');
+    }
+    return [];
+  }
+
+  Future<List<ContentReview>> fetchContentReviews(String contentId) async {
+    try {
+      final response = await _apiClient.get('/content-reviews/$contentId');
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        if (data is Map && data.containsKey('reviews') && data['reviews'] is List) {
+          final reviewsList = data['reviews'] as List;
+          return reviewsList
+              .map((e) => ContentReview.fromJson(e as Map<String, dynamic>))
+              .toList();
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching reviews from API: $e');
+    }
+    return [];
+  }
 }
+

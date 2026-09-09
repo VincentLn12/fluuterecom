@@ -24,11 +24,11 @@ class AppSearchField extends StatelessWidget {
       controller: controller,
       onChanged: onChanged,
       onSubmitted: onSubmitted != null ? (_) => onSubmitted!() : null,
-      style: const TextStyle(color: Color(0xFF332820)),
+      style: const TextStyle(color: Color(0xFF332820), fontSize: 15),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: TextStyle(color: Colors.grey[600], fontSize: 14),
-        prefixIcon: Icon(Icons.search, color: iconColor),
+        hintStyle: TextStyle(color: Colors.grey[600], fontSize: 15),
+        prefixIcon: Icon(Icons.search, color: iconColor, size: 22),
         filled: true,
         fillColor: fillColor,
         contentPadding: const EdgeInsets.symmetric(

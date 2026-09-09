@@ -6,7 +6,7 @@ import '../repositories/shop_repository.dart';
 
 class ShopController extends GetxController {
   ShopController({ShopRepository? repository})
-      : _repository = repository ?? ShopRepository();
+    : _repository = repository ?? ShopRepository();
 
   final ShopRepository _repository;
 
@@ -21,6 +21,18 @@ class ShopController extends GetxController {
   final isLoading = false.obs;
   final displayMode = 'grid'.obs; // 'grid' | 'list'
   final viewType = 'list'.obs; // 'list' | 'map'
+  final onlyOpenNow = false.obs;
+
+  List<ShopModel> get displayedShops {
+    if (onlyOpenNow.value) {
+      return shops.where((s) => s.isOpenNow).toList();
+    }
+    return shops;
+  }
+
+  void toggleOnlyOpenNow() {
+    onlyOpenNow.value = !onlyOpenNow.value;
+  }
 
   @override
   void onInit() {
@@ -90,6 +102,7 @@ class ShopController extends GetxController {
     selectedCategoryId.value = null;
     selectedDistrictId.value = null;
     searchQuery.value = '';
+    onlyOpenNow.value = false;
     fetchShops();
   }
 }

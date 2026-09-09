@@ -20,8 +20,10 @@ class ShopDetailController extends GetxController {
     if (args is ShopModel) {
       shop.value = args;
       loadShopDetailAndProducts(args.id);
-    } else if (args is String) {
+    } else if (args is String && args.isNotEmpty) {
       loadShopDetailAndProducts(args);
+    } else if (Get.parameters['id'] != null) {
+      loadShopDetailAndProducts(Get.parameters['id']!);
     }
   }
 

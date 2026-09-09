@@ -12,7 +12,8 @@ import '../../features/shops/views/shop_detail_page.dart';
 import '../../features/shops/views/product_detail_page.dart';
 import '../../features/contents/bindings/content_binding.dart';
 import '../../features/contents/views/contents_page.dart';
-import '../../features/contents/views/content_detail_page.dart';
+import '../../features/content_detail/bindings/content_detail_binding.dart';
+import '../../features/content_detail/views/content_detail_page.dart';
 import '../../features/cart/bindings/cart_binding.dart';
 import '../../features/cart/views/cart_page.dart';
 import '../../features/checkout/bindings/checkout_binding.dart';
@@ -79,7 +80,7 @@ class AppPages {
     GetPage(
       name: AppRoutes.contentDetail,
       page: () => const ContentDetailPage(),
-      binding: ContentBinding(),
+      binding: ContentDetailBinding(),
     ),
     GetPage(
       name: AppRoutes.cart,

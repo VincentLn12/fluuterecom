@@ -155,12 +155,16 @@ class ContentMapWidget extends StatelessWidget {
                         color: _Palette.brass,
                       ),
                       const SizedBox(width: 7),
-                      Text(
-                        '${latitude!.toStringAsFixed(6)}, ${longitude!.toStringAsFixed(6)}',
-                        style: GoogleFonts.robotoMono(
-                          color: Colors.white70,
-                          fontSize: 12,
-                          letterSpacing: 0.3,
+                      Flexible(
+                        child: Text(
+                          '${latitude!.toStringAsFixed(6)}, ${longitude!.toStringAsFixed(6)}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.robotoMono(
+                            color: Colors.white70,
+                            fontSize: 12,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
                     ],

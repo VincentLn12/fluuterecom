@@ -1,66 +1,119 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../app/routes/app_routes.dart';
 import '../models/shop_model.dart';
 
-class ShopCard extends StatelessWidget {
+class ShopCard extends StatefulWidget {
   final ShopModel item;
   final String displayMode; // 'grid' | 'list'
 
   const ShopCard({super.key, required this.item, this.displayMode = 'grid'});
 
   @override
+  State<ShopCard> createState() => _ShopCardState();
+}
+
+class _ShopCardState extends State<ShopCard> {
+  bool _isPressed = false;
+
+  Future<void> _makeCall(String phone) async {
+    final cleanPhone = phone.replaceAll(RegExp(r'[^0-9+]'), '');
+    final uri = Uri.parse('tel:$cleanPhone');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final isGrid = displayMode == 'grid';
+    final isGrid = widget.displayMode == 'grid';
 
     return GestureDetector(
-      onTap: () {
-        Get.toNamed(AppRoutes.shopDetail, arguments: item);
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        Get.toNamed(AppRoutes.shopDetail, arguments: widget.item);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFEADCCF), width: 1.5),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF332820).withValues(alpha: 0.08),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedScale(
+        scale: _isPressed ? 0.97 : 1.0,
+        duration: const Duration(milliseconds: 140),
+        curve: Curves.easeOutCubic,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 140),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(
+              color: _isPressed
+                  ? const Color(0xFF2A9D8F)
+                  : const Color(0xFFE0EAE6),
+              width: _isPressed ? 1.8 : 1.2,
             ),
-          ],
+            boxShadow: [
+              BoxShadow(
+                color: const Color(
+                  0xFF0F382C,
+                ).withValues(alpha: _isPressed ? 0.16 : 0.08),
+                blurRadius: _isPressed ? 6 : 18,
+                offset: Offset(0, _isPressed ? 2 : 8),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: isGrid ? _buildGridContent() : _buildListContent(),
         ),
-        clipBehavior: Clip.antiAlias,
-        child: isGrid ? _buildGridContent() : _buildListContent(),
       ),
     );
   }
 
   Widget _buildGridContent() {
-    final isOpen = item.isOpenNow;
+    final isOpen = widget.item.isOpenNow;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Image Header
+        // Image Store Banner Header with Status Overlay
         Stack(
           children: [
             AspectRatio(aspectRatio: 16 / 9, child: _buildImage()),
-            // Open / Closed Status Badge
+
+            // Top Gradient Overlay for readability
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withValues(alpha: 0.5),
+                      Colors.transparent,
+                      Colors.black.withValues(alpha: 0.5),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 0.45, 1.0],
+                  ),
+                ),
+              ),
+            ),
+
+            // Open / Closed Status Badge (Top Left)
             Positioned(
               top: 12,
               left: 12,
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
+                  horizontal: 11,
+                  vertical: 5,
                 ),
                 decoration: BoxDecoration(
-                  color: isOpen ? const Color(0xFF2E7D32) : Colors.grey[800],
+                  color: isOpen
+                      ? const Color(0xFF2A9D8F)
+                      : const Color(0xFF0F382C).withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: Colors.black.withValues(alpha: 0.25),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),
@@ -70,19 +123,19 @@ class ShopCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 7,
-                      height: 7,
+                      width: 8,
+                      height: 8,
                       decoration: const BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
                     ),
-                    const SizedBox(width: 5),
+                    const SizedBox(width: 6),
                     Text(
-                      isOpen ? 'เปิดทำการ' : 'ปิดทำการ',
+                      isOpen ? 'เปิดบริการอยู่' : 'ปิดให้บริการ',
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 11.5,
+                        fontSize: 12,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -90,43 +143,70 @@ class ShopCard extends StatelessWidget {
                 ),
               ),
             ),
-            // Category Badge
-            if (item.categoryName != null)
+
+            // Category Badge (Top Right)
+            if (widget.item.categoryName != null)
               Positioned(
                 top: 12,
                 right: 12,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                    horizontal: 11,
+                    vertical: 5,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD96C2C),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    item.categoryName!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.bold,
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
                     ),
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.storefront_rounded,
+                        size: 13,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 4),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 130),
+                        child: Text(
+                          widget.item.categoryName!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            // District Badge
-            if (item.districtName != null)
+
+            // District Badge (Bottom Left)
+            if (widget.item.districtName != null)
               Positioned(
                 bottom: 10,
-                right: 12,
+                left: 12,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 10,
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF231B15).withValues(alpha: 0.75),
-                    borderRadius: BorderRadius.circular(12),
+                    color: const Color(0xFF0F382C).withValues(alpha: 0.85),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -136,13 +216,18 @@ class ShopCard extends StatelessWidget {
                         color: Color(0xFFE9C46A),
                         size: 13,
                       ),
-                      const SizedBox(width: 3),
-                      Text(
-                        item.districtName!,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+                      const SizedBox(width: 4),
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 150),
+                        child: Text(
+                          'อ.${widget.item.districtName}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ],
@@ -152,63 +237,195 @@ class ShopCard extends StatelessWidget {
           ],
         ),
 
-        // Body Info
+        // Body Storefront Info
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                item.name,
+                widget.item.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 19,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2B1F17),
+                  color: Color(0xFF0D2B22),
+                  height: 1.25,
                 ),
               ),
-              if (item.description != null && item.description!.isNotEmpty) ...[
+              if (widget.item.description != null &&
+                  widget.item.description!.isNotEmpty) ...[
                 const SizedBox(height: 6),
                 Text(
-                  item.description!,
+                  widget.item.description!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: 13.5,
-                    color: Colors.grey[700],
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    color: Color(0xFF4A6B60),
                     height: 1.35,
                   ),
                 ),
               ],
               const SizedBox(height: 12),
-              Row(
+
+              // Hours & Action Toolbar
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (item.phone != null && item.phone!.isNotEmpty) ...[
-                    const Icon(
-                      Icons.phone_rounded,
-                      size: 14,
-                      color: Color(0xFFD96C2C),
+                  if (widget.item.openingTime != null &&
+                      widget.item.closingTime != null) ...[
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.access_time_filled_rounded,
+                          size: 14,
+                          color: Color(0xFF2A9D8F),
+                        ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            '${widget.item.openingTime} - ${widget.item.closingTime} น.',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF0D2B22),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      item.phone!,
-                      style: TextStyle(fontSize: 12.5, color: Colors.grey[800]),
-                    ),
-                    const SizedBox(width: 12),
+                    const SizedBox(height: 10),
                   ],
-                  if (item.openingTime != null && item.closingTime != null) ...[
-                    Icon(
-                      Icons.access_time_rounded,
-                      size: 14,
-                      color: Colors.grey[600],
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${item.openingTime} - ${item.closingTime}',
-                      style: TextStyle(fontSize: 12.5, color: Colors.grey[700]),
-                    ),
-                  ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Left side: Phone number
+                      if (widget.item.phone != null &&
+                          widget.item.phone!.isNotEmpty)
+                        Expanded(
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.phone_rounded,
+                                size: 14,
+                                color: Color(0xFF2A9D8F),
+                              ),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: Text(
+                                  widget.item.phone!,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF0D2B22),
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        const Spacer(),
+
+                      // Right side: Action Buttons Row
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Quick Call Button (if phone exists)
+                          if (widget.item.phone != null &&
+                              widget.item.phone!.isNotEmpty) ...[
+                            Material(
+                              color: const Color(0xFFEBF6F3),
+                              borderRadius: BorderRadius.circular(12),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: () => _makeCall(widget.item.phone!),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 7,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.phone_in_talk_rounded,
+                                        size: 14,
+                                        color: Color(0xFF2A9D8F),
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'โทร',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF2A9D8F),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+
+                          // Main Store Details Button
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 7,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(
+                                    0xFFE76F51,
+                                  ).withValues(alpha: 0.35),
+                                  blurRadius: _isPressed ? 2 : 5,
+                                  offset: Offset(0, _isPressed ? 1 : 2),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Text(
+                                  'เข้าชมร้าน',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                AnimatedPadding(
+                                  duration: const Duration(milliseconds: 140),
+                                  padding: EdgeInsets.only(
+                                    left: _isPressed ? 5 : 2,
+                                  ),
+                                  child: const Icon(
+                                    Icons.arrow_forward_rounded,
+                                    size: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ],
@@ -219,16 +436,16 @@ class ShopCard extends StatelessWidget {
   }
 
   Widget _buildListContent() {
-    final isOpen = item.isOpenNow;
+    final isOpen = widget.item.isOpenNow;
 
     return SizedBox(
-      height: 136,
+      height: 148,
       child: Row(
         children: [
-          SizedBox(width: 140, height: double.infinity, child: _buildImage()),
+          SizedBox(width: 144, height: double.infinity, child: _buildImage()),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(14.0),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,32 +455,38 @@ class ShopCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          if (item.categoryName != null)
-                            Text(
-                              item.categoryName!,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFD96C2C),
+                          if (widget.item.categoryName != null)
+                            Expanded(
+                              child: Text(
+                                widget.item.categoryName!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF2A9D8F),
+                                ),
                               ),
-                            ),
-                          const Spacer(),
+                            )
+                          else
+                            const Spacer(),
+                          const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                              horizontal: 7,
+                              vertical: 2.5,
                             ),
                             decoration: BoxDecoration(
                               color: isOpen
-                                  ? const Color(0xFF2E7D32)
-                                  : Colors.grey[700],
-                              borderRadius: BorderRadius.circular(10),
+                                  ? const Color(0xFF2A9D8F)
+                                  : const Color(0xFF0F382C),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
-                              isOpen ? 'เปิด' : 'ปิด',
+                              isOpen ? 'เปิดบริการ' : 'ปิดให้บริการ',
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 10,
+                                fontSize: 10.5,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -272,13 +495,14 @@ class ShopCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        item.name,
+                        widget.item.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 16.5,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2B1F17),
+                          color: Color(0xFF0D2B22),
+                          height: 1.25,
                         ),
                       ),
                     ],
@@ -286,40 +510,66 @@ class ShopCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      if (item.districtName != null)
-                        Row(
+                      if (widget.item.districtName != null)
+                        Expanded(
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on_rounded,
+                                size: 13,
+                                color: Color(0xFF2A9D8F),
+                              ),
+                              const SizedBox(width: 3),
+                              Flexible(
+                                child: Text(
+                                  'อ.${widget.item.districtName!}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF4A6B60),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        const Spacer(),
+                      const SizedBox(width: 6),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 9,
+                          vertical: 4.5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEBF6F3),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.location_on_rounded,
-                              size: 13,
-                              color: Color(0xFFD96C2C),
-                            ),
-                            const SizedBox(width: 3),
-                            Text(
-                              item.districtName!,
+                            const Text(
+                              'เข้าชมร้าน',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[700],
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF2A9D8F),
+                              ),
+                            ),
+                            AnimatedPadding(
+                              duration: const Duration(milliseconds: 140),
+                              padding: EdgeInsets.only(
+                                left: _isPressed ? 5 : 2,
+                              ),
+                              child: const Icon(
+                                Icons.arrow_forward_rounded,
+                                size: 13.5,
+                                color: Color(0xFF2A9D8F),
                               ),
                             ),
                           ],
                         ),
-                      const Row(
-                        children: [
-                          Text(
-                            'ดูร้านค้า',
-                            style: TextStyle(
-                              fontSize: 12.5,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFD96C2C),
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            size: 16,
-                            color: Color(0xFFD96C2C),
-                          ),
-                        ],
                       ),
                     ],
                   ),
@@ -333,9 +583,10 @@ class ShopCard extends StatelessWidget {
   }
 
   Widget _buildImage() {
-    if (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty) {
+    if (widget.item.coverImageUrl != null &&
+        widget.item.coverImageUrl!.isNotEmpty) {
       return Image.network(
-        item.coverImageUrl!,
+        widget.item.coverImageUrl!,
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
       );
@@ -353,7 +604,7 @@ class ShopCard extends StatelessWidget {
         ),
       ),
       child: const Center(
-        child: Icon(Icons.storefront_rounded, size: 40, color: Colors.white70),
+        child: Icon(Icons.storefront_rounded, size: 44, color: Colors.white70),
       ),
     );
   }

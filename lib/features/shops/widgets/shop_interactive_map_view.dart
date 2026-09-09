@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -50,7 +51,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 decoration: const BoxDecoration(
                   color: Color(0xFFFFF9F2),
                   shape: BoxShape.circle,
@@ -65,7 +66,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
               const Text(
                 'ไม่พบพิกัดร้านค้าตามเงื่อนไขที่เลือก',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.5,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF332820),
                 ),
@@ -73,7 +74,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
               const SizedBox(height: 6),
               const Text(
                 'ลองเปลี่ยนการเลือกหมวดหมู่หรืออำเภออื่น',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+                style: TextStyle(fontSize: 13.5, color: Colors.grey),
               ),
             ],
           ),
@@ -100,32 +101,10 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
               markers: validItems.map((item) {
                 return Marker(
                   point: LatLng(item.latitude!, item.longitude!),
-                  width: 50,
-                  height: 50,
-                  child: GestureDetector(
-                    onTap: () => _showShopPreviewSheet(context, item),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF332820),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFE9C46A), width: 2.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.storefront_rounded,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
-                    ),
-                  ),
+                  width: 58,
+                  height: 64,
+                  alignment: Alignment.topCenter,
+                  child: _buildShopImageMarkerPin(context, item),
                 );
               }).toList(),
             ),
@@ -139,26 +118,30 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF332820),
+              color: const Color(0xFF2B1F17).withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 0.8,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.storefront_rounded, size: 16, color: Color(0xFFE9C46A)),
+                const Icon(Icons.storefront_rounded, size: 17, color: Color(0xFFE9C46A)),
                 const SizedBox(width: 6),
                 Text(
                   'พบ ${validItems.length} ร้านค้าบนแผนที่',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12.5,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -167,21 +150,81 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           ),
         ),
 
-        // Recenter Button
+        // Recenter FAB Button
         Positioned(
           bottom: 20,
           right: 16,
           child: FloatingActionButton.small(
+            heroTag: 'shop_map_recenter',
             onPressed: () {
               _mapController.move(_initialCenter, 10.5);
             },
-            backgroundColor: const Color(0xFF332820),
+            backgroundColor: const Color(0xFF2B1F17),
             foregroundColor: Colors.white,
-            elevation: 4,
-            child: const Icon(Icons.my_location),
+            elevation: 6,
+            child: const Icon(Icons.my_location_rounded, size: 20),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildShopImageMarkerPin(BuildContext context, ShopModel item) {
+    final imgUrl = item.coverImageUrl;
+
+    return GestureDetector(
+      onTap: () => _showShopPreviewSheet(context, item),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Circular Photo Frame Pin Head
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Color(0xFF332820), Color(0xFF1F1713)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              border: Border.all(color: const Color(0xFFE9C46A), width: 2.8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.38),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: imgUrl != null && imgUrl.isNotEmpty
+                  ? Image.network(
+                      imgUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stack) =>
+                          _buildShopMarkerFallbackIcon(),
+                    )
+                  : _buildShopMarkerFallbackIcon(),
+            ),
+          ),
+
+          // Downward Pointer Tail
+          CustomPaint(
+            size: const Size(12, 7),
+            painter: _ShopPinTrianglePainter(color: const Color(0xFF332820)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShopMarkerFallbackIcon() {
+    return Container(
+      color: const Color(0xFF332820),
+      child: const Center(
+        child: Icon(Icons.storefront_rounded, color: Color(0xFFE9C46A), size: 24),
+      ),
     );
   }
 
@@ -334,3 +377,29 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
     );
   }
 }
+
+class _ShopPinTrianglePainter extends CustomPainter {
+  final Color color;
+
+  _ShopPinTrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = ui.Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _ShopPinTrianglePainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+

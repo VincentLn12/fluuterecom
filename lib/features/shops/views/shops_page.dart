@@ -15,23 +15,31 @@ class ShopsPage extends GetView<ShopController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F0E6),
+      backgroundColor: const Color(0xFFF3F7F5),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF332820),
+        backgroundColor: const Color(0xFF0F382C),
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(7),
               decoration: BoxDecoration(
-                color: const Color(0xFFD96C2C),
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
+                ),
                 borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFE76F51).withValues(alpha: 0.4),
+                    blurRadius: 6,
+                  ),
+                ],
               ),
               child: const Icon(
                 Icons.storefront_rounded,
-                size: 20,
+                size: 21,
                 color: Colors.white,
               ),
             ),
@@ -41,9 +49,9 @@ class ShopsPage extends GetView<ShopController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'KANCHANABURI',
+                    'KANCHANABURI BAZAAR',
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 11.5,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                       color: Color(0xFFE9C46A),
@@ -51,7 +59,10 @@ class ShopsPage extends GetView<ShopController> {
                   ),
                   Text(
                     'ร้านค้า & สินค้าชุมชน',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -83,211 +94,355 @@ class ShopsPage extends GetView<ShopController> {
         ],
       ),
       body: Obx(() {
-        return Column(
-          children: [
-            // 1. HERO BANNER & SEARCH & VIEW TOGGLE
-            Container(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF2B1F17), Color(0xFF3D2D23)],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(28),
-                  bottomRight: Radius.circular(28),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'ช้อปสินค้า OTOP & ร้านเด็ดเมืองกาญจน์ ✨',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'ของฝากขึ้นชื่อ ร้านอาหารริมน้ำ งานแฮนด์เมด และสินค้าเกษตรชุมชน',
-                    style: TextStyle(color: Color(0xFFE8D9C9), fontSize: 13),
-                  ),
-                  const SizedBox(height: 14),
-                  // Reusable Search Field
-                  AppSearchField(
-                    hintText: 'ค้นหาชื่อร้านค้า สินค้า หรือคำอธิบาย...',
-                    onChanged: controller.setSearch,
-                  ),
-                  const SizedBox(height: 14),
+        final displayedShops = controller.displayedShops;
+        final openShopsCount =
+            controller.shops.where((s) => s.isOpenNow).length;
 
-                  // Reusable View Switcher Toggle
-                  AppViewToggle<String>(
-                    selectedValue: controller.viewType.value,
-                    onChanged: controller.setViewType,
-                    options: const [
-                      ToggleOption(
-                        value: 'list',
-                        label: 'รายการร้านค้า',
-                        icon: Icons.storefront_rounded,
-                      ),
-                      ToggleOption(
-                        value: 'map',
-                        label: 'แผนที่ร้านค้า',
-                        icon: Icons.map_rounded,
+        return RefreshIndicator(
+          onRefresh: controller.fetchShops,
+          color: const Color(0xFF2A9D8F),
+          backgroundColor: Colors.white,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              // 1. HERO MARKETPLACE BILLBOARD & SEARCH BAR
+              SliverToBoxAdapter(
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 22),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF0F382C), Color(0xFF1B4D3E)],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(28),
+                      bottomRight: Radius.circular(28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-
-            // 2. CATEGORIES & DISTRICT FILTER ROW
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    AppCategoryChip(
-                      label: 'ทั้งหมด',
-                      isSelected: controller.selectedCategoryId.value == null,
-                      onTap: () => controller.selectCategory(null),
-                    ),
-                    ...controller.categories.map((cat) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: AppCategoryChip(
-                          label: cat.name,
-                          isSelected:
-                              controller.selectedCategoryId.value == cat.id,
-                          onTap: () => controller.selectCategory(cat.id),
-                        ),
-                      );
-                    }),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.filter_alt_outlined,
-                    size: 16,
-                    color: Color(0xFF332820),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    'อำเภอ:',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color: Color(0xFF332820),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Container(
-                      height: 36,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: const Color(0xFFE8D9C9)),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String?>(
-                          value: controller.selectedDistrictId.value,
-                          hint: const Text(
-                            'ทุกอำเภอ',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                          isExpanded: true,
-                          items: [
-                            const DropdownMenuItem<String?>(
-                              value: null,
-                              child: Text(
-                                'ทุกอำเภอในกาญจนบุรี',
-                                style: TextStyle(fontSize: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Expanded(
+                            child: Text(
+                              'ตลาดร้านค้าเมืองกาญจน์ 🛍️',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            ...controller.districts.map(
-                              (d) => DropdownMenuItem<String?>(
-                                value: d.id,
-                                child: Text(
-                                  d.name,
-                                  style: const TextStyle(fontSize: 12),
+                          ),
+
+                          // Live Open Store Count Counter Pill
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 5,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2A9D8F)
+                                  .withValues(alpha: 0.9),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.25),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.store_rounded,
+                                  size: 13,
+                                  color: Colors.white,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'เปิดอยู่ $openShopsCount ร้าน',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      const Text(
+                        'ของฝากขึ้นชื่อ ร้านอาหารริมน้ำ งานแฮนด์เมด และสินค้าเกษตรชุมชน',
+                        style: TextStyle(
+                          color: Color(0xFFE0EAE6),
+                          fontSize: 15,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Search Input
+                      AppSearchField(
+                        hintText: 'ค้นหาชื่อร้านค้า สินค้า OTOP หรือของฝาก...',
+                        onChanged: controller.setSearch,
+                        iconColor: const Color(0xFF2A9D8F),
+                      ),
+                      const SizedBox(height: 14),
+
+                      // View Type Switcher Toggle
+                      AppViewToggle<String>(
+                        selectedValue: controller.viewType.value,
+                        onChanged: controller.setViewType,
+                        activeColor: const Color(0xFF2A9D8F),
+                        options: const [
+                          ToggleOption(
+                            value: 'list',
+                            label: 'รายการร้านค้า',
+                            icon: Icons.storefront_rounded,
+                          ),
+                          ToggleOption(
+                            value: 'map',
+                            label: 'แผนที่ร้านค้า',
+                            icon: Icons.map_rounded,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // 2. QUICK FILTER BUTTONS & CATEGORIES & DISTRICTS
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            // Quick Filter Pill: 🟢 เปิดอยู่ตอนนี้
+                            GestureDetector(
+                              onTap: controller.toggleOnlyOpenNow,
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 8.5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: controller.onlyOpenNow.value
+                                      ? const Color(0xFF2A9D8F)
+                                      : Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: controller.onlyOpenNow.value
+                                        ? const Color(0xFF2A9D8F)
+                                        : const Color(0xFFE0EAE6),
+                                    width: 1.2,
+                                  ),
+                                  boxShadow: controller.onlyOpenNow.value
+                                      ? [
+                                          BoxShadow(
+                                            color: const Color(0xFF2A9D8F)
+                                                .withValues(alpha: 0.35),
+                                            blurRadius: 8,
+                                            offset: const Offset(0, 3),
+                                          ),
+                                        ]
+                                      : [
+                                          BoxShadow(
+                                            color: Colors.black
+                                                .withValues(alpha: 0.03),
+                                            blurRadius: 4,
+                                            offset: const Offset(0, 2),
+                                          ),
+                                        ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 8,
+                                      height: 8,
+                                      decoration: BoxDecoration(
+                                        color: controller.onlyOpenNow.value
+                                            ? Colors.white
+                                            : const Color(0xFF2A9D8F),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'เปิดอยู่ตอนนี้',
+                                      style: TextStyle(
+                                        color: controller.onlyOpenNow.value
+                                            ? Colors.white
+                                            : const Color(0xFF0D2B22),
+                                        fontWeight: controller.onlyOpenNow.value
+                                            ? FontWeight.bold
+                                            : FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
+                            const SizedBox(width: 8),
+
+                            // Category Chips
+                            AppCategoryChip(
+                              label: 'ทั้งหมด',
+                              selectedColor: const Color(0xFF2A9D8F),
+                              isSelected:
+                                  controller.selectedCategoryId.value == null,
+                              onTap: () => controller.selectCategory(null),
+                            ),
+                            ...controller.categories.map((cat) {
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: AppCategoryChip(
+                                  label: cat.name,
+                                  selectedColor: const Color(0xFF2A9D8F),
+                                  isSelected:
+                                      controller.selectedCategoryId.value ==
+                                      cat.id,
+                                  onTap: () =>
+                                      controller.selectCategory(cat.id),
+                                ),
+                              );
+                            }),
                           ],
-                          onChanged: controller.selectDistrict,
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 6),
 
-            // 3. MAIN CONTENT BODY (LIST VIEW vs MAP VIEW)
-            Expanded(
-              child: controller.isLoading.value
-                  ? const LoadingWidget()
-                  : controller.viewType.value == 'map'
-                  ? ShopInteractiveMapView(shops: controller.shops)
-                  : RefreshIndicator(
-                      onRefresh: controller.fetchShops,
-                      color: const Color(0xFFD96C2C),
-                      child: controller.shops.isEmpty
-                          ? EmptyWidget(
-                              message:
-                                  'ไม่พบข้อมูลร้านค้าตรงกับเงื่อนไขการค้นหา',
-                            )
-                          : controller.displayMode.value == 'grid'
-                          ? ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: controller.shops.length,
-                              itemBuilder: (context, index) {
-                                final item = controller.shops[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0),
-                                  child: ShopCard(
-                                    item: item,
-                                    displayMode: 'grid',
-                                  ),
-                                );
-                              },
-                            )
-                          : ListView.builder(
-                              padding: const EdgeInsets.all(16),
-                              itemCount: controller.shops.length,
-                              itemBuilder: (context, index) {
-                                final item = controller.shops[index];
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12.0),
-                                  child: ShopCard(
-                                    item: item,
-                                    displayMode: 'list',
-                                  ),
-                                );
-                              },
+                    // District Filter Dropdown
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.filter_alt_outlined,
+                            size: 18,
+                            color: Color(0xFF0D2B22),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            'อำเภอ:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: Color(0xFF0D2B22),
                             ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Container(
+                              height: 40,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xFFE0EAE6),
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String?>(
+                                  value: controller.selectedDistrictId.value,
+                                  hint: const Text(
+                                    'ทุกอำเภอ',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  isExpanded: true,
+                                  items: [
+                                    const DropdownMenuItem<String?>(
+                                      value: null,
+                                      child: Text(
+                                        'ทุกอำเภอในกาญจนบุรี',
+                                        style: TextStyle(fontSize: 14),
+                                      ),
+                                    ),
+                                    ...controller.districts.map(
+                                      (d) => DropdownMenuItem<String?>(
+                                        value: d.id,
+                                        child: Text(
+                                          d.name,
+                                          style: const TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: controller.selectDistrict,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-            ),
-          ],
+                    const SizedBox(height: 6),
+                  ],
+                ),
+              ),
+
+              // 3. MAIN CONTENT BODY (GRID vs LIST vs MAP)
+              if (controller.isLoading.value)
+                const SliverFillRemaining(child: LoadingWidget())
+              else if (controller.viewType.value == 'map')
+                SliverFillRemaining(
+                  child: ShopInteractiveMapView(shops: displayedShops),
+                )
+              else if (displayedShops.isEmpty)
+                const SliverFillRemaining(
+                  child: EmptyWidget(
+                    message: 'ไม่พบข้อมูลร้านค้าตรงกับเงื่อนไขที่เลือก',
+                  ),
+                )
+              else if (controller.displayMode.value == 'grid')
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = displayedShops[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: ShopCard(item: item, displayMode: 'grid'),
+                      );
+                    }, childCount: displayedShops.length),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.all(16),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final item = displayedShops[index];
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12.0),
+                        child: ShopCard(item: item, displayMode: 'list'),
+                      );
+                    }, childCount: displayedShops.length),
+                  ),
+                ),
+            ],
+          ),
         );
       }),
     );

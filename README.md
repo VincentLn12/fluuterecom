@@ -128,8 +128,7 @@ kanchanaburi_platform/
 │       │
 │       ├── contents/
 │       │   ├── controllers/
-│       │   │   ├── content_controller.dart
-│       │   │   └── content_detail_controller.dart
+│       │   │   └── content_controller.dart
 │       │   ├── bindings/
 │       │   │   └── content_binding.dart
 │       │   ├── models/
@@ -137,13 +136,34 @@ kanchanaburi_platform/
 │       │   ├── repositories/
 │       │   │   └── content_repository.dart
 │       │   ├── views/
-│       │   │   ├── contents_page.dart
-│       │   │   └── content_detail_page.dart
+│       │   │   └── contents_page.dart
 │       │   └── widgets/
 │       │       ├── content_card.dart
 │       │       ├── content_video_player.dart
 │       │       ├── content_map_widget.dart
 │       │       └── content_interactive_map_view.dart
+│       │
+│       ├── content_detail/
+│       │   ├── controllers/
+│       │   │   └── content_detail_controller.dart
+│       │   ├── bindings/
+│       │   │   └── content_detail_binding.dart
+│       │   ├── models/
+│       │   │   └── content_detail_model.dart
+│       │   ├── repositories/
+│       │   │   └── content_detail_repository.dart
+│       │   ├── views/
+│       │   │   └── content_detail_page.dart
+│       │   └── widgets/
+│       │       ├── content_detail_hero.dart
+│       │       ├── content_detail_header.dart
+│       │       ├── content_action_buttons.dart
+│       │       ├── content_summary_card.dart
+│       │       ├── content_schedule_section.dart
+│       │       ├── content_shop_section.dart
+│       │       ├── content_product_section.dart
+│       │       ├── content_review_section.dart
+│       │       └── related_content_section.dart
 │       │
 │       ├── cart/
 │       │   ├── controllers/
@@ -244,18 +264,29 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
 2. **ร้านค้า & ระบบสินค้า (Shops & Product System)**
    * `shops_page.dart`, `shop_detail_page.dart` & `product_detail_page.dart`
    * **Live API Integration**: ดึงข้อมูลร้านค้า หมวดหมู่สินค้า และอำเภอจาก API จริง (`https://coms.kru.ac.th/boatapi/api`)
-   * **Dual View Switcher**: สลับการแสดงผลแบบ `📋 รายการร้านค้า` (Grid/List View) และ `🗺️ แผนที่ร้านค้า` (Interactive OpenStreetMap)
+   * **Dual View Switcher**: สลับการแสดงผลแบบ `📋 รายการร้านค้า` (Grid/List View) และ `🗺️ แผนที่ร้านค้า` (Interactive Map View)
+   * **Photo Pin Markers (`shop_interactive_map_view.dart`)**: แสดงหมุดปักรูปภาพร้านค้าจริงบนแผนที่ OpenStreetMap พร้อมปลายหมุดชี้พิกัด และการ์ดพรีวิวร้านค้าเมื่อแตะหมุด
    * **Shop Operating Status**: คำนวณเวลาเปิด-ปิดร้านอัตโนมัติ (`isOpenNow`) แสดงสถานะ เปิดบริการอยู่ / ปิดให้บริการ แบบ Real-time
    * **Shop Detail Showcase**: แสดง Banner ปก, โทรออกตรง (`tel:`), ดูตำแหน่งที่ตั้ง และสินค้าทั้งหมดภายในร้าน
    * **Product Detail Page**: แสดงแกลเลอรีรูปภาพสินค้า, ป้ายสถานะคลังสินค้า, ข้อมูลร้านค้าผู้ขาย, เครื่องมือเลือกจำนวน และปุ่มเพิ่มลงตะกร้าพร้อมคำนวณราคารวม
 
-3. **เนื้อหา & แผนที่ท่องเที่ยว (Content & Map)**
+3. **เนื้อหา & แผนที่ท่องเที่ยว (Content & Map System)**
    * `contents_page.dart` & `content_detail_page.dart`
    * **API Integration**: ดึงข้อมูลคอนเทนต์ หมวดหมู่ และอำเภอ จาก API จริง (`https://coms.kru.ac.th/boatapi/api`) โดยตรง
    * **Segmented View Switcher**: ปุ่มสลับมุมมองระหว่าง **`📋 รายการบทความ`** (Grid/List Card View) และ **`🗺️ แผนที่ท่องเที่ยว`** (Full Interactive Map View)
-   * **Interactive Map View (`content_interactive_map_view.dart`)**: ปักหมุดพิกัดสถานที่จริง (`latitude`, `longitude`) บนแผนที่ OpenStreetMap แบบโต้ตอบได้
-   * **Marker BottomSheet & Navigation**: กดที่หมุดบนแผนที่เพื่อดูการ์ดพรีวิว และเปิดนำทางด้วย Google Maps / Apple Maps ได้ทันที
-   * **In-App Video Player (`content_video_player.dart`)**: ตัวเล่นวิดีโอ YouTube ในแอป (`youtube_player_flutter`) วางในตำแหน่ง Top Header พร้อมระบบ AutoPlay เมื่อเข้าดูรายละเอียดบทความ
+   * **Photo Pin Markers (`content_interactive_map_view.dart`)**: ปักหมุดรูปภาพสถานที่ท่องเที่ยวจริงบนแผนที่ OpenStreetMap ดีไซน์รูปกรอบวงกลมสะดุดตา พร้อมปลายหมุดชี้พิกัด
+   * **Marker BottomSheet & Navigation**: กดที่หมุดบนแผนที่เพื่อดูการ์ดพรีวิว และเปิดนำทางไปยังสถานที่ด้วย Google Maps / Apple Maps ได้ทันที
+   * **Enhanced Content Detail Redesign (`content_detail_page.dart` & Modular Widgets)**:
+     - **16:9 AspectRatio Video Hero (`content_detail_hero.dart`)**: วิดีโอ YouTube อัตราส่วน 16:9 มุมโค้งมน พร้อมระบบ AutoPlay เล่นวิดีโออัตโนมัติเมื่อเข้าสู่บทความ
+     - **Magazine Typography Header (`content_detail_header.dart`)**: แสดงหมวดหมู่, เวลาที่ใช้ในการอ่าน, ยอดเข้าชม และวันที่เผยแพร่
+     - **Prominent Navigation CTA (`content_action_buttons.dart`)**: ปุ่มเฉดสีส้มไล่ระดับ `นำทางไปยังสถานที่ 📍`, ปุ่มถูกใจ และปุ่มแชร์
+     - **Quote Callout Summary (`content_summary_card.dart`)**: การ์ดสรุปเนื้อหาสไตล์บทความนิตยสาร
+     - **Schedule Timeline (`content_schedule_section.dart`)**: กำหนดการและช่วงเวลาจัดกิจกรรม
+     - **Related Shops Slider (`content_shop_section.dart`)**: สไลเดอร์เลื่อนดูร้านค้าชุมชนที่เกี่ยวข้อง พร้อมป้ายสถานะ `🟢 เปิดบริการ`
+     - **OTOP Product Showcase (`content_product_section.dart`)**: แสดงสินค้าชุมชน OTOP ที่เกี่ยวข้อง พร้อมราคา ป้าย `⭐ OTOP` และระบบป้องกัน Layout Overflow
+     - **Review & Star Selector (`content_review_section.dart`)**: แสดงคะแนนรีวิว ระบบเลือกดาวรีวิวแบบ responsive (Wrap-based) และรายการรีวิวจากผู้ใช้จริง
+     - **Related Articles (`related_content_section.dart`)**: แนะนำบทความท่องเที่ยวอื่น ๆ ที่น่าสนใจ
+   - **Typography & Font Scaling**: ปรับขนาดตัวอักษรให้อ่านง่ายสบายตา รองรับการแสดงผลทุกขนาดหน้าจอโดยไม่มีปัญหา Overflow
 
 4. **ตะกร้าสินค้า (Shopping Cart System)**
    * `cart_page.dart`, `cart_controller.dart`, `cart_repository.dart` & `cart_item_model.dart`
@@ -289,4 +320,3 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
 - **Admin Verification Flow**: ส่งรูปสลิปและอัปเดตสถานะออเดอร์ไปยัง `PATCH /api/orders/{id}/status` เป็น `PendingVerify` สำหรับ Admin ตรวจสอบผ่าน `GET /api/orders/admin/pending-slips` & `POST /api/orders/admin/verify-slip`
 - **Payment Success View (`PaymentSuccessPage`)**: หน้าแสดงความยินดีทำรายการสำเร็จ พร้อมปุ่มไปดูประวัติคำสั่งซื้อ (`OrdersPage`)
 - **My Orders & Order Detail (`OrdersPage` & `OrderDetailPage`)**: หน้าติดตามประวัติคำสั่งซื้อพร้อมป้ายสถานะออเดอร์ (`StatusBadge`)
-

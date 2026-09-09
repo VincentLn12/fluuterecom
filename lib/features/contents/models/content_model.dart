@@ -131,3 +131,91 @@ class ContentModel {
     return '';
   }
 }
+
+class ContentSchedule {
+  final String scheduleId;
+  final String title;
+  final String? startDateTime;
+  final String? endDateTime;
+  final String? address;
+  final String? description;
+
+  ContentSchedule({
+    required this.scheduleId,
+    required this.title,
+    this.startDateTime,
+    this.endDateTime,
+    this.address,
+    this.description,
+  });
+
+  factory ContentSchedule.fromJson(Map<String, dynamic> json) {
+    return ContentSchedule(
+      scheduleId: json['scheduleId']?.toString() ?? '',
+      title: json['title']?.toString() ?? '',
+      startDateTime: json['startDateTime']?.toString(),
+      endDateTime: json['endDateTime']?.toString(),
+      address: json['address']?.toString(),
+      description: json['description']?.toString(),
+    );
+  }
+}
+
+class ContentShopProduct {
+  final String productId;
+  final String shopId;
+  final String? shopName;
+  final String productName;
+  final String? description;
+  final double price;
+  final String? imageUrl;
+
+  ContentShopProduct({
+    required this.productId,
+    required this.shopId,
+    this.shopName,
+    required this.productName,
+    this.description,
+    required this.price,
+    this.imageUrl,
+  });
+
+  factory ContentShopProduct.fromJson(Map<String, dynamic> json) {
+    return ContentShopProduct(
+      productId: json['productId']?.toString() ?? '',
+      shopId: json['shopId']?.toString() ?? '',
+      shopName: json['shopName']?.toString(),
+      productName: json['productName']?.toString() ?? 'สินค้าชุมชน',
+      description: json['description']?.toString(),
+      price: double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
+      imageUrl: json['imageUrl']?.toString() ?? json['coverImageUrl']?.toString(),
+    );
+  }
+}
+
+class ContentReview {
+  final String reviewId;
+  final String userName;
+  final String comment;
+  final String? createdAt;
+  final double rating;
+
+  ContentReview({
+    required this.reviewId,
+    required this.userName,
+    required this.comment,
+    this.createdAt,
+    this.rating = 5.0,
+  });
+
+  factory ContentReview.fromJson(Map<String, dynamic> json) {
+    return ContentReview(
+      reviewId: json['reviewId']?.toString() ?? '',
+      userName: json['userName']?.toString() ?? 'ผู้ใช้งานกาญจนบุรี',
+      comment: json['comment']?.toString() ?? '',
+      createdAt: json['createdAt']?.toString(),
+      rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
+    );
+  }
+}
+

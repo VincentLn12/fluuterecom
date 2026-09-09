@@ -29,7 +29,7 @@ class AppViewToggle<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 42,
+      height: 46,
       padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.3),
@@ -53,7 +53,7 @@ class AppViewToggle<T> extends StatelessWidget {
                     children: [
                       Icon(
                         option.icon,
-                        size: 16,
+                        size: 18,
                         color: isSelected ? Colors.white : Colors.white70,
                       ),
                       const SizedBox(width: 6),
@@ -62,7 +62,7 @@ class AppViewToggle<T> extends StatelessWidget {
                         style: TextStyle(
                           color: isSelected ? Colors.white : Colors.white70,
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 14,
                         ),
                       ),
                     ],

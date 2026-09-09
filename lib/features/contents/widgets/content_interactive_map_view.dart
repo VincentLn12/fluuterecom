@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -54,7 +55,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(18),
                 decoration: const BoxDecoration(
                   color: Color(0xFFFFF9F2),
                   shape: BoxShape.circle,
@@ -69,7 +70,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
               const Text(
                 'ไม่พบพิกัดหมุดแผนที่ตามเงื่อนไขที่เลือก',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.5,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF332820),
                 ),
@@ -77,7 +78,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
               const SizedBox(height: 6),
               const Text(
                 'ลองเปลี่ยนการเลือกหมวดหมู่หรือเลือกอำเภออื่น',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+                style: TextStyle(fontSize: 13.5, color: Colors.grey),
               ),
             ],
           ),
@@ -104,32 +105,10 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
               markers: validItems.map((item) {
                 return Marker(
                   point: LatLng(item.latitude!, item.longitude!),
-                  width: 50,
-                  height: 50,
-                  child: GestureDetector(
-                    onTap: () => _showContentPreviewSheet(context, item),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFD96C2C),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2.5),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.location_on_rounded,
-                          color: Colors.white,
-                          size: 26,
-                        ),
-                      ),
-                    ),
-                  ),
+                  width: 58,
+                  height: 64,
+                  alignment: Alignment.topCenter,
+                  child: _buildImageMarkerPin(context, item),
                 );
               }).toList(),
             ),
@@ -143,13 +122,17 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF332820),
+              color: const Color(0xFF2B1F17).withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+                width: 0.8,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
+                  color: Colors.black.withValues(alpha: 0.25),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
@@ -158,7 +141,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
               children: [
                 const Icon(
                   Icons.place_rounded,
-                  size: 16,
+                  size: 17,
                   color: Color(0xFFE9C46A),
                 ),
                 const SizedBox(width: 6),
@@ -166,7 +149,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                   'พบ ${validItems.length} พิกัดสถานที่',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: 13,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -175,21 +158,82 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
           ),
         ),
 
-        // Recenter Button
+        // Recenter FAB Button
         Positioned(
           bottom: 20,
           right: 16,
           child: FloatingActionButton.small(
+            heroTag: 'content_map_recenter',
             onPressed: () {
               _mapController.move(_initialCenter, 10.5);
             },
-            backgroundColor: const Color(0xFF332820),
+            backgroundColor: const Color(0xFF2B1F17),
             foregroundColor: Colors.white,
-            elevation: 4,
-            child: const Icon(Icons.my_location),
+            elevation: 6,
+            child: const Icon(Icons.my_location_rounded, size: 20),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildImageMarkerPin(BuildContext context, ContentModel item) {
+    final imgUrl = item.coverImageUrl ??
+        (item.youtubeThumbnail.isNotEmpty ? item.youtubeThumbnail : null);
+
+    return GestureDetector(
+      onTap: () => _showContentPreviewSheet(context, item),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Circular Photo Frame Pin Head
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: [Color(0xFFE07A3B), Color(0xFFC45A1B)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              border: Border.all(color: Colors.white, width: 2.8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.38),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: imgUrl != null && imgUrl.isNotEmpty
+                  ? Image.network(
+                      imgUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (ctx, err, stack) =>
+                          _buildMarkerFallbackIcon(),
+                    )
+                  : _buildMarkerFallbackIcon(),
+            ),
+          ),
+
+          // Downward Pointer Tail
+          CustomPaint(
+            size: const Size(12, 7),
+            painter: _PinTrianglePainter(color: const Color(0xFFC45A1B)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMarkerFallbackIcon() {
+    return Container(
+      color: const Color(0xFFD96C2C),
+      child: const Center(
+        child: Icon(Icons.landscape_rounded, color: Colors.white, size: 24),
+      ),
     );
   }
 
@@ -198,8 +242,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final imgUrl =
-            item.coverImageUrl ??
+        final imgUrl = item.coverImageUrl ??
             (item.youtubeThumbnail.isNotEmpty ? item.youtubeThumbnail : null);
 
         return Container(
@@ -239,8 +282,8 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                         if (item.categoryName != null)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
+                              horizontal: 9,
+                              vertical: 3.5,
                             ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFD96C2C),
@@ -250,7 +293,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                               item.categoryName!,
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 11,
+                                fontSize: 11.5,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -259,8 +302,8 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                           const SizedBox(width: 6),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
+                              horizontal: 9,
+                              vertical: 3.5,
                             ),
                             decoration: BoxDecoration(
                               color: const Color(0xFF332820),
@@ -270,7 +313,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                               'อ.${item.districtName}',
                               style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 11,
+                                fontSize: 11.5,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -282,7 +325,7 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                     Text(
                       item.title,
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 17,
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF332820),
                       ),
@@ -294,7 +337,10 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                       const SizedBox(height: 4),
                       Text(
                         item.description!,
-                        style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                        style: TextStyle(
+                          fontSize: 13.5,
+                          color: Colors.grey[700],
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -318,12 +364,19 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                             style: OutlinedButton.styleFrom(
                               foregroundColor: const Color(0xFFD96C2C),
                               side: const BorderSide(color: Color(0xFFD96C2C)),
+                              padding: const EdgeInsets.symmetric(vertical: 11),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            icon: const Icon(Icons.near_me_outlined, size: 16),
-                            label: const Text('นำทาง'),
+                            icon: const Icon(Icons.near_me_outlined, size: 17),
+                            label: const Text(
+                              'นำทาง',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -339,15 +392,22 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF332820),
                               foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 11),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             icon: const Icon(
                               Icons.arrow_forward_rounded,
-                              size: 16,
+                              size: 17,
                             ),
-                            label: const Text('ดูบทความ'),
+                            label: const Text(
+                              'ดูบทความ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -362,3 +422,29 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
     );
   }
 }
+
+class _PinTrianglePainter extends CustomPainter {
+  final Color color;
+
+  _PinTrianglePainter({required this.color});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = ui.Path()
+      ..moveTo(0, 0)
+      ..lineTo(size.width, 0)
+      ..lineTo(size.width / 2, size.height)
+      ..close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _PinTrianglePainter oldDelegate) =>
+      oldDelegate.color != color;
+}
+
