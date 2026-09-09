@@ -203,4 +203,42 @@ class ContentDetailRepository {
       return false;
     }
   }
+
+  /// Add content to favorites API
+  Future<bool> addFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.post(
+        '/content-favorites/$contentId',
+        {},
+      );
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error adding favorite API: $e');
+      return false;
+    }
+  }
+
+  /// Remove content from favorites API
+  Future<bool> removeFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.delete('/content-favorites/$contentId');
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error removing favorite API: $e');
+      return false;
+    }
+  }
+
+  /// Check if content is favorited
+  Future<bool> checkIsFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.get('/content-favorites/$contentId');
+      if (response.isOk && response.body is Map) {
+        return response.body['isFavorite'] == true;
+      }
+    } catch (e) {
+      debugPrint('Error checking favorite API: $e');
+    }
+    return false;
+  }
 }

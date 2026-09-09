@@ -5,11 +5,7 @@ class ContentCategory {
   final String name;
   final String? description;
 
-  ContentCategory({
-    required this.id,
-    required this.name,
-    this.description,
-  });
+  ContentCategory({required this.id, required this.name, this.description});
 
   factory ContentCategory.fromJson(Map<String, dynamic> json) {
     return ContentCategory(
@@ -54,6 +50,7 @@ class ContentModel {
   final double rating;
   final List<String> tags;
   final String? publishedAt;
+  final String? status;
 
   ContentModel({
     required this.id,
@@ -75,16 +72,22 @@ class ContentModel {
     this.rating = 5.0,
     this.tags = const [],
     this.publishedAt,
+    this.status = 'Published',
   });
 
   factory ContentModel.fromJson(Map<String, dynamic> json) {
     var rawTags = json['tags'];
     List<String> parsedTags = [];
     if (rawTags is List) {
-      parsedTags = rawTags.map((e) {
-        if (e is Map) return e['tagName']?.toString() ?? e['name']?.toString() ?? '';
-        return e.toString();
-      }).where((t) => t.isNotEmpty).toList();
+      parsedTags = rawTags
+          .map((e) {
+            if (e is Map) {
+              return e['tagName']?.toString() ?? e['name']?.toString() ?? '';
+            }
+            return e.toString();
+          })
+          .where((t) => t.isNotEmpty)
+          .toList();
     }
 
     double? parseCoord(dynamic val) {
@@ -109,14 +112,24 @@ class ContentModel {
     return ContentModel(
       id: json['contentId']?.toString() ?? json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? 'ไม่มีชื่อเรื่อง',
-      description: json['description']?.toString() ?? json['summary']?.toString(),
-      body: json['content']?.toString() ?? json['body']?.toString() ?? json['details']?.toString(),
+      description:
+          json['description']?.toString() ?? json['summary']?.toString(),
+      body:
+          json['content']?.toString() ??
+          json['body']?.toString() ??
+          json['details']?.toString(),
       coverImageUrl: resolveUrl(json['coverImageUrl'] ?? json['imageUrl']),
       youtubeUrl: json['youtubeUrl']?.toString(),
-      categoryId: json['contentCategoryId']?.toString() ?? json['categoryId']?.toString(),
-      categoryName: json['categoryName']?.toString() ?? json['category']?['categoryName']?.toString(),
+      categoryId:
+          json['contentCategoryId']?.toString() ??
+          json['categoryId']?.toString(),
+      categoryName:
+          json['categoryName']?.toString() ??
+          json['category']?['categoryName']?.toString(),
       districtId: json['districtId']?.toString(),
-      districtName: json['districtName']?.toString() ?? json['district']?['districtName']?.toString(),
+      districtName:
+          json['districtName']?.toString() ??
+          json['district']?['districtName']?.toString(),
       subDistrictName: json['subDistrictName']?.toString(),
       shopId: json['shopId']?.toString(),
       shopName: json['shopName']?.toString(),
@@ -125,8 +138,19 @@ class ContentModel {
       viewCount: int.tryParse(json['viewCount']?.toString() ?? '0') ?? 0,
       rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
       tags: parsedTags,
-      publishedAt: json['publishedAt']?.toString() ?? json['createdAt']?.toString(),
+      publishedAt:
+          json['publishedAt']?.toString() ?? json['createdAt']?.toString(),
+      status: json['status']?.toString() ?? 'Published',
     );
+  }
+
+  String get statusLabel {
+    final s = status?.trim() ?? '';
+    if (s.toLowerCase() == 'pending') return 'รอตรวจสอบ';
+    if (s.toLowerCase() == 'archived' || s.toLowerCase() == 'draft') {
+      return 'เก็บถาวร';
+    }
+    return 'เผยแพร่แล้ว';
   }
 
   String get youtubeThumbnail {
@@ -246,4 +270,3 @@ class ContentReview {
     );
   }
 }
-

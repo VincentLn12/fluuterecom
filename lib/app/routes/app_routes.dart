@@ -20,6 +20,8 @@ abstract class AppRoutes {
 
   static const profile = '/profile';
   static const editProfile = '/profile/edit';
+  static const myContents = '/profile/my-contents';
+  static const favorites = '/profile/favorites';
 
   static const registerShop = '/register-shop';
   static const myShop = '/my-shop';

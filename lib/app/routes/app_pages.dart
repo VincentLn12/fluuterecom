@@ -26,6 +26,8 @@ import '../../features/orders/views/order_detail_page.dart';
 import '../../features/profile/bindings/profile_binding.dart';
 import '../../features/profile/views/profile_page.dart';
 import '../../features/profile/views/edit_profile_page.dart';
+import '../../features/profile/views/my_contents_page.dart';
+import '../../features/profile/views/favorites_page.dart';
 import '../../features/merchant/views/register_shop_page.dart';
 import '../../features/merchant/views/merchant_dashboard_page.dart';
 import '../../features/merchant/views/manage_products_page.dart';
@@ -111,6 +113,16 @@ class AppPages {
     GetPage(
       name: AppRoutes.editProfile,
       page: () => const EditProfilePage(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myContents,
+      page: () => const MyContentsPage(),
+      binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.favorites,
+      page: () => const FavoritesPage(),
       binding: ProfileBinding(),
     ),
     GetPage(name: AppRoutes.registerShop, page: () => const RegisterShopPage()),

@@ -91,7 +91,8 @@ class PaymentSuccessPage extends StatelessWidget {
               // CTA Action Buttons
               ElevatedButton.icon(
                 onPressed: () {
-                  Get.offAllNamed(AppRoutes.orders);
+                  Get.offAllNamed(AppRoutes.initial);
+                  Get.toNamed(AppRoutes.orders);
                 },
                 icon: const Icon(Icons.receipt_long_rounded, size: 20),
                 label: Text(
@@ -138,9 +139,21 @@ class PaymentSuccessPage extends StatelessWidget {
   Widget _buildInfoRow(String label, String value) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: GoogleFonts.krub(fontSize: 14, color: Colors.grey[600])),
-        Text(value, style: GoogleFonts.krub(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF2B1F17))),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            value,
+            textAlign: TextAlign.end,
+            style: GoogleFonts.krub(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: const Color(0xFF2B1F17),
+            ),
+          ),
+        ),
       ],
     );
   }

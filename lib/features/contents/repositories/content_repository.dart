@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import '../../../core/network/api_client.dart';
+import '../../profile/models/favorite_content_model.dart';
 import '../models/content_model.dart';
 
 class ContentRepository {
@@ -167,6 +168,95 @@ class ContentRepository {
       debugPrint('Error fetching reviews from API: $e');
     }
     return [];
+  }
+
+  Future<List<ContentModel>> fetchMyContents({int page = 1, int pageSize = 50}) async {
+    try {
+      final response = await _apiClient.get(
+        '/contents/mine',
+        query: {'page': page.toString(), 'pageSize': pageSize.toString()},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        } else if (data is List) {
+          items = data;
+        }
+        return items
+            .map((e) => ContentModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching my contents from API: $e');
+    }
+    return [];
+  }
+
+  Future<bool> archiveMyContent(String contentId) async {
+    try {
+      final response = await _apiClient.delete('/contents/mine/$contentId');
+      if (response.isOk) return true;
+      final delRes = await _apiClient.delete('/contents/$contentId');
+      return delRes.isOk;
+    } catch (e) {
+      debugPrint('Error archiving my content: $e');
+    }
+    return false;
+  }
+
+  Future<List<FavoriteContentModel>> fetchFavorites() async {
+    try {
+      final response = await _apiClient.get('/content-favorites');
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        List items = [];
+        if (data is List) {
+          items = data;
+        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+          items = data['items'] as List;
+        }
+        return items
+            .map((e) => FavoriteContentModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching favorites: $e');
+    }
+    return [];
+  }
+
+  Future<bool> addFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.post('/content-favorites/$contentId', {});
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error adding favorite: $e');
+    }
+    return false;
+  }
+
+  Future<bool> removeFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.delete('/content-favorites/$contentId');
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error removing favorite: $e');
+    }
+    return false;
+  }
+
+  Future<bool> checkIsFavorite(String contentId) async {
+    try {
+      final response = await _apiClient.get('/content-favorites/$contentId');
+      if (response.isOk && response.body is Map) {
+        return response.body['isFavorite'] == true;
+      }
+    } catch (e) {
+      debugPrint('Error checking favorite status: $e');
+    }
+    return false;
   }
 }
 

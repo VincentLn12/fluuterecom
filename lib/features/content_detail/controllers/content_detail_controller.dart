@@ -7,6 +7,8 @@ import '../models/content_review_model.dart';
 import '../repositories/content_detail_repository.dart';
 import '../../shops/models/shop_model.dart';
 import '../../shops/models/product_model.dart';
+import '../../../core/services/auth_service.dart';
+import '../../profile/controllers/favorites_controller.dart';
 
 class ContentDetailController extends GetxController {
   ContentDetailController({ContentDetailRepository? repository})
@@ -74,6 +76,14 @@ class ContentDetailController extends GetxController {
       if (detail != null) {
         content.value = detail;
         isFavorite.value = detail.isFavorite;
+
+        // Check live server favorite status if logged in
+        if (Get.isRegistered<AuthService>() &&
+            Get.find<AuthService>().isLoggedIn.value) {
+          final serverFav = await _repository.checkIsFavorite(id);
+          isFavorite.value = serverFav;
+        }
+
         await fetchSubEntities(id);
       } else {
         isError.value = true;
@@ -114,16 +124,67 @@ class ContentDetailController extends GetxController {
     }
   }
 
-  void toggleFavorite() {
-    isFavorite.toggle();
-    if (content.value != null) {
-      content.value = content.value!.copyWith(isFavorite: isFavorite.value);
+  Future<void> toggleFavorite() async {
+    if (Get.isRegistered<AuthService>() &&
+        !Get.find<AuthService>().isLoggedIn.value) {
+      Get.snackbar(
+        'ต้องเข้าสู่ระบบก่อน',
+        'กรุณาเข้าสู่ระบบก่อนบันทึกรายการโปรด',
+        backgroundColor: const Color(0xFF332820),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+      );
+      return;
     }
+
+    final targetId = _currentContentId.isNotEmpty
+        ? _currentContentId
+        : content.value?.id;
+    if (targetId == null || targetId.isEmpty) return;
+
+    final willFavorite = !isFavorite.value;
+    isFavorite.value = willFavorite;
+    if (content.value != null) {
+      content.value = content.value!.copyWith(isFavorite: willFavorite);
+    }
+
+    bool success = false;
+    if (willFavorite) {
+      success = await _repository.addFavorite(targetId);
+    } else {
+      success = await _repository.removeFavorite(targetId);
+    }
+
+    if (!success) {
+      // Revert if API failed
+      isFavorite.value = !willFavorite;
+      if (content.value != null) {
+        content.value = content.value!.copyWith(isFavorite: !willFavorite);
+      }
+      Get.snackbar(
+        'เกิดข้อผิดพลาด',
+        'ไม่สามารถบันทึกรายการโปรดได้ กรุณาลองใหม่อีกครั้ง',
+        backgroundColor: Colors.red.shade700,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+      );
+      return;
+    }
+
+    // Refresh Favorites list in Profile if controller exists
+    if (Get.isRegistered<FavoritesController>()) {
+      Get.find<FavoritesController>().fetchFavorites();
+    }
+
     Get.snackbar(
-      isFavorite.value ? 'บันทึกแล้ว' : 'ยกเลิกการบันทึก',
-      isFavorite.value
-          ? 'เพิ่มในรายการบันทึกโปรดของคุณแล้ว'
-          : 'เอาออกจากรายการบันทึกโปรดแล้ว',
+      willFavorite ? 'บันทึกแล้ว' : 'ยกเลิกการบันทึก',
+      willFavorite
+          ? 'เพิ่มในรายการบันทึกโปรดของคุณเรียบร้อยแล้ว'
+          : 'นำออกจากรายการบันทึกโปรดเรียบร้อยแล้ว',
       backgroundColor: const Color(0xFF332820),
       colorText: Colors.white,
       snackPosition: SnackPosition.BOTTOM,
