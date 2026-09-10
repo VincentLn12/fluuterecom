@@ -178,7 +178,8 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
   }
 
   Widget _buildImageMarkerPin(BuildContext context, ContentModel item) {
-    final imgUrl = item.coverImageUrl ??
+    final imgUrl =
+        item.coverImageUrl ??
         (item.youtubeThumbnail.isNotEmpty ? item.youtubeThumbnail : null);
 
     return GestureDetector(
@@ -242,7 +243,8 @@ class _ContentInteractiveMapViewState extends State<ContentInteractiveMapView> {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        final imgUrl = item.coverImageUrl ??
+        final imgUrl =
+            item.coverImageUrl ??
             (item.youtubeThumbnail.isNotEmpty ? item.youtubeThumbnail : null);
 
         return Container(
@@ -447,4 +449,3 @@ class _PinTrianglePainter extends CustomPainter {
   bool shouldRepaint(covariant _PinTrianglePainter oldDelegate) =>
       oldDelegate.color != color;
 }
-

@@ -88,18 +88,6 @@ class _ContentCardState extends State<ContentCard> {
         widget.item.youtubeUrl != null &&
         widget.item.youtubeUrl!.trim().isNotEmpty;
 
-    final locationParts = [
-      if (widget.item.shopName != null && widget.item.shopName!.isNotEmpty)
-        widget.item.shopName,
-      if (widget.item.districtName != null &&
-          widget.item.districtName!.isNotEmpty)
-        'อ.${widget.item.districtName}',
-      if (widget.item.subDistrictName != null &&
-          widget.item.subDistrictName!.isNotEmpty)
-        'ต.${widget.item.subDistrictName}',
-    ];
-    final locationText = locationParts.join(' · ');
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -162,7 +150,10 @@ class _ContentCardState extends State<ContentCard> {
               top: 10,
               right: 10,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 9,
+                  vertical: 4.5,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.black.withValues(alpha: 0.6),
                   borderRadius: BorderRadius.circular(12),
@@ -209,49 +200,6 @@ class _ContentCardState extends State<ContentCard> {
                       size: 26,
                     ),
                   ),
-                ),
-              ),
-            // District / Shop Location Badge (Bottom Left)
-            if (locationText.isNotEmpty)
-              Positioned(
-                bottom: 10,
-                left: 10,
-                right: 10,
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF1F1713).withValues(alpha: 0.75),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.location_on_rounded,
-                            color: Color(0xFFE9C46A),
-                            size: 13,
-                          ),
-                          const SizedBox(width: 3),
-                          Flexible(
-                            child: Text(
-                              locationText,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12.5,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
           ],

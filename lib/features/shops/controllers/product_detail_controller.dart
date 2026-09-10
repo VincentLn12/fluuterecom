@@ -9,7 +9,7 @@ import '../repositories/shop_repository.dart';
 
 class ProductDetailController extends GetxController {
   ProductDetailController({ShopRepository? repository})
-      : _repository = repository ?? ShopRepository();
+    : _repository = repository ?? ShopRepository();
 
   final ShopRepository _repository;
 
