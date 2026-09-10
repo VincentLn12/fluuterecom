@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../../app/routes/app_routes.dart';
 import '../controllers/content_controller.dart';
 import '../widgets/content_card.dart';
 import '../widgets/content_interactive_map_view.dart';
@@ -62,11 +60,6 @@ class ContentsPage extends GetView<ContentController> {
           ],
         ),
         actions: [
-          IconButton(
-            tooltip: 'ลงคอนเทนต์ใหม่',
-            icon: const Icon(Icons.post_add_rounded, color: Color(0xFFE9C46A)),
-            onPressed: () => Get.toNamed(AppRoutes.createContent),
-          ),
           Obx(
             () => controller.viewType.value == 'list'
                 ? IconButton(
@@ -89,17 +82,6 @@ class ContentsPage extends GetView<ContentController> {
           ),
           const SizedBox(width: 6),
         ],
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Get.toNamed(AppRoutes.createContent),
-        backgroundColor: const Color(0xFFD96C2C),
-        foregroundColor: Colors.white,
-        elevation: 4,
-        icon: const Icon(Icons.post_add_rounded, size: 20),
-        label: Text(
-          'ลงคอนเทนต์',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 14),
-        ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
@@ -142,23 +124,6 @@ class ContentsPage extends GetView<ContentController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'ค้นพบเรื่องราวเมืองกาญจน์ ✨',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 23,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'แหล่งท่องเที่ยว ประวัติศาสตร์ คาเฟ่เด็ด และวิถีชีวิตท้องถิ่น',
-                        style: TextStyle(
-                          color: Color(0xFFE8D9C9),
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
                       // Reusable Search Field
                       AppSearchField(
                         hintText: 'ค้นหาบทความ สถานที่ หรือคีย์เวิร์ด...',
@@ -304,6 +269,7 @@ class ContentsPage extends GetView<ContentController> {
                 )
               else if (controller.contents.isEmpty)
                 const SliverFillRemaining(
+                  hasScrollBody: false,
                   child: EmptyWidget(
                     message: 'ไม่พบข้อมูลคอนเทนต์ตรงกับเงื่อนไขการค้นหา',
                   ),
@@ -350,8 +316,6 @@ class ContentsPage extends GetView<ContentController> {
   }
 }
 
-/// A cool travel-themed center-screen loading widget featuring a rotating compass sweep ring
-/// and a pulsing travel explore badge with custom typography.
 class _TravelCenterLoadingWidget extends StatefulWidget {
   const _TravelCenterLoadingWidget();
 

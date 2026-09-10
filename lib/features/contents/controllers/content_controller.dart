@@ -27,7 +27,31 @@ class ContentController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    parseArguments(Get.arguments);
     initMasterDataAndFetch();
+  }
+
+  @override
+  void onReady() {
+    super.onReady();
+    if (Get.arguments != null) {
+      parseArguments(Get.arguments);
+      fetchContents();
+    }
+  }
+
+  void parseArguments(dynamic args) {
+    if (args is Map) {
+      if (args['districtId'] != null) {
+        selectedDistrictId.value = args['districtId']?.toString();
+      }
+      if (args['categoryId'] != null) {
+        selectedCategoryId.value = args['categoryId']?.toString();
+      }
+      if (args['search'] != null) {
+        searchQuery.value = args['search']?.toString() ?? '';
+      }
+    }
   }
 
   Future<void> initMasterDataAndFetch() async {

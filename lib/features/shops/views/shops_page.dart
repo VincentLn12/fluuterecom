@@ -59,10 +59,7 @@ class ShopsPage extends GetView<ShopController> {
                   ),
                   Text(
                     'ร้านค้า & สินค้าชุมชน',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -95,8 +92,6 @@ class ShopsPage extends GetView<ShopController> {
       ),
       body: Obx(() {
         final displayedShops = controller.displayedShops;
-        final openShopsCount =
-            controller.shops.where((s) => s.isOpenNow).length;
 
         return RefreshIndicator(
           onRefresh: controller.fetchShops,
@@ -130,66 +125,6 @@ class ShopsPage extends GetView<ShopController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Expanded(
-                            child: Text(
-                              'ตลาดร้านค้าเมืองกาญจน์ 🛍️',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 23,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-
-                          // Live Open Store Count Counter Pill
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2A9D8F)
-                                  .withValues(alpha: 0.9),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.25),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.store_rounded,
-                                  size: 13,
-                                  color: Colors.white,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  'เปิดอยู่ $openShopsCount ร้าน',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      const Text(
-                        'ของฝากขึ้นชื่อ ร้านอาหารริมน้ำ งานแฮนด์เมด และสินค้าเกษตรชุมชน',
-                        style: TextStyle(
-                          color: Color(0xFFE0EAE6),
-                          fontSize: 15,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
                       // Search Input
                       AppSearchField(
                         hintText: 'ค้นหาชื่อร้านค้า สินค้า OTOP หรือของฝาก...',
@@ -254,16 +189,18 @@ class ShopsPage extends GetView<ShopController> {
                                   boxShadow: controller.onlyOpenNow.value
                                       ? [
                                           BoxShadow(
-                                            color: const Color(0xFF2A9D8F)
-                                                .withValues(alpha: 0.35),
+                                            color: const Color(
+                                              0xFF2A9D8F,
+                                            ).withValues(alpha: 0.35),
                                             blurRadius: 8,
                                             offset: const Offset(0, 3),
                                           ),
                                         ]
                                       : [
                                           BoxShadow(
-                                            color: Colors.black
-                                                .withValues(alpha: 0.03),
+                                            color: Colors.black.withValues(
+                                              alpha: 0.03,
+                                            ),
                                             blurRadius: 4,
                                             offset: const Offset(0, 2),
                                           ),

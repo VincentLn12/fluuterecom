@@ -195,7 +195,7 @@ class ContentModel {
         videoId = uri.queryParameters['v'];
       }
       if (videoId != null && videoId.isNotEmpty) {
-        return 'https://i.ytimg.com/vi/$videoId/hqdefault.jpg';
+        return 'https://i.ytimg.com/vi/$videoId/mqdefault.jpg';
       }
     } catch (_) {}
     return '';
