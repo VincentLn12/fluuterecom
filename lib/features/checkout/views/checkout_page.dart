@@ -39,7 +39,8 @@ class CheckoutPage extends GetView<CheckoutController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Obx(() {
-                    if (controller.savedAddresses.isEmpty) return const SizedBox.shrink();
+                    if (controller.savedAddresses.isEmpty)
+                      return const SizedBox.shrink();
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -59,7 +60,9 @@ class CheckoutPage extends GetView<CheckoutController> {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
                                 child: ActionChip(
-                                  backgroundColor: const Color(0xFF1F5F58).withValues(alpha: 0.1),
+                                  backgroundColor: const Color(
+                                    0xFF1F5F58,
+                                  ).withValues(alpha: 0.1),
                                   label: Text(
                                     '${addr.recipientName} (${addr.district ?? "กาญจนบุรี"})',
                                     style: GoogleFonts.krub(
@@ -68,7 +71,8 @@ class CheckoutPage extends GetView<CheckoutController> {
                                       color: const Color(0xFF1F5F58),
                                     ),
                                   ),
-                                  onPressed: () => controller.applyAddress(addr),
+                                  onPressed: () =>
+                                      controller.applyAddress(addr),
                                 ),
                               );
                             }).toList(),
@@ -82,14 +86,20 @@ class CheckoutPage extends GetView<CheckoutController> {
                     controller: controller.receiverNameController,
                     labelText: 'ชื่อ-นามสกุล ผู้รับสินค้า',
                     hintText: 'กรอกชื่อผู้รับ',
-                    prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFFD96C2C)),
+                    prefixIcon: const Icon(
+                      Icons.person_outline_rounded,
+                      color: Color(0xFFD96C2C),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: controller.receiverPhoneController,
                     labelText: 'เบอร์โทรศัพท์ติดต่อ',
                     hintText: '08X-XXX-XXXX',
-                    prefixIcon: const Icon(Icons.phone_iphone_rounded, color: Color(0xFFD96C2C)),
+                    prefixIcon: const Icon(
+                      Icons.phone_iphone_rounded,
+                      color: Color(0xFFD96C2C),
+                    ),
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 12),
@@ -97,7 +107,10 @@ class CheckoutPage extends GetView<CheckoutController> {
                     controller: controller.addressLineController,
                     labelText: 'ที่อยู่ (บ้านเลขที่ / ถนน / ซอย)',
                     hintText: '123/45 ถนนแสงชูโต',
-                    prefixIcon: const Icon(Icons.home_outlined, color: Color(0xFFD96C2C)),
+                    prefixIcon: const Icon(
+                      Icons.home_outlined,
+                      color: Color(0xFFD96C2C),
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Row(
@@ -167,7 +180,8 @@ class CheckoutPage extends GetView<CheckoutController> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: selectedItems.length,
-                  separatorBuilder: (context, i) => const Divider(height: 16, color: Color(0xFFF0E6DC)),
+                  separatorBuilder: (context, i) =>
+                      const Divider(height: 16, color: Color(0xFFF0E6DC)),
                   itemBuilder: (context, i) {
                     final item = selectedItems[i];
                     return Row(
@@ -178,14 +192,23 @@ class CheckoutPage extends GetView<CheckoutController> {
                             width: 50,
                             height: 50,
                             color: const Color(0xFFF7F0E6),
-                            child: item.product.imageUrl != null && item.product.imageUrl!.isNotEmpty
+                            child:
+                                item.product.imageUrl != null &&
+                                    item.product.imageUrl!.isNotEmpty
                                 ? Image.network(
                                     item.product.imageUrl!,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) =>
-                                        const Icon(Icons.shopping_bag_outlined, color: Colors.grey),
+                                    errorBuilder:
+                                        (context, error, stackTrace) =>
+                                            const Icon(
+                                              Icons.shopping_bag_outlined,
+                                              color: Colors.grey,
+                                            ),
                                   )
-                                : const Icon(Icons.shopping_bag_outlined, color: Colors.grey),
+                                : const Icon(
+                                    Icons.shopping_bag_outlined,
+                                    color: Colors.grey,
+                                  ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -235,23 +258,25 @@ class CheckoutPage extends GetView<CheckoutController> {
               title: 'รูปแบบการจัดส่ง',
               icon: Icons.fire_truck_rounded,
               iconColor: const Color(0xFFC8952F),
-              child: Obx(() => Column(
-                    children: [
-                      _buildShippingOption(
-                        title: 'จัดส่งพัสดุแบบธรรมดา (Standard Delivery)',
-                        subtitle: 'ระยะเวลาจัดส่ง 2-3 วันทำการ',
-                        fee: 40.0,
-                        methodKey: 'Standard Delivery',
-                      ),
-                      const SizedBox(height: 10),
-                      _buildShippingOption(
-                        title: 'จัดส่งแบบด่วนพิเศษ (Express Delivery)',
-                        subtitle: 'ระยะเวลาจัดส่ง 1-2 วันทำการ',
-                        fee: 60.0,
-                        methodKey: 'Express Delivery',
-                      ),
-                    ],
-                  )),
+              child: Obx(
+                () => Column(
+                  children: [
+                    _buildShippingOption(
+                      title: 'จัดส่งพัสดุแบบธรรมดา (Standard Delivery)',
+                      subtitle: 'ระยะเวลาจัดส่ง 2-3 วันทำการ',
+                      fee: 40.0,
+                      methodKey: 'Standard Delivery',
+                    ),
+                    const SizedBox(height: 10),
+                    _buildShippingOption(
+                      title: 'จัดส่งแบบด่วนพิเศษ (Express Delivery)',
+                      subtitle: 'ระยะเวลาจัดส่ง 1-2 วันทำการ',
+                      fee: 60.0,
+                      methodKey: 'Express Delivery',
+                    ),
+                  ],
+                ),
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -261,35 +286,43 @@ class CheckoutPage extends GetView<CheckoutController> {
               title: 'สรุปยอดชำระเงิน',
               icon: Icons.receipt_long_rounded,
               iconColor: const Color(0xFF2B1F17),
-              child: Obx(() => Column(
-                    children: [
-                      _buildPriceRow('ยอดรวมสินค้า', '฿${controller.subtotal.toStringAsFixed(2)}'),
-                      const SizedBox(height: 8),
-                      _buildPriceRow('ค่าจัดส่ง', '฿${controller.shippingFee.value.toStringAsFixed(2)}'),
-                      const Divider(height: 20, color: Color(0xFFEADCCF)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'ยอดสุทธิต้องชำระ',
-                            style: GoogleFonts.krub(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF2B1F17),
-                            ),
+              child: Obx(
+                () => Column(
+                  children: [
+                    _buildPriceRow(
+                      'ยอดรวมสินค้า',
+                      '฿${controller.subtotal.toStringAsFixed(2)}',
+                    ),
+                    const SizedBox(height: 8),
+                    _buildPriceRow(
+                      'ค่าจัดส่ง',
+                      '฿${controller.shippingFee.value.toStringAsFixed(2)}',
+                    ),
+                    const Divider(height: 20, color: Color(0xFFEADCCF)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'ยอดสุทธิต้องชำระ',
+                          style: GoogleFonts.krub(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF2B1F17),
                           ),
-                          Text(
-                            '฿${controller.totalAmount.toStringAsFixed(2)}',
-                            style: GoogleFonts.krub(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              color: const Color(0xFFD96C2C),
-                            ),
+                        ),
+                        Text(
+                          '฿${controller.totalAmount.toStringAsFixed(2)}',
+                          style: GoogleFonts.krub(
+                            fontSize: 22,
+                            fontWeight: FontWeight.w800,
+                            color: const Color(0xFFD96C2C),
                           ),
-                        ],
-                      ),
-                    ],
-                  )),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
 
             const SizedBox(height: 24),
@@ -321,27 +354,34 @@ class CheckoutPage extends GetView<CheckoutController> {
                   children: [
                     Text(
                       'ยอดชำระสุทธิ',
-                      style: GoogleFonts.krub(fontSize: 12, color: Colors.grey[600]),
+                      style: GoogleFonts.krub(
+                        fontSize: 12,
+                        color: Colors.grey[600],
+                      ),
                     ),
-                    Obx(() => Text(
-                          '฿${controller.totalAmount.toStringAsFixed(2)}',
-                          style: GoogleFonts.krub(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: const Color(0xFFD96C2C),
-                          ),
-                        )),
+                    Obx(
+                      () => Text(
+                        '฿${controller.totalAmount.toStringAsFixed(2)}',
+                        style: GoogleFonts.krub(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          color: const Color(0xFFD96C2C),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
               const SizedBox(width: 16),
               Expanded(
-                child: Obx(() => AppButton(
-                      text: 'สั่งซื้อสินค้า',
-                      isLoading: controller.isLoading.value,
-                      onPressed: controller.submitCheckout,
-                      color: const Color(0xFFD96C2C),
-                    )),
+                child: Obx(
+                  () => AppButton(
+                    text: 'สั่งซื้อสินค้า',
+                    isLoading: controller.isLoading.value,
+                    onPressed: controller.submitCheckout,
+                    color: const Color(0xFFD96C2C),
+                  ),
+                ),
               ),
             ],
           ),
@@ -408,10 +448,14 @@ class CheckoutPage extends GetView<CheckoutController> {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFD96C2C).withValues(alpha: 0.08) : const Color(0xFFF7F0E6).withValues(alpha: 0.5),
+          color: isSelected
+              ? const Color(0xFFD96C2C).withValues(alpha: 0.08)
+              : const Color(0xFFF7F0E6).withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-            color: isSelected ? const Color(0xFFD96C2C) : const Color(0xFFEADCCF),
+            color: isSelected
+                ? const Color(0xFFD96C2C)
+                : const Color(0xFFEADCCF),
             width: isSelected ? 1.8 : 1.0,
           ),
         ),
@@ -443,7 +487,10 @@ class CheckoutPage extends GetView<CheckoutController> {
                   ),
                   Text(
                     subtitle,
-                    style: GoogleFonts.krub(fontSize: 12, color: Colors.grey[600]),
+                    style: GoogleFonts.krub(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
@@ -466,8 +513,18 @@ class CheckoutPage extends GetView<CheckoutController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: GoogleFonts.krub(fontSize: 14, color: Colors.grey[700])),
-        Text(amount, style: GoogleFonts.krub(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF2B1F17))),
+        Text(
+          label,
+          style: GoogleFonts.krub(fontSize: 14, color: Colors.grey[700]),
+        ),
+        Text(
+          amount,
+          style: GoogleFonts.krub(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xFF2B1F17),
+          ),
+        ),
       ],
     );
   }

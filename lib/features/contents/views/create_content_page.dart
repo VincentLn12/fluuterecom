@@ -32,9 +32,7 @@ class CreateContentPage extends StatelessWidget {
       body: Obx(() {
         if (controller.isLoadingFormOptions.value) {
           return const Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFFD96C2C),
-            ),
+            child: CircularProgressIndicator(color: Color(0xFFD96C2C)),
           );
         }
 
@@ -145,7 +143,10 @@ class CreateContentPage extends StatelessWidget {
         const SizedBox(height: 6),
         TextFormField(
           controller: controller.titleController,
-          style: GoogleFonts.krub(fontSize: 14.5, color: const Color(0xFF332820)),
+          style: GoogleFonts.krub(
+            fontSize: 14.5,
+            color: const Color(0xFF332820),
+          ),
           decoration: _buildInputDecoration(
             hintText: 'เช่น ล่องแพเปียกแม่น้ำแควซอย 5 ชมทิวทัศน์ธรรมชาติ',
             prefixIcon: Icons.title_rounded,
@@ -162,7 +163,8 @@ class CreateContentPage extends StatelessWidget {
           maxLines: 4,
           style: GoogleFonts.krub(fontSize: 14, color: const Color(0xFF332820)),
           decoration: _buildInputDecoration(
-            hintText: 'อธิบายรายละเอียด บรรยากาศ จุดเด่น หรือข้อมูลที่น่าสนใจ...',
+            hintText:
+                'อธิบายรายละเอียด บรรยากาศ จุดเด่น หรือข้อมูลที่น่าสนใจ...',
           ),
         ),
 
@@ -186,10 +188,14 @@ class CreateContentPage extends StatelessWidget {
                 hint: Text(
                   'เลือกหมวดหมู่',
                   style: GoogleFonts.krub(
-                      fontSize: 14, color: const Color(0xFF786B62)),
+                    fontSize: 14,
+                    color: const Color(0xFF786B62),
+                  ),
                 ),
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFD96C2C)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFD96C2C),
+                ),
                 items: controller.categories.map((c) {
                   return DropdownMenuItem<String>(
                     value: c.id,
@@ -275,8 +281,9 @@ class CreateContentPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(15)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(15),
+                  ),
                   child: Image.network(
                     thumb,
                     height: 150,
@@ -287,12 +294,17 @@ class CreateContentPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   child: Row(
                     children: [
-                      const Icon(Icons.check_circle,
-                          size: 16, color: Color(0xFF059669)),
+                      const Icon(
+                        Icons.check_circle,
+                        size: 16,
+                        color: Color(0xFF059669),
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         'พบวิดีโอ YouTube พร้อมแสดงภาพตัวอย่าง',
@@ -336,10 +348,14 @@ class CreateContentPage extends StatelessWidget {
                 hint: Text(
                   'เลือกอำเภอ',
                   style: GoogleFonts.krub(
-                      fontSize: 14, color: const Color(0xFF786B62)),
+                    fontSize: 14,
+                    color: const Color(0xFF786B62),
+                  ),
                 ),
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFD96C2C)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFD96C2C),
+                ),
                 items: controller.districts.map((d) {
                   return DropdownMenuItem<String>(
                     value: d.id,
@@ -381,10 +397,14 @@ class CreateContentPage extends StatelessWidget {
                       ? 'กรุณาเลือกอำเภอก่อน'
                       : 'เลือกตำบล',
                   style: GoogleFonts.krub(
-                      fontSize: 14, color: const Color(0xFF786B62)),
+                    fontSize: 14,
+                    color: const Color(0xFF786B62),
+                  ),
                 ),
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFD96C2C)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFD96C2C),
+                ),
                 items: controller.subDistricts.map((s) {
                   return DropdownMenuItem<String>(
                     value: s.id,
@@ -426,17 +446,23 @@ class CreateContentPage extends StatelessWidget {
                 hint: Text(
                   'เลือกร้านค้าชุมชนที่เกี่ยวข้อง (ระบุหรือไม่ก็ได้)',
                   style: GoogleFonts.krub(
-                      fontSize: 13, color: const Color(0xFF786B62)),
+                    fontSize: 13,
+                    color: const Color(0xFF786B62),
+                  ),
                 ),
-                icon: const Icon(Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFD96C2C)),
+                icon: const Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: Color(0xFFD96C2C),
+                ),
                 items: [
                   DropdownMenuItem<String>(
                     value: null,
                     child: Text(
                       '-- ไม่ระบุร้านค้า --',
                       style: GoogleFonts.krub(
-                          fontSize: 14, color: const Color(0xFF786B62)),
+                        fontSize: 14,
+                        color: const Color(0xFF786B62),
+                      ),
                     ),
                   ),
                   ...controller.shops.map((sh) {
@@ -473,9 +499,13 @@ class CreateContentPage extends StatelessWidget {
                   TextFormField(
                     controller: controller.latitudeController,
                     keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
+                      decimal: true,
+                      signed: true,
+                    ),
                     style: GoogleFonts.krub(
-                        fontSize: 14, color: const Color(0xFF332820)),
+                      fontSize: 14,
+                      color: const Color(0xFF332820),
+                    ),
                     decoration: _buildInputDecoration(hintText: '14.0227'),
                   ),
                 ],
@@ -491,9 +521,13 @@ class CreateContentPage extends StatelessWidget {
                   TextFormField(
                     controller: controller.longitudeController,
                     keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
+                      decimal: true,
+                      signed: true,
+                    ),
                     style: GoogleFonts.krub(
-                        fontSize: 14, color: const Color(0xFF332820)),
+                      fontSize: 14,
+                      color: const Color(0xFF332820),
+                    ),
                     decoration: _buildInputDecoration(hintText: '99.5328'),
                   ),
                 ],
@@ -528,10 +562,7 @@ class CreateContentPage extends StatelessWidget {
             isSubmitting
                 ? 'กำลังบันทึกข้อมูล...'
                 : (controller.isEditing ? 'บันทึกการแก้ไข' : 'เผยแพร่คอนเทนต์'),
-            style: GoogleFonts.krub(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
+            style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFD96C2C),
@@ -609,7 +640,10 @@ class CreateContentPage extends StatelessWidget {
   }) {
     return InputDecoration(
       hintText: hintText,
-      hintStyle: GoogleFonts.krub(fontSize: 13.5, color: const Color(0xFF786B62)),
+      hintStyle: GoogleFonts.krub(
+        fontSize: 13.5,
+        color: const Color(0xFF786B62),
+      ),
       prefixIcon: prefixIcon != null
           ? Icon(prefixIcon, color: const Color(0xFFD96C2C), size: 20)
           : null,

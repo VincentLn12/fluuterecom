@@ -247,7 +247,9 @@ class ContentDetailRepository {
     try {
       var response = await _apiClient.post('/content-views/$contentId', {});
       if (!response.isOk) {
-        response = await _apiClient.post('/content-views', {'contentId': contentId});
+        response = await _apiClient.post('/content-views', {
+          'contentId': contentId,
+        });
       }
       return response.isOk;
     } catch (e) {

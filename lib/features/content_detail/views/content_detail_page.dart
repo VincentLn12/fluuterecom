@@ -151,8 +151,6 @@ class ContentDetailPage extends GetView<ContentDetailController> {
     );
   }
 
-
-
   Widget _buildErrorState() {
     return Center(
       child: Padding(
@@ -266,4 +264,3 @@ class ContentDetailPage extends GetView<ContentDetailController> {
     );
   }
 }
-
