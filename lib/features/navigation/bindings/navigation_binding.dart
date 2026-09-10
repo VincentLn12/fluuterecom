@@ -9,11 +9,13 @@ import '../../profile/controllers/profile_controller.dart';
 class NavigationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<NavigationController>(() => NavigationController());
-    Get.lazyPut<HomeController>(() => HomeController());
-    Get.lazyPut<ShopController>(() => ShopController());
-    Get.lazyPut<ContentController>(() => ContentController());
-    Get.lazyPut<CartController>(() => CartController());
-    Get.lazyPut<ProfileController>(() => ProfileController());
+    if (!Get.isRegistered<NavigationController>()) {
+      Get.put(NavigationController(), permanent: true);
+    }
+    Get.lazyPut<HomeController>(() => HomeController(), fenix: true);
+    Get.lazyPut<ShopController>(() => ShopController(), fenix: true);
+    Get.lazyPut<ContentController>(() => ContentController(), fenix: true);
+    Get.lazyPut<CartController>(() => CartController(), fenix: true);
+    Get.lazyPut<ProfileController>(() => ProfileController(), fenix: true);
   }
 }

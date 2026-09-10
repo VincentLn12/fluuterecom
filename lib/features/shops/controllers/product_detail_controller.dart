@@ -1,6 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import '../../../app/routes/app_routes.dart';
+import '../../cart/controllers/cart_controller.dart';
 import '../models/product_model.dart';
 import '../models/shop_model.dart';
+import '../models/shop_review_model.dart';
 import '../repositories/shop_repository.dart';
 
 class ProductDetailController extends GetxController {
@@ -13,6 +17,14 @@ class ProductDetailController extends GetxController {
   final sellerShop = Rxn<ShopModel>();
   final quantity = 1.obs;
   final isLoading = false.obs;
+
+  final selectedImageIndex = 0.obs;
+  final isFavorite = false.obs;
+  final activeTab = 'details'.obs; // 'details' | 'reviews'
+
+  final otherShopProducts = <ProductModel>[].obs;
+  final recommendedProducts = <ProductModel>[].obs;
+  final shopReviews = <ShopReviewModel>[].obs;
 
   @override
   void onInit() {
@@ -30,6 +42,7 @@ class ProductDetailController extends GetxController {
 
   Future<void> loadProductAndShop(String productId, String? shopId) async {
     isLoading.value = true;
+    selectedImageIndex.value = 0;
     try {
       final item = await _repository.fetchProductById(productId);
       if (item != null) {
@@ -39,19 +52,78 @@ class ProductDetailController extends GetxController {
       if (targetShopId != null && targetShopId.isNotEmpty) {
         final s = await _repository.fetchShopById(targetShopId);
         sellerShop.value = s;
+
+        // Fetch reviews
+        final reviews = await _repository.fetchShopReviews(targetShopId);
+        shopReviews.assignAll(reviews);
       }
+
+      // Fetch recommended & other shop products
+      final all = await _repository.fetchProducts();
+      final currentId = product.value?.id;
+      final currentShopId = product.value?.shopId;
+
+      final otherProducts = all.where((p) => p.id != currentId).toList();
+      if (currentShopId != null) {
+        otherShopProducts.assignAll(
+          otherProducts.where((p) => p.shopId == currentShopId).take(4),
+        );
+        recommendedProducts.assignAll(
+          otherProducts.where((p) => p.shopId != currentShopId).take(4),
+        );
+      } else {
+        recommendedProducts.assignAll(otherProducts.take(4));
+      }
+    } catch (e) {
+      debugPrint('Error loading product details: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
   void incrementQuantity() {
-    quantity.value++;
+    final maxQty = product.value?.quantity ?? 99;
+    if (quantity.value < maxQty) {
+      quantity.value++;
+    }
   }
 
   void decrementQuantity() {
     if (quantity.value > 1) {
       quantity.value--;
     }
+  }
+
+  void toggleFavorite() {
+    isFavorite.value = !isFavorite.value;
+  }
+
+  void selectImage(int index) {
+    selectedImageIndex.value = index;
+  }
+
+  void changeTab(String tab) {
+    activeTab.value = tab;
+  }
+
+  void addToCart() {
+    final current = product.value;
+    if (current == null) return;
+    Get.find<CartController>().addToCart(
+      current,
+      quantity: quantity.value,
+      shopName: sellerShop.value?.name,
+    );
+  }
+
+  void buyNow() {
+    final current = product.value;
+    if (current == null) return;
+    Get.find<CartController>().addToCart(
+      current,
+      quantity: quantity.value,
+      shopName: sellerShop.value?.name,
+    );
+    Get.toNamed(AppRoutes.cart);
   }
 }

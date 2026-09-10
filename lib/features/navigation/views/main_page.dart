@@ -14,6 +14,9 @@ class MainPage extends GetView<NavigationController> {
 
   @override
   Widget build(BuildContext context) {
+    final navCtrl = Get.isRegistered<NavigationController>()
+        ? Get.find<NavigationController>()
+        : Get.put(NavigationController(), permanent: true);
     final cartController = Get.find<CartController>();
     final authService = Get.find<AuthService>();
 
@@ -87,7 +90,7 @@ class MainPage extends GetView<NavigationController> {
         ),
       ];
 
-      int currentIndex = controller.selectedIndex.value;
+      int currentIndex = navCtrl.selectedIndex.value;
       if (currentIndex >= items.length) {
         currentIndex = items.length - 1;
       }
@@ -97,7 +100,7 @@ class MainPage extends GetView<NavigationController> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: currentIndex,
           onTap: (index) {
-            controller.changeTab(index);
+            navCtrl.changeTab(index);
           },
           type: BottomNavigationBarType.fixed,
           selectedItemColor: const Color(0xFFD96C2C),
