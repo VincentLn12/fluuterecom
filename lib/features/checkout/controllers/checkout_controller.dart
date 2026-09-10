@@ -127,7 +127,8 @@ class CheckoutController extends GetxController {
 
     isLoading.value = true;
     try {
-      final apiShippingMethod = selectedShippingMethod.value.toLowerCase().contains('pickup')
+      final apiShippingMethod =
+          selectedShippingMethod.value.toLowerCase().contains('pickup')
           ? 'Pickup'
           : 'Delivery';
 
