@@ -10,7 +10,8 @@ class CreateContentController extends GetxController {
       : ContentRepository();
 
   String? editingContentId;
-  bool get isEditing => editingContentId != null && editingContentId!.isNotEmpty;
+  bool get isEditing =>
+      editingContentId != null && editingContentId!.isNotEmpty;
 
   // Form Controllers
   final titleController = TextEditingController();
@@ -75,7 +76,8 @@ class CreateContentController extends GetxController {
         summaryController.text = args.description ?? '';
         youtubeUrlController.text = args.youtubeUrl ?? '';
         youtubeUrlText.value = args.youtubeUrl ?? '';
-        selectedCategoryId.value = args.categoryId ??
+        selectedCategoryId.value =
+            args.categoryId ??
             (categories.isNotEmpty ? categories.first.id : null);
         selectedStatus.value = args.status ?? 'Published';
         if (args.latitude != null) {
@@ -86,7 +88,9 @@ class CreateContentController extends GetxController {
         }
         if (args.districtId != null && args.districtId!.isNotEmpty) {
           selectedDistrictId.value = args.districtId;
-          final fetchedSubs = await _repository.fetchSubDistricts(args.districtId!);
+          final fetchedSubs = await _repository.fetchSubDistricts(
+            args.districtId!,
+          );
           subDistricts.assignAll(fetchedSubs);
           if (args.subDistrictId != null && args.subDistrictId!.isNotEmpty) {
             selectedSubDistrictId.value = args.subDistrictId;
@@ -202,8 +206,8 @@ class CreateContentController extends GetxController {
           isEditing
               ? 'บันทึกการแก้ไขคอนเทนต์เรียบร้อยแล้ว'
               : (selectedStatus.value == 'Published'
-                  ? 'บทความของคุณได้รับการลงและเผยแพร่เรียบร้อยแล้ว'
-                  : 'บันทึกฉบับร่างคอนเทนต์เรียบร้อยแล้ว'),
+                    ? 'บทความของคุณได้รับการลงและเผยแพร่เรียบร้อยแล้ว'
+                    : 'บันทึกฉบับร่างคอนเทนต์เรียบร้อยแล้ว'),
           backgroundColor: const Color(0xFF2B1F17),
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP,

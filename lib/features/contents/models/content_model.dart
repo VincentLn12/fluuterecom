@@ -1,62 +1,11 @@
 import '../../../app/config/api_config.dart';
 
-class ContentCategory {
-  final String id;
-  final String name;
-  final String? description;
-
-  ContentCategory({required this.id, required this.name, this.description});
-
-  factory ContentCategory.fromJson(Map<String, dynamic> json) {
-    return ContentCategory(
-      id: json['contentCategoryId']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['categoryName']?.toString() ?? json['name']?.toString() ?? '',
-      description: json['description']?.toString(),
-    );
-  }
-}
-
-class District {
-  final String id;
-  final String name;
-
-  District({required this.id, required this.name});
-
-  factory District.fromJson(Map<String, dynamic> json) {
-    return District(
-      id: json['districtId']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['districtName']?.toString() ?? json['name']?.toString() ?? '',
-    );
-  }
-}
-
-class SubDistrict {
-  final String id;
-  final String name;
-
-  SubDistrict({required this.id, required this.name});
-
-  factory SubDistrict.fromJson(Map<String, dynamic> json) {
-    return SubDistrict(
-      id: json['subDistrictId']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['subDistrictName']?.toString() ?? json['name']?.toString() ?? '',
-    );
-  }
-}
-
-class ContentShopOption {
-  final String id;
-  final String name;
-
-  ContentShopOption({required this.id, required this.name});
-
-  factory ContentShopOption.fromJson(Map<String, dynamic> json) {
-    return ContentShopOption(
-      id: json['shopId']?.toString() ?? json['id']?.toString() ?? '',
-      name: json['shopName']?.toString() ?? json['name']?.toString() ?? '',
-    );
-  }
-}
+export 'content_category_model.dart';
+export 'content_review_model.dart';
+export 'content_schedule_model.dart';
+export 'content_shop_option_model.dart';
+export 'content_shop_product_model.dart';
+export 'district_model.dart';
 
 class ContentModel {
   final String id;
@@ -199,105 +148,5 @@ class ContentModel {
       }
     } catch (_) {}
     return '';
-  }
-}
-
-class ContentSchedule {
-  final String scheduleId;
-  final String title;
-  final String? startDateTime;
-  final String? endDateTime;
-  final String? address;
-  final String? description;
-
-  ContentSchedule({
-    required this.scheduleId,
-    required this.title,
-    this.startDateTime,
-    this.endDateTime,
-    this.address,
-    this.description,
-  });
-
-  factory ContentSchedule.fromJson(Map<String, dynamic> json) {
-    return ContentSchedule(
-      scheduleId: json['scheduleId']?.toString() ?? '',
-      title: json['title']?.toString() ?? '',
-      startDateTime: json['startDateTime']?.toString(),
-      endDateTime: json['endDateTime']?.toString(),
-      address: json['address']?.toString(),
-      description: json['description']?.toString(),
-    );
-  }
-}
-
-class ContentShopProduct {
-  final String productId;
-  final String shopId;
-  final String? shopName;
-  final String productName;
-  final String? description;
-  final double price;
-  final String? imageUrl;
-
-  ContentShopProduct({
-    required this.productId,
-    required this.shopId,
-    this.shopName,
-    required this.productName,
-    this.description,
-    required this.price,
-    this.imageUrl,
-  });
-
-  factory ContentShopProduct.fromJson(Map<String, dynamic> json) {
-    String? resolveUrl(dynamic val) {
-      if (val == null) return null;
-      String str = val.toString().trim();
-      if (str.isEmpty) return null;
-      if (str.startsWith('http://') || str.startsWith('https://')) {
-        return str;
-      }
-      if (str.startsWith('/')) {
-        return ApiConfig.baseUrl.replaceAll('/api', '') + str;
-      }
-      return '${ApiConfig.baseUrl.replaceAll('/api', '')}/$str';
-    }
-
-    return ContentShopProduct(
-      productId: json['productId']?.toString() ?? '',
-      shopId: json['shopId']?.toString() ?? '',
-      shopName: json['shopName']?.toString(),
-      productName: json['productName']?.toString() ?? 'สินค้าชุมชน',
-      description: json['description']?.toString(),
-      price: double.tryParse(json['price']?.toString() ?? '0') ?? 0.0,
-      imageUrl: resolveUrl(json['imageUrl'] ?? json['coverImageUrl']),
-    );
-  }
-}
-
-class ContentReview {
-  final String reviewId;
-  final String userName;
-  final String comment;
-  final String? createdAt;
-  final double rating;
-
-  ContentReview({
-    required this.reviewId,
-    required this.userName,
-    required this.comment,
-    this.createdAt,
-    this.rating = 5.0,
-  });
-
-  factory ContentReview.fromJson(Map<String, dynamic> json) {
-    return ContentReview(
-      reviewId: json['reviewId']?.toString() ?? '',
-      userName: json['userName']?.toString() ?? 'ผู้ใช้งานกาญจนบุรี',
-      comment: json['comment']?.toString() ?? '',
-      createdAt: json['createdAt']?.toString(),
-      rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
-    );
   }
 }
