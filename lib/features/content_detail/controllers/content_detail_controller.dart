@@ -99,6 +99,10 @@ class ContentDetailController extends GetxController {
 
   Future<void> fetchSubEntities(String id) async {
     try {
+      if (Get.isRegistered<AuthService>() &&
+          Get.find<AuthService>().isLoggedIn.value) {
+        _repository.recordContentView(id);
+      }
       final fetchedSchedules = await _repository.fetchSchedules(id);
       final fetchedReviews = await _repository.fetchReviews(id);
       final fetchedProducts = await _repository.fetchRelatedProducts(id);

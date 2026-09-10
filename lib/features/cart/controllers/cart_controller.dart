@@ -82,6 +82,7 @@ class CartController extends GetxController {
     return map;
   }
 
+  /// Add item to cart with strict stock quantity limit check
   Future<void> addToCart(
     ProductModel product, {
     int quantity = 1,
@@ -109,8 +110,64 @@ class CartController extends GetxController {
       return;
     }
 
+    final maxStock = product.quantity;
+
+    // Check if product is out of stock
+    if (maxStock <= 0) {
+      Get.snackbar(
+        'สินค้าหมดชั่วคราว',
+        'ขออภัย สินค้า "${product.name}" หมดชั่วคราว ไม่สามารถเพิ่มลงตะกร้าได้',
+        backgroundColor: const Color(0xFFC62828),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 14,
+        duration: const Duration(seconds: 3),
+      );
+      return;
+    }
+
+    // Check how many items of this product are already in cart
+    final existingIndex = cartItems.indexWhere(
+      (item) => item.product.id.toLowerCase() == product.id.toLowerCase(),
+    );
+    final currentInCart = existingIndex >= 0
+        ? cartItems[existingIndex].quantity
+        : 0;
+    final totalRequested = currentInCart + quantity;
+
+    int actualQtyToAdd = quantity;
+
+    if (totalRequested > maxStock) {
+      final allowedToAdd = maxStock - currentInCart;
+      if (allowedToAdd <= 0) {
+        Get.snackbar(
+          'ครบจำนวนสต็อกแล้ว',
+          'คุณมีสินค้าในตะกร้าแล้ว $currentInCart ชิ้น ซึ่งครบจำนวนสินค้าที่มีในสต็อกแล้ว ($maxStock ชิ้น)',
+          backgroundColor: const Color(0xFFC62828),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 14,
+          duration: const Duration(seconds: 3),
+        );
+        return;
+      }
+      actualQtyToAdd = allowedToAdd;
+      Get.snackbar(
+        'ปรับจำนวนตามสต็อกที่มี',
+        'เพิ่มสินค้าได้สูงสุดอีก $actualQtyToAdd ชิ้น (จำกัดตามสต็อกที่มี $maxStock ชิ้น)',
+        backgroundColor: const Color(0xFFE65100),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 14,
+        duration: const Duration(seconds: 3),
+      );
+    }
+
     try {
-      final success = await _repository.addToCart(product.id, quantity);
+      final success = await _repository.addToCart(product.id, actualQtyToAdd);
       if (success) {
         await fetchCart();
       }
@@ -120,7 +177,7 @@ class CartController extends GetxController {
 
     Get.snackbar(
       'เพิ่มลงตะกร้าเรียบร้อย',
-      'เพิ่ม "${product.name}" จำนวน $quantity ชิ้น ลงในตะกร้าสินค้าแล้ว',
+      'เพิ่ม "${product.name}" จำนวน $actualQtyToAdd ชิ้น ลงในตะกร้าสินค้าแล้ว',
       backgroundColor: const Color(0xFF2B1F17),
       colorText: Colors.white,
       snackPosition: SnackPosition.TOP,
@@ -162,10 +219,27 @@ class CartController extends GetxController {
     }
   }
 
+  /// Increment quantity with stock limit check
   Future<void> incrementQuantity(String id) async {
     final index = cartItems.indexWhere((item) => item.id == id);
     if (index >= 0) {
       final item = cartItems[index];
+      final maxStock = item.product.quantity;
+
+      if (item.quantity >= maxStock) {
+        Get.snackbar(
+          'ครบจำนวนสต็อกแล้ว',
+          'ไม่สามารถเพิ่มได้เกินจำนวนสินค้าที่มีในสต็อก (มีทั้งหมด $maxStock ชิ้น)',
+          backgroundColor: const Color(0xFFC62828),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.TOP,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 14,
+          duration: const Duration(seconds: 2),
+        );
+        return;
+      }
+
       final newQty = item.quantity + 1;
       cartItems[index] = item.copyWith(quantity: newQty);
 

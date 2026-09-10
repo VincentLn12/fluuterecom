@@ -775,16 +775,19 @@ class ProductDetailPage extends GetView<ProductDetailController> {
                       ),
                     ),
                   ),
-                  IconButton(
-                    constraints: const BoxConstraints(
-                      minWidth: 36,
-                      minHeight: 36,
-                    ),
-                    padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.add_rounded, size: 16),
-                    color: const Color(0xFF332820),
-                    onPressed: controller.incrementQuantity,
-                  ),
+                  Obx(() {
+                    final isAtMax = controller.quantity.value >= product.quantity;
+                    return IconButton(
+                      constraints: const BoxConstraints(
+                        minWidth: 36,
+                        minHeight: 36,
+                      ),
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(Icons.add_rounded, size: 16),
+                      color: isAtMax ? Colors.grey[400] : const Color(0xFF332820),
+                      onPressed: isAtMax ? null : controller.incrementQuantity,
+                    );
+                  }),
                 ],
               ),
             ),

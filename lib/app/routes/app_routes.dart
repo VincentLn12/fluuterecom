@@ -23,6 +23,7 @@ abstract class AppRoutes {
   static const editProfile = '/profile/edit';
   static const myContents = '/profile/my-contents';
   static const favorites = '/profile/favorites';
+  static const history = '/profile/history';
 
   static const registerShop = '/register-shop';
   static const myShop = '/my-shop';

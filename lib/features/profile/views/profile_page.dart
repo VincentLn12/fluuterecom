@@ -154,6 +154,25 @@ class ProfilePage extends StatelessWidget {
                       }
                     },
                   ),
+                  const Divider(
+                    height: 1,
+                    indent: 52,
+                    color: Color(0xFFE8D9C9),
+                  ),
+                  _buildNavigationTile(
+                    icon: Icons.history_rounded,
+                    title: 'ประวัติการเข้าชม',
+                    subtitle: 'เรื่องราวและบทความที่คุณเคยเปิดอ่าน',
+                    badgeText: isLoggedIn ? 'ประวัติ' : null,
+                    badgeColor: const Color(0xFFD96C2C),
+                    onTap: () {
+                      if (isLoggedIn) {
+                        Get.toNamed(AppRoutes.history);
+                      } else {
+                        _showAuthRequiredDialog(context, 'ประวัติการเข้าชม');
+                      }
+                    },
+                  ),
                 ],
               ),
 

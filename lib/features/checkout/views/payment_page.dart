@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +48,10 @@ class PaymentPage extends GetView<PaymentController> {
             const SizedBox(height: 18),
 
             // 2. Section Header: Select Payment Method
-            _buildSectionHeader('เลือกช่องทางการชำระเงิน', Icons.account_balance_wallet_rounded),
+            _buildSectionHeader(
+              'เลือกช่องทางการชำระเงิน',
+              Icons.account_balance_wallet_rounded,
+            ),
 
             const SizedBox(height: 12),
 
@@ -77,7 +81,9 @@ class PaymentPage extends GetView<PaymentController> {
     return Obx(() {
       final currentOrder = controller.order.value;
       final total = currentOrder?.totalAmount ?? 0.0;
-      final orderNo = currentOrder?.orderNumber ?? 'ORD-${DateTime.now().millisecondsSinceEpoch}';
+      final orderNo =
+          currentOrder?.orderNumber ??
+          'ORD-${DateTime.now().millisecondsSinceEpoch}';
 
       return Container(
         width: double.infinity,
@@ -329,7 +335,10 @@ class PaymentPage extends GetView<PaymentController> {
                     runSpacing: 4,
                     children: badges.map((badge) {
                       return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: isSelected
                               ? accentColor.withValues(alpha: 0.1)
@@ -341,7 +350,9 @@ class PaymentPage extends GetView<PaymentController> {
                           style: GoogleFonts.krub(
                             fontSize: 10.5,
                             fontWeight: FontWeight.bold,
-                            color: isSelected ? accentColor : const Color(0xFF786B62),
+                            color: isSelected
+                                ? accentColor
+                                : const Color(0xFF786B62),
                           ),
                         ),
                       );
@@ -377,7 +388,11 @@ class PaymentPage extends GetView<PaymentController> {
         children: [
           Row(
             children: [
-              const Icon(Icons.credit_card_rounded, color: Color(0xFF1F5F58), size: 22),
+              const Icon(
+                Icons.credit_card_rounded,
+                color: Color(0xFF1F5F58),
+                size: 22,
+              ),
               const SizedBox(width: 8),
               Text(
                 'กรอกข้อมูลบัตรเครดิต / เดบิต',
@@ -442,18 +457,24 @@ class PaymentPage extends GetView<PaymentController> {
             controller: controller.cardHolderController,
             labelText: 'ชื่อบนหน้าบัตร (Cardholder Name)',
             hintText: 'เช่น SOMCHAI JAIDEE',
-            prefixIcon: const Icon(Icons.person_outline_rounded, color: Color(0xFF1F5F58)),
+            prefixIcon: const Icon(
+              Icons.person_outline_rounded,
+              color: Color(0xFF1F5F58),
+            ),
           ),
 
           const SizedBox(height: 22),
 
-          Obx(() => AppButton(
-                text: 'ยืนยันชำระเงินด้วยบัตร • ฿${(controller.order.value?.totalAmount ?? 0.0).toStringAsFixed(2)}',
-                color: const Color(0xFF1F5F58),
-                icon: Icons.lock_rounded,
-                isLoading: controller.isLoading.value,
-                onPressed: controller.processStripePayment,
-              )),
+          Obx(
+            () => AppButton(
+              text:
+                  'ยืนยันชำระเงินด้วยบัตร • ฿${(controller.order.value?.totalAmount ?? 0.0).toStringAsFixed(2)}',
+              color: const Color(0xFF1F5F58),
+              icon: Icons.lock_rounded,
+              isLoading: controller.isLoading.value,
+              onPressed: controller.processStripePayment,
+            ),
+          ),
         ],
       ),
     );
@@ -480,7 +501,11 @@ class PaymentPage extends GetView<PaymentController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.qr_code_2_rounded, color: Color(0xFFD96C2C), size: 22),
+              const Icon(
+                Icons.qr_code_2_rounded,
+                color: Color(0xFFD96C2C),
+                size: 22,
+              ),
               const SizedBox(width: 8),
               Text(
                 'โอนเงินผ่าน PromptPay หรือ ธนาคาร',
@@ -592,7 +617,10 @@ class PaymentPage extends GetView<PaymentController> {
                       },
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: const Color(0xFF003865).withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
@@ -600,7 +628,11 @@ class PaymentPage extends GetView<PaymentController> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.copy_rounded, size: 13, color: Color(0xFF003865)),
+                            const Icon(
+                              Icons.copy_rounded,
+                              size: 13,
+                              color: Color(0xFF003865),
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'คัดลอกเลขบัญชี',
@@ -651,7 +683,10 @@ class PaymentPage extends GetView<PaymentController> {
                 decoration: BoxDecoration(
                   color: const Color(0xFF059669).withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFF059669), width: 1.5),
+                  border: Border.all(
+                    color: const Color(0xFF059669),
+                    width: 1.5,
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -660,18 +695,7 @@ class PaymentPage extends GetView<PaymentController> {
                       child: SizedBox(
                         width: 56,
                         height: 56,
-                        child: slip.startsWith('http')
-                            ? Image.network(slip, fit: BoxFit.cover)
-                            : Image.file(
-                                File(slip),
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) =>
-                                    Container(
-                                  color: const Color(0xFF059669),
-                                  child: const Icon(Icons.image_rounded,
-                                      color: Colors.white, size: 28),
-                                ),
-                              ),
+                        child: _buildSlipImageWidget(slip),
                       ),
                     ),
                     const SizedBox(width: 14),
@@ -699,7 +723,10 @@ class PaymentPage extends GetView<PaymentController> {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.cancel_rounded, color: Colors.redAccent),
+                      icon: const Icon(
+                        Icons.cancel_rounded,
+                        color: Colors.redAccent,
+                      ),
                       onPressed: () {
                         controller.uploadedSlipPath.value = null;
                       },
@@ -732,13 +759,15 @@ class PaymentPage extends GetView<PaymentController> {
 
           const SizedBox(height: 20),
 
-          Obx(() => AppButton(
-                text: 'ยืนยันและส่งสลิปชำระเงิน',
-                color: const Color(0xFFD96C2C),
-                icon: Icons.check_circle_outline_rounded,
-                isLoading: controller.isUploadingSlip.value,
-                onPressed: controller.submitSlipPayment,
-              )),
+          Obx(
+            () => AppButton(
+              text: 'ยืนยันและส่งสลิปชำระเงิน',
+              color: const Color(0xFFD96C2C),
+              icon: Icons.check_circle_outline_rounded,
+              isLoading: controller.isUploadingSlip.value,
+              onPressed: controller.submitSlipPayment,
+            ),
+          ),
         ],
       ),
     );
@@ -830,5 +859,49 @@ class PaymentPage extends GetView<PaymentController> {
         ),
       );
     });
+  }
+
+  Widget _buildSlipImageWidget(
+    String slip, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    if (slip.startsWith('data:image')) {
+      try {
+        final base64Data = slip.split(',').last;
+        final bytes = base64Decode(base64Data);
+        return Image.memory(bytes, width: width, height: height, fit: fit);
+      } catch (_) {}
+    }
+    if (slip.startsWith('http://') || slip.startsWith('https://')) {
+      return Image.network(
+        slip,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: const Color(0xFF059669),
+          child: const Icon(Icons.image_rounded, color: Colors.white, size: 28),
+        ),
+      );
+    }
+    final file = File(slip);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: const Color(0xFF059669),
+          child: const Icon(Icons.image_rounded, color: Colors.white, size: 28),
+        ),
+      );
+    }
+    return Container(
+      color: const Color(0xFF059669),
+      child: const Icon(Icons.image_rounded, color: Colors.white, size: 28),
+    );
   }
 }

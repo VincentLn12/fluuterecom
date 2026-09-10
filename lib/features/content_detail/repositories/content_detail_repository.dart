@@ -241,4 +241,18 @@ class ContentDetailRepository {
     }
     return false;
   }
+
+  /// Record content view history
+  Future<bool> recordContentView(String contentId) async {
+    try {
+      var response = await _apiClient.post('/content-views/$contentId', {});
+      if (!response.isOk) {
+        response = await _apiClient.post('/content-views', {'contentId': contentId});
+      }
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error recording content view: $e');
+      return false;
+    }
+  }
 }

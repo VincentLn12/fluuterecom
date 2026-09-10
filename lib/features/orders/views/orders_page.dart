@@ -5,6 +5,8 @@ import '../../../app/routes/app_routes.dart';
 import '../controllers/order_controller.dart';
 import '../models/order_model.dart';
 
+import '../../../shared/widgets/loading_widget.dart';
+
 class OrdersPage extends GetView<OrderController> {
   const OrdersPage({super.key});
 
@@ -80,8 +82,9 @@ class OrdersPage extends GetView<OrderController> {
               final filteredList = controller.filteredOrders;
 
               if (isLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(color: Color(0xFFD96C2C)),
+                return const LoadingWidget(
+                  message: 'กำลังโหลดคำสั่งซื้อของคุณ...',
+                  icon: Icons.receipt_long_rounded,
                 );
               }
 

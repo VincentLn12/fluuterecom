@@ -109,7 +109,10 @@ class ContentDetailPage extends GetView<ContentDetailController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(child: LoadingWidget());
+          return const LoadingWidget(
+            message: 'กำลังโหลดรายละเอียดบทความ...',
+            icon: Icons.auto_stories_rounded,
+          );
         }
 
         if (controller.isError.value) {

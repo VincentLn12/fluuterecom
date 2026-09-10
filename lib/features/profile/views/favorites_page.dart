@@ -5,6 +5,8 @@ import '../../../app/routes/app_routes.dart';
 import '../controllers/favorites_controller.dart';
 import '../models/favorite_content_model.dart';
 
+import '../../../shared/widgets/loading_widget.dart';
+
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({super.key});
 
@@ -40,10 +42,9 @@ class FavoritesPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Color(0xFFE76F51),
-            ),
+          return const LoadingWidget(
+            message: 'กำลังโหลดรายการโปรด...',
+            icon: Icons.favorite_rounded,
           );
         }
 

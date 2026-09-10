@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -221,21 +223,62 @@ class PaymentController extends GetxController {
 
     isUploadingSlip.value = true;
     try {
+      String slipData = uploadedSlipPath.value!;
+
+      // Convert local file to Base64 Data URL so real image bytes are sent to backend API
+      if (!slipData.startsWith('data:') && !slipData.startsWith('http')) {
+        final file = File(slipData);
+        if (await file.exists()) {
+          final bytes = await file.readAsBytes();
+          final base64String = base64Encode(bytes);
+          final ext = slipData.split('.').last.toLowerCase();
+          final mimeType = (ext == 'png' || ext == 'webp')
+              ? 'image/$ext'
+              : 'image/jpeg';
+          slipData = 'data:$mimeType;base64,$base64String';
+        }
+      }
+
       // API call PATCH /api/orders/{id}/status to attach slip and set status to PendingVerify
-      await _orderRepository.updateOrderSlip(
-        currentOrder.orderId,
-        uploadedSlipPath.value!,
+      await _orderRepository.updateOrderSlip(currentOrder.orderId, slipData);
+
+      final updatedOrder = OrderModel(
+        orderId: currentOrder.orderId,
+        orderNumber: currentOrder.orderNumber,
+        shopId: currentOrder.shopId,
+        shopName: currentOrder.shopName,
+        receiverName: currentOrder.receiverName,
+        receiverPhone: currentOrder.receiverPhone,
+        shippingAddress: currentOrder.shippingAddress,
+        shippingMethod: currentOrder.shippingMethod,
+        shippingFee: currentOrder.shippingFee,
+        subtotal: currentOrder.subtotal,
+        totalAmount: currentOrder.totalAmount,
+        orderStatus: 'Pending',
+        paymentStatus: 'PendingVerification',
+        slipImageUrl: slipData,
+        createdAt: currentOrder.createdAt,
+        items: currentOrder.items,
       );
 
       Get.snackbar(
         'แจ้งชำระเงินสำเร็จ',
-        'ส่งสลิปชำระเงินเรียบร้อยแล้ว รอเจ้าหน้าที่ตรวจสอบ (PendingVerify)',
+        'ส่งสลิปชำระเงินเรียบร้อยแล้ว รอเจ้าหน้าที่ตรวจสอบ (PendingVerification)',
         backgroundColor: const Color(0xFF2E7D32),
         colorText: Colors.white,
         snackPosition: SnackPosition.TOP,
       );
 
-      Get.offNamed(AppRoutes.paymentSuccess, arguments: currentOrder);
+      Get.offNamed(AppRoutes.paymentSuccess, arguments: updatedOrder);
+    } catch (e) {
+      debugPrint('Error submitting slip: $e');
+      Get.snackbar(
+        'เกิดข้อผิดพลาด',
+        'ไม่สามารถส่งสลิปชำระเงินได้: $e',
+        backgroundColor: const Color(0xFFC62828),
+        colorText: Colors.white,
+        snackPosition: SnackPosition.TOP,
+      );
     } finally {
       isUploadingSlip.value = false;
     }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -82,6 +84,53 @@ class PaymentSuccessPage extends StatelessWidget {
                       _buildInfoRow('ร้านค้า', order.shopName ?? 'ร้านค้าชุมชน'),
                       const SizedBox(height: 8),
                       _buildInfoRow('ราคารวมทั้งสิ้น', '฿${order.totalAmount.toStringAsFixed(2)}'),
+                      const SizedBox(height: 8),
+                      _buildInfoRow(
+                        'สถานะการชำระเงิน',
+                        order.paymentStatus == 'PendingVerify'
+                            ? 'แนบสลิปแล้ว (รอตรวจสอบ)'
+                            : order.statusLabel,
+                      ),
+                      if (order.slipImageUrl != null && order.slipImageUrl!.isNotEmpty) ...[
+                        const SizedBox(height: 12),
+                        const Divider(height: 1, color: Color(0xFFEADCCF)),
+                        const SizedBox(height: 12),
+                        Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: SizedBox(
+                                width: 48,
+                                height: 48,
+                                child: _buildSlipImageWidget(order.slipImageUrl!),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'แนบหลักฐานการชำระเงินเรียบร้อย',
+                                    style: GoogleFonts.krub(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold,
+                                      color: const Color(0xFF2E7D32),
+                                    ),
+                                  ),
+                                  Text(
+                                    'เจ้าหน้าที่จะทำการตรวจสอบยอดชำระโดยเร็วที่สุด',
+                                    style: GoogleFonts.krub(
+                                      fontSize: 11.5,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ],
                   ),
                 ),
@@ -155,6 +204,60 @@ class PaymentSuccessPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildSlipImageWidget(
+    String slip, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    if (slip.startsWith('data:image')) {
+      try {
+        final base64Data = slip.split(',').last;
+        final bytes = base64Decode(base64Data);
+        return Image.memory(bytes, width: width, height: height, fit: fit);
+      } catch (_) {}
+    }
+    if (slip.startsWith('http://') || slip.startsWith('https://')) {
+      return Image.network(
+        slip,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder:
+            (context, error, stackTrace) => Container(
+              color: const Color(0xFF2E7D32),
+              child: const Icon(
+                Icons.image_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+      );
+    }
+    final file = File(slip);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder:
+            (context, error, stackTrace) => Container(
+              color: const Color(0xFF2E7D32),
+              child: const Icon(
+                Icons.image_rounded,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+      );
+    }
+    return Container(
+      color: const Color(0xFF2E7D32),
+      child: const Icon(Icons.image_rounded, color: Colors.white, size: 24),
     );
   }
 }

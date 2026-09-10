@@ -5,6 +5,8 @@ import '../../../app/routes/app_routes.dart';
 import '../../contents/models/content_model.dart';
 import '../controllers/my_contents_controller.dart';
 
+import '../../../shared/widgets/loading_widget.dart';
+
 class MyContentsPage extends StatelessWidget {
   const MyContentsPage({super.key});
 
@@ -40,8 +42,9 @@ class MyContentsPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(color: Color(0xFFD96C2C)),
+          return const LoadingWidget(
+            message: 'กำลังโหลดคอนเทนต์ของคุณ...',
+            icon: Icons.article_rounded,
           );
         }
 

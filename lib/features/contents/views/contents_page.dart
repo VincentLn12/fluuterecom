@@ -9,6 +9,7 @@ import '../../../shared/widgets/empty_widget.dart';
 import '../../../shared/widgets/app_search_field.dart';
 import '../../../shared/widgets/app_category_chip.dart';
 import '../../../shared/widgets/app_view_toggle.dart';
+import '../../../shared/widgets/loading_widget.dart';
 
 class ContentsPage extends GetView<ContentController> {
   const ContentsPage({super.key});
@@ -102,7 +103,11 @@ class ContentsPage extends GetView<ContentController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const _TravelCenterLoadingWidget();
+          return const LoadingWidget(
+            message: 'กำลังสำรวจเรื่องราวเมืองกาญจน์...',
+            subMessage: 'ค้นหาบทความ & สถานที่แนะนำ',
+            icon: Icons.explore_rounded,
+          );
         }
 
         return RefreshIndicator(

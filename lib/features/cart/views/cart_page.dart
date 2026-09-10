@@ -275,6 +275,9 @@ class CartPage extends GetView<CartController> {
                           ),
                           itemBuilder: (context, itemIndex) {
                             final item = items[itemIndex];
+                            final maxStock = item.product.quantity;
+                            final isAtMaxStock = item.quantity >= maxStock;
+
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 10,
@@ -358,6 +361,23 @@ class CartPage extends GetView<CartController> {
                                                   .removeFromCart(item.id),
                                             ),
                                           ],
+                                        ),
+                                        const SizedBox(height: 4),
+
+                                        // Stock Limit Label
+                                        Text(
+                                          isAtMaxStock
+                                              ? '⚠️ เพิ่มครบตามสต็อกแล้ว (มี $maxStock ชิ้น)'
+                                              : 'คงเหลือในสต็อก $maxStock ชิ้น',
+                                          style: GoogleFonts.krub(
+                                            fontSize: 11,
+                                            fontWeight: isAtMaxStock
+                                                ? FontWeight.bold
+                                                : FontWeight.w500,
+                                            color: isAtMaxStock
+                                                ? const Color(0xFFE65100)
+                                                : const Color(0xFF786B62),
+                                          ),
                                         ),
                                         const SizedBox(height: 6),
 
@@ -451,10 +471,12 @@ class CartPage extends GetView<CartController> {
                                                     ),
                                                   ),
                                                   InkWell(
-                                                    onTap: () => controller
-                                                        .incrementQuantity(
-                                                          item.id,
-                                                        ),
+                                                    onTap: isAtMaxStock
+                                                        ? null
+                                                        : () => controller
+                                                              .incrementQuantity(
+                                                                item.id,
+                                                              ),
                                                     borderRadius:
                                                         const BorderRadius.horizontal(
                                                           right:
@@ -462,18 +484,20 @@ class CartPage extends GetView<CartController> {
                                                                 10,
                                                               ),
                                                         ),
-                                                    child: const Padding(
+                                                    child: Padding(
                                                       padding:
-                                                          EdgeInsets.symmetric(
+                                                          const EdgeInsets.symmetric(
                                                             horizontal: 8,
                                                             vertical: 4,
                                                           ),
                                                       child: Icon(
                                                         Icons.add,
                                                         size: 14,
-                                                        color: Color(
-                                                          0xFF2B1F17,
-                                                        ),
+                                                        color: isAtMaxStock
+                                                            ? Colors.grey[400]
+                                                            : const Color(
+                                                                0xFF2B1F17,
+                                                              ),
                                                       ),
                                                     ),
                                                   ),

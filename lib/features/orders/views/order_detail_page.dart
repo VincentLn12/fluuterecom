@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -137,7 +139,8 @@ class OrderDetailPage extends StatelessWidget {
       case 'completed':
         bannerBg = const Color(0xFF059669);
         bannerIcon = Icons.check_circle_rounded;
-        statusDesc = 'คำสั่งซื้อสำเร็จ ขอบคุณที่ร่วมอุดหนุนสินค้าโอทอปกาญจนบุรี';
+        statusDesc =
+            'คำสั่งซื้อสำเร็จ ขอบคุณที่ร่วมอุดหนุนสินค้าโอทอปกาญจนบุรี';
         break;
       case 'cancelled':
         bannerBg = const Color(0xFF786B62);
@@ -203,7 +206,11 @@ class OrderDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Icon(bannerIcon, size: 44, color: Colors.white.withValues(alpha: 0.9)),
+          Icon(
+            bannerIcon,
+            size: 44,
+            color: Colors.white.withValues(alpha: 0.9),
+          ),
         ],
       ),
     );
@@ -306,7 +313,9 @@ class OrderDetailPage extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(7),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFD96C2C).withValues(alpha: 0.12),
+                          color: const Color(
+                            0xFFD96C2C,
+                          ).withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
@@ -334,11 +343,17 @@ class OrderDetailPage extends StatelessWidget {
                 if (order.shopId != null && order.shopId!.isNotEmpty)
                   InkWell(
                     onTap: () {
-                      Get.toNamed(AppRoutes.shopDetail, arguments: order.shopId);
+                      Get.toNamed(
+                        AppRoutes.shopDetail,
+                        arguments: order.shopId,
+                      );
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -385,16 +400,17 @@ class OrderDetailPage extends StatelessWidget {
                           width: 58,
                           height: 58,
                           color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
-                          child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                          child:
+                              item.imageUrl != null && item.imageUrl!.isNotEmpty
                               ? Image.network(
                                   item.imageUrl!,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
                                       const Icon(
-                                    Icons.shopping_bag_outlined,
-                                    color: Color(0xFF786B62),
-                                    size: 26,
-                                  ),
+                                        Icons.shopping_bag_outlined,
+                                        color: Color(0xFF786B62),
+                                        size: 26,
+                                      ),
                                 )
                               : const Icon(
                                   Icons.shopping_bag_outlined,
@@ -548,24 +564,11 @@ class OrderDetailPage extends StatelessWidget {
               },
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(14),
-                child: Image.network(
+                child: _buildSlipImageWidget(
                   order.slipImageUrl!,
                   height: 150,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 80,
-                    color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
-                    child: Center(
-                      child: Text(
-                        'ไม่สามารถโหลดรูปสลิปได้',
-                        style: GoogleFonts.krub(
-                          fontSize: 13,
-                          color: const Color(0xFF786B62),
-                        ),
-                      ),
-                    ),
-                  ),
                 ),
               ),
             ),
@@ -613,14 +616,18 @@ class OrderDetailPage extends StatelessWidget {
             InteractiveViewer(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: Image.network(imageUrl, fit: BoxFit.contain),
+                child: _buildSlipImageWidget(imageUrl, fit: BoxFit.contain),
               ),
             ),
             Positioned(
               top: 10,
               right: 10,
               child: IconButton(
-                icon: const Icon(Icons.close_rounded, color: Colors.white, size: 28),
+                icon: const Icon(
+                  Icons.close_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
                 onPressed: () => Navigator.pop(context),
               ),
             ),
@@ -649,5 +656,73 @@ class OrderDetailPage extends StatelessWidget {
     final yearThai = dt.year + 543;
     final minuteStr = dt.minute.toString().padLeft(2, '0');
     return '${dt.day} $monthName $yearThai - ${dt.hour}:$minuteStr น.';
+  }
+
+  Widget _buildSlipImageWidget(
+    String slip, {
+    double? width,
+    double? height,
+    BoxFit fit = BoxFit.cover,
+  }) {
+    if (slip.startsWith('data:image')) {
+      try {
+        final base64Data = slip.split(',').last;
+        final bytes = base64Decode(base64Data);
+        return Image.memory(bytes, width: width, height: height, fit: fit);
+      } catch (_) {}
+    }
+    if (slip.startsWith('http://') || slip.startsWith('https://')) {
+      return Image.network(
+        slip,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Container(
+          height: height ?? 80,
+          color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
+          child: Center(
+            child: Text(
+              'ไม่สามารถโหลดรูปสลิปได้',
+              style: GoogleFonts.krub(
+                fontSize: 13,
+                color: const Color(0xFF786B62),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    final file = File(slip);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        width: width,
+        height: height,
+        fit: fit,
+        errorBuilder: (context, error, stackTrace) => Container(
+          height: height ?? 80,
+          color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
+          child: Center(
+            child: Text(
+              'ไม่สามารถโหลดรูปสลิปได้',
+              style: GoogleFonts.krub(
+                fontSize: 13,
+                color: const Color(0xFF786B62),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container(
+      height: height ?? 80,
+      color: const Color(0xFFE8D9C9).withValues(alpha: 0.3),
+      child: Center(
+        child: Text(
+          'ไม่สามารถโหลดรูปสลิปได้',
+          style: GoogleFonts.krub(fontSize: 13, color: const Color(0xFF786B62)),
+        ),
+      ),
+    );
   }
 }
