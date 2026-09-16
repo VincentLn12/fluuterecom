@@ -28,8 +28,11 @@ abstract class AppRoutes {
   static const registerShop = '/register-shop';
   static const myShop = '/my-shop';
   static const myShopProducts = '/my-shop/products';
+  static const myShopProductForm = '/my-shop/products/form';
   static const myShopOrders = '/my-shop/orders';
   static const myShopContents = '/my-shop/contents';
+  static const myShopContentForm = '/my-shop/contents/form';
+  static const myShopExports = '/my-shop/exports';
 
   static const admin = '/admin';
   static const adminShops = '/admin/shops';

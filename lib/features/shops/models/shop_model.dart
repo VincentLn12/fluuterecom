@@ -20,6 +20,13 @@ class ShopModel {
   final String? backgroundImageUrl;
   final String? openingTime;
   final String? closingTime;
+  final String? bankName;
+  final String? bankAccountName;
+  final String? bankAccountNumber;
+  final String? promptPay;
+
+  String get shopId => id;
+  String get shopName => name;
 
   ShopModel({
     required this.id,
@@ -41,6 +48,10 @@ class ShopModel {
     this.backgroundImageUrl,
     this.openingTime,
     this.closingTime,
+    this.bankName,
+    this.bankAccountName,
+    this.bankAccountNumber,
+    this.promptPay,
   });
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
@@ -88,6 +99,10 @@ class ShopModel {
       backgroundImageUrl: resolveUrl(json['backgroundImageUrl']),
       openingTime: json['openingTime']?.toString(),
       closingTime: json['closingTime']?.toString(),
+      bankName: json['bankName']?.toString(),
+      bankAccountName: json['bankAccountName']?.toString(),
+      bankAccountNumber: json['bankAccountNumber']?.toString(),
+      promptPay: json['promptPay']?.toString(),
     );
   }
 

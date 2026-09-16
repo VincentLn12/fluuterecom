@@ -53,6 +53,8 @@ class OrderModel {
   final String? receiverPhone;
   final String? shippingAddress;
   final String? slipImageUrl;
+  final String? carrierName;
+  final String? trackingNumber;
   final DateTime? createdAt;
   final List<OrderItemModel> items;
 
@@ -74,6 +76,8 @@ class OrderModel {
     this.receiverPhone,
     this.shippingAddress,
     this.slipImageUrl,
+    this.carrierName,
+    this.trackingNumber,
     this.createdAt,
     this.items = const [],
   });
@@ -111,6 +115,8 @@ class OrderModel {
       receiverPhone: json['receiverPhone']?.toString(),
       shippingAddress: json['shippingAddress']?.toString(),
       slipImageUrl: resolveUrl(json['slipImageUrl']),
+      carrierName: json['carrierName']?.toString() ?? json['shipment']?['carrierName']?.toString(),
+      trackingNumber: json['trackingNumber']?.toString() ?? json['shipment']?['trackingNumber']?.toString(),
       createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
       items: parsedItems,
     );

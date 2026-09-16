@@ -30,7 +30,6 @@ class HomeController extends GetxController {
     'ทองผาภูมิ',
     'แพเปียก',
   ];
-
   final quickCategories = const [
     {
       'name': 'ทั้งหมด',
@@ -63,13 +62,11 @@ class HomeController extends GetxController {
       'color': Color(0xFFEC4899),
     },
   ];
-
   final stats = const [
     {'value': '13', 'label': 'อำเภอบนเส้นทาง'},
     {'value': '500+', 'label': 'ร้านค้าชุมชน'},
     {'value': '1,000+', 'label': 'เรื่องราวความประทับใจ'},
   ];
-
   final valuePillars = const [
     {
       'icon': Icons.auto_awesome,

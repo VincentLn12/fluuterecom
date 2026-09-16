@@ -30,11 +30,15 @@ import '../../features/profile/views/edit_profile_page.dart';
 import '../../features/profile/views/my_contents_page.dart';
 import '../../features/profile/views/favorites_page.dart';
 import '../../features/profile/views/browsing_history_page.dart';
+import '../../features/merchant/bindings/merchant_binding.dart';
 import '../../features/merchant/views/register_shop_page.dart';
 import '../../features/merchant/views/merchant_dashboard_page.dart';
 import '../../features/merchant/views/manage_products_page.dart';
+import '../../features/merchant/views/product_form_page.dart';
 import '../../features/merchant/views/manage_orders_page.dart';
 import '../../features/merchant/views/manage_contents_page.dart';
+import '../../features/merchant/views/content_form_page.dart';
+import '../../features/merchant/views/merchant_export_page.dart';
 import '../../features/admin/views/admin_dashboard_page.dart';
 import '../../features/admin/views/manage_shops_page.dart';
 import '../../features/admin/views/manage_categories_page.dart';
@@ -137,16 +141,45 @@ class AppPages {
       page: () => const BrowsingHistoryPage(),
       binding: ProfileBinding(),
     ),
-    GetPage(name: AppRoutes.registerShop, page: () => const RegisterShopPage()),
-    GetPage(name: AppRoutes.myShop, page: () => const MerchantDashboardPage()),
+    GetPage(
+      name: AppRoutes.registerShop,
+      page: () => const RegisterShopPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShop,
+      page: () => const MerchantDashboardPage(),
+      binding: MerchantBinding(),
+    ),
     GetPage(
       name: AppRoutes.myShopProducts,
       page: () => const ManageProductsPage(),
+      binding: MerchantBinding(),
     ),
-    GetPage(name: AppRoutes.myShopOrders, page: () => const ManageOrdersPage()),
+    GetPage(
+      name: AppRoutes.myShopProductForm,
+      page: () => const ProductFormPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShopOrders,
+      page: () => const ManageOrdersPage(),
+      binding: MerchantBinding(),
+    ),
     GetPage(
       name: AppRoutes.myShopContents,
-      page: () => const ManageMerchantContentsPage(),
+      page: () => const ManageContentsPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShopContentForm,
+      page: () => const ContentFormPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShopExports,
+      page: () => const MerchantExportPage(),
+      binding: MerchantBinding(),
     ),
     GetPage(name: AppRoutes.admin, page: () => const AdminDashboardPage()),
     GetPage(name: AppRoutes.adminShops, page: () => const ManageShopsPage()),

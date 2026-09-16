@@ -103,36 +103,29 @@ class HomePage extends GetView<HomeController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Search & Popular Tags Header
                 HomeSearchHeader(),
                 SizedBox(height: 20),
 
-                // 2. Hero Slider Banner
                 HomeHeroSlider(),
 
                 SizedBox(height: 26),
 
-                // 4. Unseen Stories Showcase
                 HomeStoriesSection(),
 
                 SizedBox(height: 26),
 
-                // 5. 13 Districts Transit Line Map Section
                 HomeDistrictTransitMap(),
 
                 SizedBox(height: 26),
 
-                // 6. Community Shops Showcase
                 HomeShopsSection(),
 
                 SizedBox(height: 26),
 
-                // 7. OTOP Products Grid
                 HomeProductsSection(),
 
                 SizedBox(height: 26),
 
-                // 8. CTA Community Banner
                 HomeCtaBanner(),
 
                 SizedBox(height: 48),
