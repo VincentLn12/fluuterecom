@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../shops/models/product_model.dart';
 import '../repositories/merchant_repository.dart';
@@ -56,6 +57,29 @@ class ProductFormController extends GetxController {
     }
   }
 
+  final selectedCoverImagePath = RxnString();
+
+  Future<void> pickCoverImage(ImageSource source) async {
+    try {
+      final picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
+        source: source,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 80,
+      );
+      if (pickedFile != null) {
+        selectedCoverImagePath.value = pickedFile.path;
+      }
+    } catch (e) {
+      debugPrint('Error picking cover image: $e');
+    }
+  }
+
+  void removeSelectedCoverImage() {
+    selectedCoverImagePath.value = null;
+  }
+
   Future<void> submitProduct() async {
     if (!formKey.currentState!.validate()) return;
 
@@ -84,23 +108,43 @@ class ProductFormController extends GetxController {
         'price': double.tryParse(priceController.text.trim()) ?? 0.0,
         'quantity': int.tryParse(quantityController.text.trim()) ?? 0,
         'description': descriptionController.text.trim(),
-        'imageUrl': imageUrlController.text.trim(),
+        'imageUrl': editingProduct?.imageUrl ?? '',
         'status': status.value,
       };
 
       bool success = false;
+      String? targetProductId = editingProduct?.id;
+
       if (editingProduct != null) {
         success = await _repository.updateProduct(editingProduct!.id, payload);
       } else {
-        success = await _repository.createProduct(payload);
+        final newProd = await _repository.createProduct(payload);
+        if (newProd != null) {
+          success = true;
+          targetProductId = newProd.id;
+        }
+      }
+
+      bool imgUploaded = true;
+      if (success &&
+          selectedCoverImagePath.value != null &&
+          selectedCoverImagePath.value!.isNotEmpty &&
+          targetProductId != null &&
+          targetProductId.isNotEmpty) {
+        imgUploaded = await _repository.uploadProductCoverImage(
+          targetProductId,
+          selectedCoverImagePath.value!,
+        );
       }
 
       if (success) {
         Get.back(result: true);
         Get.snackbar(
           'บันทึกสำเร็จ',
-          editingProduct != null ? 'อัปเดตข้อมูลสินค้าแล้ว' : 'เพิ่มสินค้าใหม่เรียบร้อยแล้ว',
-          backgroundColor: const Color(0xFF047857),
+          imgUploaded
+              ? (editingProduct != null ? 'อัปเดตข้อมูลสินค้าเรียบร้อยแล้ว' : 'เพิ่มสินค้าใหม่และอัปโหลดรูปเรียบร้อยแล้ว')
+              : 'บันทึกข้อมูลสินค้าสำเร็จ (แต่รูปภาพอัปโหลดไม่ผ่าน กรุณาลองใหม่อีกครั้ง)',
+          backgroundColor: imgUploaded ? const Color(0xFF047857) : Colors.amber.shade800,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
         );

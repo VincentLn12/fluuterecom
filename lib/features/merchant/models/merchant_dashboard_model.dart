@@ -47,7 +47,9 @@ class MerchantDashboardModel {
       monthRevenue: parseDouble(summary['monthRevenue']),
       totalOrders: parseInt(summary['totalOrders']),
       pendingSlipOrdersCount: parseInt(summary['pendingSlipOrdersCount']),
-      pendingShipmentOrdersCount: parseInt(summary['pendingShipmentOrdersCount']),
+      pendingShipmentOrdersCount: parseInt(
+        summary['pendingShipmentOrdersCount'],
+      ),
       completedOrdersCount: parseInt(summary['completedOrdersCount']),
       totalProducts: parseInt(summary['totalProducts']),
       lowStockProductsCount: parseInt(summary['lowStockProductsCount']),

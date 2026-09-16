@@ -12,10 +12,14 @@ class ContentFormPage extends GetView<ContentFormController> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAF9),
       appBar: AppBar(
-        title: Obx(() => Text(
-          controller.isEditing.value ? 'แก้ไขเรื่องราวร้านค้า' : 'เขียนเรื่องราวร้านค้าใหม่',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-        )),
+        title: Obx(
+          () => Text(
+            controller.isEditing.value
+                ? 'แก้ไขเรื่องราวร้านค้า'
+                : 'เขียนเรื่องราวร้านค้าใหม่',
+            style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+          ),
+        ),
         elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: const Color(0xFF1E293B),
@@ -43,7 +47,11 @@ class ContentFormPage extends GetView<ContentFormController> {
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.storefront_rounded, color: Color(0xFFD96C2C), size: 24),
+                      const Icon(
+                        Icons.storefront_rounded,
+                        color: Color(0xFFD96C2C),
+                        size: 24,
+                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(
@@ -85,7 +93,8 @@ class ContentFormPage extends GetView<ContentFormController> {
                     style: GoogleFonts.krub(),
                     decoration: _inputDecoration(
                       label: 'ชื่อเรื่องราว / หัวข้อข่าวสาร *',
-                      hint: 'เช่น เรื่องเล่าความเป็นมาของร้าน หรือ โปรโมชั่นพิเศษ...',
+                      hint:
+                          'เช่น เรื่องเล่าความเป็นมาของร้าน หรือ โปรโมชั่นพิเศษ...',
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -94,20 +103,32 @@ class ContentFormPage extends GetView<ContentFormController> {
                   Obx(() {
                     final items = controller.categories;
                     final selectedVal = controller.selectedCategoryId.value;
-                    final validVal = items.any((c) =>
-                            (c['contentCategoryId']?.toString() ?? c['id']?.toString()) == selectedVal)
+                    final validVal =
+                        items.any(
+                          (c) =>
+                              (c['contentCategoryId']?.toString() ??
+                                  c['id']?.toString()) ==
+                              selectedVal,
+                        )
                         ? selectedVal
                         : (items.isNotEmpty
-                            ? (items.first['contentCategoryId']?.toString() ?? items.first['id']?.toString())
-                            : null);
+                              ? (items.first['contentCategoryId']?.toString() ??
+                                    items.first['id']?.toString())
+                              : null);
 
                     return DropdownButtonFormField<String>(
                       initialValue: validVal,
                       style: GoogleFonts.krub(color: const Color(0xFF1E293B)),
                       decoration: _inputDecoration(label: 'หมวดหมู่บทความ *'),
                       items: items.map((cat) {
-                        final id = cat['contentCategoryId']?.toString() ?? cat['id']?.toString() ?? '';
-                        final name = cat['categoryName']?.toString() ?? cat['name']?.toString() ?? 'หมวดหมู่';
+                        final id =
+                            cat['contentCategoryId']?.toString() ??
+                            cat['id']?.toString() ??
+                            '';
+                        final name =
+                            cat['categoryName']?.toString() ??
+                            cat['name']?.toString() ??
+                            'หมวดหมู่';
                         return DropdownMenuItem<String>(
                           value: id,
                           child: Text(name, style: GoogleFonts.krub()),
@@ -139,7 +160,8 @@ class ContentFormPage extends GetView<ContentFormController> {
                     maxLines: 6,
                     decoration: _inputDecoration(
                       label: 'เนื้อหาฉบับเต็ม *',
-                      hint: 'กรอกเนื้อหาและรายละเอียดทั้งหมดของเรื่องราวที่นี่...',
+                      hint:
+                          'กรอกเนื้อหาและรายละเอียดทั้งหมดของเรื่องราวที่นี่...',
                     ),
                   ),
                 ],
@@ -154,7 +176,9 @@ class ContentFormPage extends GetView<ContentFormController> {
                   Obx(() {
                     final dists = controller.districts;
                     final selDist = controller.selectedDistrictId.value;
-                    final validDist = dists.any((d) => d.districtId == selDist) ? selDist : null;
+                    final validDist = dists.any((d) => d.districtId == selDist)
+                        ? selDist
+                        : null;
 
                     return DropdownButtonFormField<String>(
                       initialValue: validDist,
@@ -163,7 +187,10 @@ class ContentFormPage extends GetView<ContentFormController> {
                       items: dists.map((d) {
                         return DropdownMenuItem<String>(
                           value: d.districtId,
-                          child: Text(d.districtName, style: GoogleFonts.krub()),
+                          child: Text(
+                            d.districtName,
+                            style: GoogleFonts.krub(),
+                          ),
                         );
                       }).toList(),
                       onChanged: controller.onDistrictChanged,
@@ -174,7 +201,9 @@ class ContentFormPage extends GetView<ContentFormController> {
                   Obx(() {
                     final subs = controller.subDistricts;
                     final selSub = controller.selectedSubDistrictId.value;
-                    final validSub = subs.any((s) => s.subDistrictId == selSub) ? selSub : null;
+                    final validSub = subs.any((s) => s.subDistrictId == selSub)
+                        ? selSub
+                        : null;
 
                     return DropdownButtonFormField<String>(
                       initialValue: validSub,
@@ -183,10 +212,14 @@ class ContentFormPage extends GetView<ContentFormController> {
                       items: subs.map((s) {
                         return DropdownMenuItem<String>(
                           value: s.subDistrictId,
-                          child: Text(s.subDistrictName, style: GoogleFonts.krub()),
+                          child: Text(
+                            s.subDistrictName,
+                            style: GoogleFonts.krub(),
+                          ),
                         );
                       }).toList(),
-                      onChanged: (val) => controller.selectedSubDistrictId.value = val,
+                      onChanged: (val) =>
+                          controller.selectedSubDistrictId.value = val,
                     );
                   }),
                 ],
@@ -195,52 +228,9 @@ class ContentFormPage extends GetView<ContentFormController> {
 
               // Section 3: Media & Status
               _buildSectionCard(
-                title: 'รูปภาพปก วิดีโอ และสถานะการเผยแพร่',
-                icon: Icons.perm_media_outlined,
+                title: 'วิดีโอ YouTube และสถานะการเผยแพร่',
+                icon: Icons.play_circle_outline_rounded,
                 children: [
-                  // Cover Image URL
-                  TextFormField(
-                    controller: controller.coverImageUrlController,
-                    style: GoogleFonts.krub(),
-                    onChanged: (_) => controller.update(),
-                    decoration: _inputDecoration(
-                      label: 'URL รูปภาพปก',
-                      hint: 'https://example.com/cover.jpg',
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Image Preview
-                  ValueListenableBuilder(
-                    valueListenable: controller.coverImageUrlController,
-                    builder: (context, value, _) {
-                      if (value.text.trim().isEmpty) {
-                        return const SizedBox.shrink();
-                      }
-                      return Container(
-                        height: 160,
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.network(
-                            value.text.trim(),
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) => Center(
-                              child: Text(
-                                'ไม่สามารถโหลดรูปภาพจาก URL นี้ได้',
-                                style: GoogleFonts.krub(color: Colors.red.shade700, fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
 
                   // YouTube URL
                   TextFormField(
@@ -255,61 +245,67 @@ class ContentFormPage extends GetView<ContentFormController> {
                   const SizedBox(height: 12),
 
                   // YouTube Live Thumbnail Preview (Matching CreateContentPage)
-                  Obx(() {
-                    final thumb = controller.youtubeThumbnailUrl;
-                    if (thumb.isEmpty) return const SizedBox.shrink();
+                  ValueListenableBuilder(
+                    valueListenable: controller.youtubeUrlController,
+                    builder: (context, value, _) {
+                      final thumb = controller.youtubeThumbnailUrl;
+                      if (thumb.isEmpty) return const SizedBox.shrink();
 
-                    return Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(bottom: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(15),
+                      return Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(15),
+                              ),
+                              child: Image.network(
+                                thumb,
+                                height: 150,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    const SizedBox.shrink(),
+                              ),
                             ),
-                            child: Image.network(
-                              thumb,
-                              height: 150,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.check_circle,
-                                  size: 16,
-                                  color: Color(0xFF047857),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  'พบวิดีโอ YouTube พร้อมใช้ภาพวิดีโอเป็นรูปปกบทความ',
-                                  style: GoogleFonts.krub(
-                                    fontSize: 12,
-                                    color: const Color(0xFF047857),
-                                    fontWeight: FontWeight.bold,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.check_circle,
+                                    size: 16,
+                                    color: Color(0xFF047857),
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 6),
+                                  Expanded(
+                                    child: Text(
+                                      'พบวิดีโอ YouTube พร้อมใช้ภาพวิดีโอเป็นรูปปกบทความ',
+                                      style: GoogleFonts.krub(
+                                        fontSize: 12,
+                                        color: const Color(0xFF047857),
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(height: 16),
 
                   // Status ChoiceChips
@@ -334,8 +330,12 @@ class ContentFormPage extends GetView<ContentFormController> {
                               opt['label']!,
                               style: GoogleFonts.krub(
                                 fontSize: 13,
-                                fontWeight: isSel ? FontWeight.bold : FontWeight.normal,
-                                color: isSel ? Colors.white : const Color(0xFF475569),
+                                fontWeight: isSel
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                                color: isSel
+                                    ? Colors.white
+                                    : const Color(0xFF475569),
                               ),
                             ),
                             selected: isSel,
@@ -344,7 +344,8 @@ class ContentFormPage extends GetView<ContentFormController> {
                                 : const Color(0xFFD97706),
                             backgroundColor: const Color(0xFFF1F5F9),
                             side: BorderSide.none,
-                            onSelected: (_) => controller.selectedStatus.value = val,
+                            onSelected: (_) =>
+                                controller.selectedStatus.value = val,
                           ),
                         );
                       }).toList(),
@@ -358,7 +359,9 @@ class ContentFormPage extends GetView<ContentFormController> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: controller.isSaving.value ? null : controller.saveContent,
+                  onPressed: controller.isSaving.value
+                      ? null
+                      : controller.saveContent,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF047857),
                     foregroundColor: Colors.white,
@@ -372,13 +375,18 @@ class ContentFormPage extends GetView<ContentFormController> {
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
                         )
                       : const Icon(Icons.check_circle_outline_rounded),
                   label: Text(
                     controller.isSaving.value
                         ? 'กำลังบันทึกข้อมูล...'
-                        : (controller.isEditing.value ? 'บันทึกการแก้ไข' : 'บันทึกเรื่องราว'),
+                        : (controller.isEditing.value
+                              ? 'บันทึกการแก้ไข'
+                              : 'บันทึกเรื่องราว'),
                     style: GoogleFonts.krub(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,

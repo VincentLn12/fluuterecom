@@ -12,19 +12,85 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAF9),
+      backgroundColor: const Color(0xFFF1F5F9),
       appBar: AppBar(
-        title: Text(
-          'จัดการคำสั่งซื้อร้านค้า',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-        ),
         elevation: 0,
         backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
+        foregroundColor: const Color(0xFF0F172A),
+        centerTitle: false,
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFECFDF5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.assignment_rounded,
+                color: Color(0xFF047857),
+                size: 22,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'จัดการคำสั่งซื้อ',
+                    style: GoogleFonts.krub(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: const Color(0xFF0F172A),
+                    ),
+                  ),
+                  Text(
+                    'Merchant Order Management',
+                    style: GoogleFonts.krub(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xFF64748B),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          Obx(() {
+            return Container(
+              margin: const EdgeInsets.only(right: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                shape: BoxShape.circle,
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: IconButton(
+                icon: controller.isLoading.value
+                    ? const SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Color(0xFF047857),
+                        ),
+                      )
+                    : const Icon(Icons.refresh_rounded, color: Color(0xFF047857), size: 22),
+                onPressed: controller.isLoading.value
+                    ? null
+                    : () => controller.loadOrders(),
+                tooltip: 'รีเฟรชข้อมูล',
+              ),
+            );
+          }),
+        ],
       ),
       body: Column(
         children: [
-          // Filter Tabs
+          // Filter Tabs Bar
           _buildFilterTabs(),
 
           // Orders List
@@ -45,51 +111,69 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          controller.myShop.value == null
-                              ? Icons.storefront_outlined
-                              : Icons.assignment_outlined,
-                          size: 64,
-                          color: const Color(0xFFCBD5E1),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x0A000000),
+                                blurRadius: 16,
+                                offset: Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            controller.myShop.value == null
+                                ? Icons.storefront_outlined
+                                : Icons.assignment_outlined,
+                            size: 54,
+                            color: const Color(0xFF94A3B8),
+                          ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 16),
                         Text(
                           controller.myShop.value == null
                               ? 'ยังไม่ได้ลงทะเบียนร้านค้า'
                               : 'ไม่พบรายการคำสั่งซื้อในหมวดนี้',
                           style: GoogleFonts.krub(
-                            fontSize: 16,
+                            fontSize: 17,
                             fontWeight: FontWeight.bold,
-                            color: const Color(0xFF64748B),
+                            color: const Color(0xFF0F172A),
                           ),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          controller.myShop.value == null
-                              ? 'กรุณากรอกข้อมูลลงทะเบียนร้านค้าเพื่อเปิดใช้งานและรับออเดอร์'
-                              : 'คำสั่งซื้อที่ผู้ใช้ชำระเงินเข้ามาจะแสดงผลในหน้านี้',
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.krub(
-                            fontSize: 12,
-                            color: const Color(0xFF94A3B8),
+                        const SizedBox(height: 6),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Text(
+                            controller.myShop.value == null
+                                ? 'กรุณากรอกข้อมูลลงทะเบียนร้านค้าเพื่อเปิดใช้งานและรับออเดอร์'
+                                : 'คำสั่งซื้อที่ผู้ใช้ชำระเงินเข้ามาจะแสดงผลเรียงตามเวลาในหน้านี้',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.krub(
+                              fontSize: 13,
+                              color: const Color(0xFF64748B),
+                            ),
                           ),
                         ),
                         if (controller.myShop.value == null) ...[
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 20),
                           ElevatedButton.icon(
                             onPressed: () => Get.toNamed(AppRoutes.registerShop),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFD97706),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                               ),
+                              elevation: 0,
                             ),
                             icon: const Icon(Icons.edit_document, size: 18),
                             label: Text(
                               'ลงทะเบียนร้านค้าใหม่',
-                              style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                              style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 14),
                             ),
                           ),
                         ],
@@ -121,13 +205,18 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
 
   Widget _buildFilterTabs() {
     return Container(
-      color: Colors.white,
-      height: 52,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Color(0xFFE2E8F0)),
+        ),
+      ),
+      height: 56,
       child: Obx(() {
         final currentStatus = controller.selectedStatus.value;
         return ListView.builder(
           scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           itemCount: controller.statusTabs.length,
           itemBuilder: (context, index) {
             final tab = controller.statusTabs[index];
@@ -138,9 +227,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                 label: Text(
                   tab['label']!,
                   style: GoogleFonts.krub(
-                    fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     color: isSelected ? Colors.white : const Color(0xFF475569),
                     fontSize: 13,
                   ),
@@ -148,7 +235,12 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                 selected: isSelected,
                 selectedColor: const Color(0xFF047857),
                 backgroundColor: const Color(0xFFF1F5F9),
-                side: BorderSide.none,
+                side: BorderSide(
+                  color: isSelected ? const Color(0xFF047857) : const Color(0xFFE2E8F0),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
                 onSelected: (_) => controller.changeStatusTab(tab['value']!),
               ),
             );
@@ -163,12 +255,12 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
-            blurRadius: 10,
+            color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -181,62 +273,146 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Text(
-                  'ออเดอร์ #${order.orderNumber ?? order.id}',
-                  style: GoogleFonts.krub(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0F172A),
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(6),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.receipt_long_rounded,
+                        color: Color(0xFF059669),
+                        size: 18,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'ออเดอร์ #${order.orderNumber ?? order.id}',
+                        style: GoogleFonts.krub(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF0F172A),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(width: 8),
               _buildStatusBadge(order.orderStatus),
             ],
           ),
-          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+          ),
 
-          // Customer Info
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(
-                Icons.person_outline_rounded,
-                size: 18,
-                color: Color(0xFF64748B),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'ผู้รับ: ${order.receiverName ?? 'ลูกค้า'} (${order.receiverPhone ?? 'ไม่ระบุเบอร์โทร'})',
-                      style: GoogleFonts.krub(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF334155),
-                      ),
-                    ),
-                    if (order.shippingAddress != null &&
-                        order.shippingAddress!.isNotEmpty) ...[
-                      const SizedBox(height: 2),
-                      Text(
-                        'ที่อยู่: ${order.shippingAddress}',
-                        style: GoogleFonts.krub(
-                          fontSize: 12,
-                          color: const Color(0xFF64748B),
-                        ),
-                      ),
-                    ],
-                  ],
+          // Customer Info Card
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFF1F5F9)),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Icon(
+                  Icons.person_rounded,
+                  size: 20,
+                  color: Color(0xFF047857),
                 ),
-              ),
-            ],
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'ผู้รับ: ${order.receiverName ?? 'ลูกค้าทั่วไป'}',
+                              style: GoogleFonts.krub(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFF0F172A),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (order.receiverPhone != null && order.receiverPhone!.isNotEmpty)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE0F2FE),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const Icon(Icons.phone_rounded, size: 10, color: Color(0xFF0284C7)),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    order.receiverPhone!,
+                                    style: GoogleFonts.krub(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF0369A1),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
+                      if (order.shippingAddress != null && order.shippingAddress!.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.location_on_rounded,
+                              size: 13,
+                              color: Color(0xFF94A3B8),
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              child: Text(
+                                order.shippingAddress!,
+                                style: GoogleFonts.krub(
+                                  fontSize: 12,
+                                  color: const Color(0xFF64748B),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 12),
+
+          // Items List Header
+          Text(
+            'รายการสินค้าในออเดอร์',
+            style: GoogleFonts.krub(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xFF64748B),
+            ),
+          ),
+          const SizedBox(height: 8),
 
           // Items List
           ...order.items.map((item) {
@@ -245,50 +421,56 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
               child: Row(
                 children: [
                   Container(
-                    width: 38,
-                    height: 38,
+                    width: 42,
+                    height: 42,
                     decoration: BoxDecoration(
                       color: const Color(0xFFF1F5F9),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
                     ),
                     child: item.imageUrl != null && item.imageUrl!.isNotEmpty
                         ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(9),
                             child: Image.network(
                               item.imageUrl!,
                               fit: BoxFit.cover,
                             ),
                           )
                         : const Icon(
-                            Icons.shopping_bag_outlined,
+                            Icons.shopping_bag_rounded,
                             size: 20,
-                            color: Color(0xFF64748B),
+                            color: Color(0xFF94A3B8),
                           ),
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      item.productName,
-                      style: GoogleFonts.krub(
-                        fontSize: 13,
-                        color: const Color(0xFF1E293B),
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Text(
-                    'x${item.quantity}',
-                    style: GoogleFonts.krub(
-                      fontSize: 12,
-                      color: const Color(0xFF64748B),
-                    ),
-                  ),
                   const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item.productName,
+                          style: GoogleFonts.krub(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: const Color(0xFF1E293B),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          'จำนวน: ${item.quantity} ชิ้น',
+                          style: GoogleFonts.krub(
+                            fontSize: 11,
+                            color: const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   Text(
                     '฿${item.totalPrice.toStringAsFixed(0)}',
                     style: GoogleFonts.krub(
-                      fontSize: 13,
+                      fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: const Color(0xFF0F172A),
                     ),
@@ -298,40 +480,22 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
             );
           }),
 
-          // Total & Shipment Status Info
-          const Divider(height: 20, color: Color(0xFFF1F5F9)),
+          // Total & Shipment Status Info Footer
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Divider(height: 1, color: Color(0xFFF1F5F9)),
+          ),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'ราคารวมทั้งหมด:',
-                style: GoogleFonts.krub(
-                  fontSize: 13,
-                  color: const Color(0xFF64748B),
-                ),
-              ),
-              Text(
-                '฿${order.totalAmount.toStringAsFixed(2)}',
-                style: GoogleFonts.krub(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  color: const Color(0xFF047857),
-                ),
-              ),
-            ],
-          ),
-
-          // Shipping Method Badge
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              // Shipping Method Badge
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F9FF),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(10),
                     border: Border.all(color: const Color(0xFFBAE6FD)),
                   ),
                   child: Row(
@@ -340,41 +504,67 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                       Icon(
                         order.shippingMethod?.toLowerCase() == 'pickup'
                             ? Icons.store_rounded
-                            : Icons.local_shipping_outlined,
+                            : Icons.local_shipping_rounded,
                         size: 14,
                         color: const Color(0xFF0284C7),
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        order.shippingMethod?.toLowerCase() == 'pickup'
-                            ? 'รับที่ร้านค้า (Pickup)'
-                            : 'จัดส่งทางพัสดุ (Delivery)',
-                        style: GoogleFonts.krub(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF0369A1),
+                      Flexible(
+                        child: Text(
+                          order.shippingMethod?.toLowerCase() == 'pickup'
+                              ? 'รับที่ร้านค้า (Pickup)'
+                              : 'จัดส่งทางพัสดุ (Delivery)',
+                          style: GoogleFonts.krub(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: const Color(0xFF0369A1),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const SizedBox(width: 8),
+
+              // Total Amount
+              Row(
+                children: [
+                  Text(
+                    'ยอดรวม: ',
+                    style: GoogleFonts.krub(
+                      fontSize: 13,
+                      color: const Color(0xFF64748B),
+                    ),
+                  ),
+                  Text(
+                    '฿${order.totalAmount.toStringAsFixed(2)}',
+                    style: GoogleFonts.krub(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF047857),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
 
           if (order.carrierName != null && order.trackingNumber != null) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: const Color(0xFFECFDF5),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFFA7F3D0)),
               ),
               child: Row(
                 children: [
                   const Icon(
-                    Icons.local_shipping_outlined,
+                    Icons.local_shipping_rounded,
                     size: 18,
                     color: Color(0xFF047857),
                   ),
@@ -394,8 +584,8 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
             ),
           ],
 
-          const SizedBox(height: 12),
-          // Action Button or Unpaid Warning Banner (Matching Vue logic)
+          const SizedBox(height: 14),
+          // Action Button or Unpaid Warning Banner
           if (order.paymentStatus == 'Paid' &&
               order.shippingMethod?.toLowerCase() != 'pickup' &&
               order.orderStatus != 'Shipped' &&
@@ -410,7 +600,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                   elevation: 0,
                 ),
@@ -433,12 +623,12 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 color: const Color(0xFFECFDF5),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: const Color(0xFFA7F3D0)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_outline_rounded, size: 18, color: Color(0xFF047857)),
+                  const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF047857)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -457,13 +647,13 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
-                color: const Color(0xFFFEF3C7),
-                borderRadius: BorderRadius.circular(12),
+                color: const Color(0xFFFFFBEB),
+                borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: const Color(0xFFFDE68A)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline_rounded, size: 18, color: Color(0xFFD97706)),
+                  const Icon(Icons.info_rounded, size: 18, color: Color(0xFFD97706)),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -490,7 +680,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                   side: const BorderSide(color: Color(0xFF047857)),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(14),
                   ),
                 ),
                 icon: const Icon(Icons.edit_outlined, size: 16),
@@ -510,37 +700,44 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
     Color bg = const Color(0xFFF1F5F9);
     Color text = const Color(0xFF475569);
     String label = status;
+    IconData icon = Icons.info_outline_rounded;
 
     switch (status.toLowerCase()) {
       case 'pending':
-        bg = const Color(0xFFFEF3C7);
+        bg = const Color(0xFFFFFBEB);
         text = const Color(0xFFD97706);
         label = 'รอชำระ';
+        icon = Icons.access_time_filled_rounded;
         break;
       case 'paid':
-        bg = const Color(0xFFE0F2FE);
+        bg = const Color(0xFFEFF6FF);
         text = const Color(0xFF0284C7);
         label = 'ชำระแล้ว';
+        icon = Icons.verified_rounded;
         break;
       case 'processing':
-        bg = const Color(0xFFF3E8FF);
+        bg = const Color(0xFFF5F3FF);
         text = const Color(0xFF7C3AED);
         label = 'เตรียมจัดส่ง';
+        icon = Icons.inventory_2_rounded;
         break;
       case 'shipped':
-        bg = const Color(0xFFECFDF5);
-        text = const Color(0xFF059669);
+        bg = const Color(0xFFEEF2FF);
+        text = const Color(0xFF4F46E5);
         label = 'จัดส่งแล้ว';
+        icon = Icons.local_shipping_rounded;
         break;
       case 'completed':
-        bg = const Color(0xFFDCFCE7);
-        text = const Color(0xFF15803D);
+        bg = const Color(0xFFECFDF5);
+        text = const Color(0xFF059669);
         label = 'สำเร็จแล้ว';
+        icon = Icons.check_circle_rounded;
         break;
       case 'cancelled':
-        bg = const Color(0xFFFFE4E6);
+        bg = const Color(0xFFFFF1F2);
         text = const Color(0xFFE11D48);
         label = 'ยกเลิกแล้ว';
+        icon = Icons.cancel_rounded;
         break;
     }
 
@@ -548,15 +745,22 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        label,
-        style: GoogleFonts.krub(
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-          color: text,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: text),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: GoogleFonts.krub(
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+              color: text,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -572,8 +776,9 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
       ),
       builder: (context) {
         return SingleChildScrollView(
@@ -581,56 +786,103 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
             padding: EdgeInsets.only(
               left: 20,
               right: 20,
-              top: 24,
+              top: 16,
               bottom: MediaQuery.of(context).viewInsets.bottom + 24,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'บันทึกข้อมูลจัดส่งพัสดุ',
-                  style: GoogleFonts.krub(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0F172A),
+                // BottomSheet Handle bar
+                Center(
+                  child: Container(
+                    width: 38,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFCBD5E1),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'ออเดอร์ #${order.orderNumber ?? order.id}',
-                  style: GoogleFonts.krub(
-                    fontSize: 13,
-                    color: const Color(0xFF64748B),
-                  ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFECFDF5),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(
+                        Icons.local_shipping_rounded,
+                        color: Color(0xFF047857),
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'บันทึกข้อมูลจัดส่งพัสดุ',
+                            style: GoogleFonts.krub(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF0F172A),
+                            ),
+                          ),
+                          Text(
+                            'ออเดอร์ #${order.orderNumber ?? order.id}',
+                            style: GoogleFonts.krub(
+                              fontSize: 12,
+                              color: const Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
                 TextField(
                   controller: carrierController,
-                  style: GoogleFonts.krub(),
+                  style: GoogleFonts.krub(fontSize: 14),
                   decoration: InputDecoration(
                     labelText: 'บริษัทขนส่ง *',
                     hintText: 'เช่น ไปรษณีย์ไทย, KERRY, Flash Express, J&T',
-                    labelStyle: GoogleFonts.krub(),
+                    labelStyle: GoogleFonts.krub(color: const Color(0xFF64748B)),
+                    prefixIcon: const Icon(Icons.business_rounded, color: Color(0xFF047857), size: 20),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
-                    border: OutlineInputBorder(
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFF047857), width: 1.5),
                     ),
                   ),
                 ),
                 const SizedBox(height: 14),
                 TextField(
                   controller: trackingController,
-                  style: GoogleFonts.krub(),
+                  style: GoogleFonts.krub(fontSize: 14),
                   decoration: InputDecoration(
                     labelText: 'เลขติดตามพัสดุ (Tracking Number) *',
                     hintText: 'เช่น TH123456789TH',
-                    labelStyle: GoogleFonts.krub(),
+                    labelStyle: GoogleFonts.krub(color: const Color(0xFF64748B)),
+                    prefixIcon: const Icon(Icons.pin_rounded, color: Color(0xFF047857), size: 20),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
-                    border: OutlineInputBorder(
+                    enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: const BorderSide(color: Color(0xFF047857), width: 1.5),
                     ),
                   ),
                 ),
@@ -652,8 +904,9 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
+                      elevation: 0,
                     ),
-                    icon: const Icon(Icons.check_circle_outline_rounded),
+                    icon: const Icon(Icons.check_circle_rounded),
                     label: Text(
                       'บันทึกและเปลี่ยนสถานะเป็น "จัดส่งแล้ว"',
                       style: GoogleFonts.krub(

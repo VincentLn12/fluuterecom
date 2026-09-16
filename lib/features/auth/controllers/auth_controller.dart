@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../core/services/auth_service.dart';
+import '../../navigation/controllers/navigation_controller.dart';
 import '../models/user_model.dart';
 import '../repositories/auth_repository.dart';
 
@@ -71,6 +72,10 @@ class AuthController extends GetxController {
           colorText: Colors.white,
           snackPosition: SnackPosition.TOP,
         );
+
+        if (Get.isRegistered<NavigationController>()) {
+          Get.find<NavigationController>().selectedIndex.value = 0;
+        }
 
         Get.offAllNamed(AppRoutes.initial);
       } else {

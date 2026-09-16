@@ -271,7 +271,10 @@ class RegisterShopPage extends GetView<RegisterShopController> {
             if (c.id.isNotEmpty) uniqueMap[c.id] = c.name;
           }
           final selectedVal = controller.selectedCategoryId.value;
-          final validValue = (selectedVal != null && uniqueMap.containsKey(selectedVal)) ? selectedVal : null;
+          final validValue =
+              (selectedVal != null && uniqueMap.containsKey(selectedVal))
+              ? selectedVal
+              : null;
 
           return DropdownButtonFormField<String>(
             value: validValue,
@@ -364,7 +367,10 @@ class RegisterShopPage extends GetView<RegisterShopController> {
                   errorBuilder: (context, error, stackTrace) => Center(
                     child: Text(
                       'ไม่สามารถโหลดรูปภาพปกร้านค้าจาก URL นี้ได้',
-                      style: GoogleFonts.krub(color: Colors.red.shade700, fontSize: 12),
+                      style: GoogleFonts.krub(
+                        color: Colors.red.shade700,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),
@@ -387,7 +393,10 @@ class RegisterShopPage extends GetView<RegisterShopController> {
             if (d.id.isNotEmpty) uniqueDistricts[d.id] = d.name;
           }
           final selectedVal = controller.selectedDistrictId.value;
-          final validValue = (selectedVal != null && uniqueDistricts.containsKey(selectedVal)) ? selectedVal : null;
+          final validValue =
+              (selectedVal != null && uniqueDistricts.containsKey(selectedVal))
+              ? selectedVal
+              : null;
 
           return DropdownButtonFormField<String>(
             value: validValue,
@@ -409,7 +418,11 @@ class RegisterShopPage extends GetView<RegisterShopController> {
             if (sd.id.isNotEmpty) uniqueSubDistricts[sd.id] = sd.name;
           }
           final selectedVal = controller.selectedSubDistrictId.value;
-          final validValue = (selectedVal != null && uniqueSubDistricts.containsKey(selectedVal)) ? selectedVal : null;
+          final validValue =
+              (selectedVal != null &&
+                  uniqueSubDistricts.containsKey(selectedVal))
+              ? selectedVal
+              : null;
 
           return DropdownButtonFormField<String>(
             value: validValue,

@@ -28,17 +28,28 @@ class ProductModel {
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
-    String? rawImage = json['imageUrl']?.toString();
-    if (rawImage != null && rawImage.startsWith('/uploads')) {
-      rawImage = ApiConfig.baseUrl.replaceAll('/api', '') + rawImage;
+    String? rawImage =
+        json['imageUrl']?.toString() ?? json['coverImageUrl']?.toString();
+    if (rawImage != null &&
+        rawImage.isNotEmpty &&
+        !rawImage.startsWith('http')) {
+      final baseDomain = ApiConfig.baseUrl.replaceAll('/api', '');
+      if (!rawImage.startsWith('/')) {
+        rawImage = '/$rawImage';
+      }
+      rawImage = '$baseDomain$rawImage';
     }
 
     List<String> parsedDetailImages = [];
     if (json['detailImages'] is List) {
       parsedDetailImages = (json['detailImages'] as List).map((e) {
         String str = e.toString();
-        if (str.startsWith('/uploads')) {
-          return ApiConfig.baseUrl.replaceAll('/api', '') + str;
+        if (str.isNotEmpty && !str.startsWith('http')) {
+          final baseDomain = ApiConfig.baseUrl.replaceAll('/api', '');
+          if (!str.startsWith('/')) {
+            str = '/$str';
+          }
+          return '$baseDomain$str';
         }
         return str;
       }).toList();

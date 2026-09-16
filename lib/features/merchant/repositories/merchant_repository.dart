@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../../../app/config/api_config.dart';
 import '../../../core/network/api_client.dart';
 import '../../contents/models/district_model.dart';
@@ -195,12 +198,69 @@ class MerchantRepository {
     return [];
   }
 
-  Future<bool> createProduct(Map<String, dynamic> data) async {
+  Future<ProductModel?> createProduct(Map<String, dynamic> data) async {
     try {
       final response = await _apiClient.post('/products', data);
-      return response.isOk;
+      if (response.isOk && response.body != null) {
+        final resData = response.body;
+        if (resData is Map<String, dynamic>) {
+          return ProductModel.fromJson(resData);
+        }
+      }
     } catch (e) {
       debugPrint('Error creating product: $e');
+    }
+    return null;
+  }
+
+  Future<bool> uploadProductCoverImage(
+    String productId,
+    String filePath,
+  ) async {
+    try {
+      final file = File(filePath);
+      if (!await file.exists()) {
+        debugPrint('Cover image file does not exist at path: $filePath');
+        return false;
+      }
+
+      final uri = Uri.parse(
+        '${ApiConfig.baseUrl}/products/$productId/cover-image',
+      );
+      debugPrint('Uploading product cover image to $uri');
+
+      final request = http.MultipartRequest('POST', uri);
+
+      if (_apiClient.authToken != null && _apiClient.authToken!.isNotEmpty) {
+        request.headers['Authorization'] = 'Bearer ${_apiClient.authToken}';
+      }
+
+      String ext = filePath.split('.').last.toLowerCase();
+      if (ext != 'png' && ext != 'webp' && ext != 'jpeg' && ext != 'jpg') {
+        ext = 'jpg';
+      }
+      final mimeSubtype = (ext == 'png')
+          ? 'png'
+          : ((ext == 'webp') ? 'webp' : 'jpeg');
+      final filename = 'cover_${DateTime.now().millisecondsSinceEpoch}.$ext';
+
+      final multipartFile = await http.MultipartFile.fromPath(
+        'file',
+        filePath,
+        filename: filename,
+        contentType: MediaType('image', mimeSubtype),
+      );
+      request.files.add(multipartFile);
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      debugPrint(
+        'Cover image upload response status: ${response.statusCode}, body: ${response.body}',
+      );
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (e) {
+      debugPrint('Error uploading product cover image: $e');
       return false;
     }
   }

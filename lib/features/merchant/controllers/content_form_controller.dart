@@ -180,9 +180,9 @@ class ContentFormController extends GetxController {
 
     isSaving.value = true;
     try {
-      String cover = coverImageUrlController.text.trim();
-      if (cover.isEmpty && youtubeThumbnailUrl.isNotEmpty) {
-        cover = youtubeThumbnailUrl;
+      String cover = youtubeThumbnailUrl;
+      if (cover.isEmpty && contentToEdit != null) {
+        cover = contentToEdit?.coverImageUrl ?? '';
       }
 
       final payload = <String, dynamic>{
