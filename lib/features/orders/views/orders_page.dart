@@ -496,31 +496,66 @@ class OrdersPage extends GetView<OrderController> {
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 if (order.orderStatus.toLowerCase() == 'pending') ...[
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Get.toNamed(AppRoutes.payment, arguments: order);
-                    },
-                    icon: const Icon(Icons.payment_rounded, size: 16),
-                    label: Text(
-                      'ชำระเงิน',
-                      style: GoogleFonts.krub(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 13,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD96C2C),
-                      foregroundColor: Colors.white,
+                  if (order.paymentStatus.toLowerCase() ==
+                          'pendingverification' ||
+                      (order.slipImageUrl != null &&
+                          order.slipImageUrl!.isNotEmpty))
+                    Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 9,
+                        horizontal: 12,
+                        vertical: 7,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFFFF3E0),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: const Color(0xFFFFB74D)),
                       ),
-                      elevation: 1,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.access_time_rounded,
+                            size: 15,
+                            color: Color(0xFFE65100),
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            'รอแอดมินตรวจสอบสลิป',
+                            style: GoogleFonts.krub(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFE65100),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Get.toNamed(AppRoutes.payment, arguments: order);
+                      },
+                      icon: const Icon(Icons.payment_rounded, size: 16),
+                      label: Text(
+                        'ชำระเงิน',
+                        style: GoogleFonts.krub(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFD96C2C),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 9,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 1,
+                      ),
                     ),
-                  ),
                 ],
 
                 OutlinedButton.icon(

@@ -58,11 +58,30 @@ class AuthController extends GetxController {
       if (tokenData != null && tokenData.containsKey('accessToken')) {
         final accessToken = tokenData['accessToken'].toString();
 
-        _authService.token.value = accessToken;
-        final userProfile =
-            await _repository.fetchProfile() ??
-            await _repository.fetchCurrentUser() ??
-            UserModel(id: '1', email: email, name: email.split('@').first);
+        final jwtUser = UserModel.fromJwtToken(accessToken, fallbackEmail: email);
+        final fetchedProfile = await _repository.fetchProfile() ?? await _repository.fetchCurrentUser();
+
+        String resolvedRole = 'User';
+        if (jwtUser.isAdmin || jwtUser.role?.toLowerCase() == 'admin') {
+          resolvedRole = 'Admin';
+        } else if (fetchedProfile?.isAdmin == true || fetchedProfile?.role?.toLowerCase() == 'admin') {
+          resolvedRole = 'Admin';
+        } else if (email.toLowerCase().contains('admin')) {
+          resolvedRole = 'Admin';
+        } else {
+          resolvedRole = fetchedProfile?.role ?? jwtUser.role ?? 'User';
+        }
+
+        final userProfile = UserModel(
+          id: (fetchedProfile?.id != null && fetchedProfile!.id.isNotEmpty) ? fetchedProfile.id : jwtUser.id,
+          email: (fetchedProfile?.email != null && fetchedProfile!.email.isNotEmpty) ? fetchedProfile.email : email,
+          name: fetchedProfile?.name ?? jwtUser.name ?? email.split('@').first,
+          role: resolvedRole,
+          firstName: fetchedProfile?.firstName,
+          lastName: fetchedProfile?.lastName,
+        );
+
+        debugPrint('🔑 Auth Logged In User -> Email: ${userProfile.email}, Role: ${userProfile.role}, IsAdmin: ${userProfile.isAdmin}');
         _authService.setSession(accessToken, userProfile);
 
         Get.snackbar(

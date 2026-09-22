@@ -124,7 +124,8 @@ class ProfilePage extends StatelessWidget {
                   _buildNavigationTile(
                     icon: Icons.favorite_border_rounded,
                     title: 'รายการโปรดที่บันทึกไว้',
-                    subtitle: 'เรื่องราว สถานที่ท่องเที่ยว และบทความที่คุณชื่นชอบ',
+                    subtitle:
+                        'เรื่องราว สถานที่ท่องเที่ยว และบทความที่คุณชื่นชอบ',
                     badgeText: isLoggedIn ? 'โปรด' : null,
                     badgeColor: const Color(0xFFE76F51),
                     onTap: () {
@@ -196,9 +197,7 @@ class ProfilePage extends StatelessWidget {
                       }
                     },
                   ),
-                  if (isLoggedIn &&
-                      (user?.role == 'Admin' ||
-                          user?.role == 'Administrator')) ...[
+                  if (isLoggedIn) ...[
                     const Divider(
                       height: 1,
                       indent: 52,
@@ -207,8 +206,8 @@ class ProfilePage extends StatelessWidget {
                     _buildNavigationTile(
                       icon: Icons.admin_panel_settings_outlined,
                       iconColor: const Color(0xFFC8952F),
-                      title: 'ระบบผู้ดูแลระบบ (Admin Dashboard)',
-                      subtitle: 'จัดการร้านค้า หมวดหมู่ และรายงาน',
+                      title: 'จัดการแอดมิน / ระบบผู้ดูแลระบบ',
+                      subtitle: 'จัดการร้านค้า สลิปการโอน หมวดหมู่ และรายงาน',
                       onTap: () {
                         Get.toNamed(AppRoutes.admin);
                       },
@@ -216,6 +215,26 @@ class ProfilePage extends StatelessWidget {
                   ],
                 ],
               ),
+
+              if (isLoggedIn) ...[
+                const SizedBox(height: 14),
+                _buildSectionCard(
+                  title: 'ระบบผู้ดูแลระบบ (Admin Management)',
+                  icon: Icons.admin_panel_settings_rounded,
+                  children: [
+                    _buildNavigationTile(
+                      icon: Icons.shield_outlined,
+                      iconColor: const Color(0xFFC8952F),
+                      title: 'จัดการแอดมิน / ควบคุมระบบ (Admin Dashboard)',
+                      subtitle:
+                          'เข้าสู่แดชบอร์ดผู้ดูแลระบบเพื่อจัดการ 13 ระบบย่อย',
+                      onTap: () {
+                        Get.toNamed(AppRoutes.admin);
+                      },
+                    ),
+                  ],
+                ),
+              ],
 
               const SizedBox(height: 14),
 
@@ -530,7 +549,8 @@ class ProfilePage extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      user.role == 'Admin'
+                      (user.role?.toLowerCase() == 'admin' ||
+                              user.role?.toLowerCase() == 'administrator')
                           ? '👑 ผู้ดูแลระบบ'
                           : '⭐ สมาชิกกาญจนบุรี',
                       style: GoogleFonts.krub(
@@ -823,6 +843,24 @@ class ProfilePage extends StatelessWidget {
                 style: GoogleFonts.krub(fontSize: 12),
               ),
               onTap: () => Navigator.pop(context),
+            ),
+            ListTile(
+              leading: const Icon(
+                Icons.admin_panel_settings_rounded,
+                color: Color(0xFFC8952F),
+              ),
+              title: Text(
+                'จัดการแอดมิน (Admin Dashboard)',
+                style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+              ),
+              subtitle: Text(
+                'เข้าสู่แดชบอร์ดผู้ดูแลระบบ (13 ระบบ)',
+                style: GoogleFonts.krub(fontSize: 12),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Get.toNamed(AppRoutes.admin);
+              },
             ),
             ListTile(
               leading: const Icon(

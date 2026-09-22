@@ -35,9 +35,15 @@ abstract class AppRoutes {
   static const myShopExports = '/my-shop/exports';
 
   static const admin = '/admin';
+  static const adminOrders = '/admin/orders';
+  static const adminPayouts = '/admin/payouts';
   static const adminShops = '/admin/shops';
   static const adminCategories = '/admin/categories';
+  static const adminProductCategories = '/admin/product-categories';
   static const adminContents = '/admin/contents';
+  static const adminContentCategories = '/admin/content-categories';
   static const adminTags = '/admin/tags';
+  static const adminSchedules = '/admin/schedules';
   static const adminReports = '/admin/reports';
+  static const adminExports = '/admin/exports';
 }

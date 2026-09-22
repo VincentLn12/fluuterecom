@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
@@ -160,33 +159,43 @@ class OrderRepository {
     }
   }
 
-  /// Upload / Update slip image for order status
-  /// Primary API: POST /api/orders/{id}/upload-slip (multipart)
-  /// Fallback API: PATCH /api/orders/{id}/status (JSON with paymentStatus: 'PendingVerification')
-  Future<bool> updateOrderSlip(String orderId, String slipFilePathOrBase64) async {
+  /// Upload slip image for order via POST /api/orders/{id}/upload-slip (multipart)
+  Future<bool> updateOrderSlip(String orderId, String slipFilePath) async {
     final transferTime = DateTime.now().toIso8601String();
 
-    // 1. Try primary endpoint: POST /orders/{id}/upload-slip with multipart FormData
-    if (!slipFilePathOrBase64.startsWith('data:') && !slipFilePathOrBase64.startsWith('http')) {
+    // 1. Primary endpoint: POST /orders/{id}/upload-slip with multipart FormData
+    if (!slipFilePath.startsWith('data:') && !slipFilePath.startsWith('http')) {
       try {
-        final form = FormData({
-          'slipFile': MultipartFile(
-            slipFilePathOrBase64,
-            filename: 'slip_${DateTime.now().millisecondsSinceEpoch}.jpg',
-          ),
-          'transferTime': transferTime,
-        });
+        final file = File(slipFilePath);
+        if (await file.exists()) {
+          final bytes = await file.readAsBytes();
+          final ext = slipFilePath.split('.').last.toLowerCase();
+          final mimeType = (ext == 'png' || ext == 'webp')
+              ? 'image/$ext'
+              : 'image/jpeg';
 
-        final response = await _apiClient.post(
-          '/orders/$orderId/upload-slip',
-          form,
-        );
+          final form = FormData({
+            'slipFile': MultipartFile(
+              bytes,
+              filename: 'slip_${DateTime.now().millisecondsSinceEpoch}.$ext',
+              contentType: mimeType,
+            ),
+            'transferTime': transferTime,
+          });
 
-        if (response.isOk) {
-          debugPrint('Successfully uploaded slip via POST /orders/$orderId/upload-slip');
-          return true;
+          final response = await _apiClient.post(
+            '/orders/$orderId/upload-slip',
+            form,
+          );
+
+          if (response.isOk) {
+            debugPrint('Successfully uploaded slip via POST /orders/$orderId/upload-slip');
+            return true;
+          } else {
+            debugPrint('POST /orders/$orderId/upload-slip returned ${response.statusCode}');
+          }
         } else {
-          debugPrint('POST /orders/$orderId/upload-slip returned ${response.statusCode}');
+          debugPrint('File does not exist at path: $slipFilePath');
         }
       } catch (e) {
         debugPrint('Error upload-slip multipart: $e');
@@ -195,22 +204,10 @@ class OrderRepository {
 
     // 2. Fallback endpoint: PATCH /orders/{id}/status with paymentStatus: 'PendingVerification'
     try {
-      String base64Data = slipFilePathOrBase64;
-      if (!base64Data.startsWith('data:') && !base64Data.startsWith('http')) {
-        final file = File(slipFilePathOrBase64);
-        if (await file.exists()) {
-          final bytes = await file.readAsBytes();
-          final base64String = base64Encode(bytes);
-          final ext = slipFilePathOrBase64.split('.').last.toLowerCase();
-          final mimeType = (ext == 'png' || ext == 'webp') ? 'image/$ext' : 'image/jpeg';
-          base64Data = 'data:$mimeType;base64,$base64String';
-        }
-      }
-
       final body = {
         'orderStatus': 'Pending',
         'paymentStatus': 'PendingVerification',
-        'slipImageUrl': base64Data,
+        'slipImageUrl': slipFilePath,
         'slipUploadedAt': transferTime,
       };
 

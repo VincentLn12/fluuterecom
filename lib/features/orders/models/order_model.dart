@@ -104,10 +104,14 @@ class OrderModel {
       shopId: json['shopId']?.toString(),
       shopName: json['shopName']?.toString() ?? 'ร้านค้าชุมชน',
       shopLogoUrl: resolveUrl(json['shopLogoUrl']),
-      orderNumber: json['orderNumber']?.toString() ?? 'ORD-${DateTime.now().millisecondsSinceEpoch}',
+      orderNumber:
+          json['orderNumber']?.toString() ??
+          'ORD-${DateTime.now().millisecondsSinceEpoch}',
       subtotal: double.tryParse(json['subtotal']?.toString() ?? '0') ?? 0.0,
-      shippingFee: double.tryParse(json['shippingFee']?.toString() ?? '0') ?? 0.0,
-      totalAmount: double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
+      shippingFee:
+          double.tryParse(json['shippingFee']?.toString() ?? '0') ?? 0.0,
+      totalAmount:
+          double.tryParse(json['totalAmount']?.toString() ?? '0') ?? 0.0,
       shippingMethod: json['shippingMethod']?.toString() ?? 'Standard Delivery',
       orderStatus: json['orderStatus']?.toString() ?? 'Pending',
       paymentStatus: json['paymentStatus']?.toString() ?? 'Pending',
@@ -115,17 +119,29 @@ class OrderModel {
       receiverPhone: json['receiverPhone']?.toString(),
       shippingAddress: json['shippingAddress']?.toString(),
       slipImageUrl: resolveUrl(json['slipImageUrl']),
-      carrierName: json['carrierName']?.toString() ?? json['shipment']?['carrierName']?.toString(),
-      trackingNumber: json['trackingNumber']?.toString() ?? json['shipment']?['trackingNumber']?.toString(),
-      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
+      carrierName:
+          json['carrierName']?.toString() ??
+          json['shipment']?['carrierName']?.toString(),
+      trackingNumber:
+          json['trackingNumber']?.toString() ??
+          json['shipment']?['trackingNumber']?.toString(),
+      createdAt: json['createdAt'] != null
+          ? DateTime.tryParse(json['createdAt'].toString())
+          : null,
       items: parsedItems,
     );
   }
 
   String get statusLabel {
+    if (paymentStatus.toLowerCase() == 'pendingverification' ||
+        (slipImageUrl != null &&
+            slipImageUrl!.isNotEmpty &&
+            orderStatus.toLowerCase() == 'pending')) {
+      return 'รอแอดมินตรวจสอบสลิป';
+    }
     switch (orderStatus.toLowerCase()) {
       case 'pending':
-        return 'รอชำระเงิน / รอยืนยัน';
+        return 'รอชำระเงิน';
       case 'paid':
         return 'ชำระเงินแล้ว';
       case 'processing':

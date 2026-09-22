@@ -121,6 +121,9 @@ class ContentsPage extends GetView<ContentController> {
                   padding: const EdgeInsets.all(16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
+                      if (index < 0 || index >= controller.contents.length) {
+                        return const SizedBox.shrink();
+                      }
                       final item = controller.contents[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16.0),
@@ -138,6 +141,9 @@ class ContentsPage extends GetView<ContentController> {
                   padding: const EdgeInsets.all(16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate((context, index) {
+                      if (index < 0 || index >= controller.contents.length) {
+                        return const SizedBox.shrink();
+                      }
                       final item = controller.contents[index];
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),

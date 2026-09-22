@@ -83,31 +83,68 @@ class OrderDetailPage extends StatelessWidget {
 
                   // 5. Payment Button if Pending
                   if (order.orderStatus.toLowerCase() == 'pending')
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Get.toNamed(AppRoutes.payment, arguments: order);
-                        },
-                        icon: const Icon(Icons.payment_rounded, size: 20),
-                        label: Text(
-                          'ดำเนินการชำระเงิน',
-                          style: GoogleFonts.krub(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                    if (order.paymentStatus.toLowerCase() == 'pendingverification' ||
+                        (order.slipImageUrl != null && order.slipImageUrl!.isNotEmpty))
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 14,
+                          horizontal: 16,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF3E0),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: const Color(0xFFFFB74D),
+                            width: 1.5,
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFD96C2C),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.mark_email_read_rounded,
+                              color: Color(0xFFE65100),
+                              size: 22,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              'แนบสลิปเรียบร้อยแล้ว — รอแอดมินตรวจสอบ',
+                              style: GoogleFonts.krub(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: const Color(0xFFE65100),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    else
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Get.toNamed(AppRoutes.payment, arguments: order);
+                          },
+                          icon: const Icon(Icons.payment_rounded, size: 20),
+                          label: Text(
+                            'ดำเนินการชำระเงิน',
+                            style: GoogleFonts.krub(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          elevation: 2,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFD96C2C),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 2,
+                          ),
                         ),
                       ),
-                    ),
                 ],
               ),
             ),
@@ -119,12 +156,20 @@ class OrderDetailPage extends StatelessWidget {
     IconData bannerIcon;
     String statusDesc;
 
-    switch (order.orderStatus.toLowerCase()) {
-      case 'pending':
-        bannerBg = const Color(0xFFE76F51);
-        bannerIcon = Icons.hourglass_empty_rounded;
-        statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
-        break;
+    if (order.paymentStatus.toLowerCase() == 'pendingverification' ||
+        (order.slipImageUrl != null &&
+            order.slipImageUrl!.isNotEmpty &&
+            order.orderStatus.toLowerCase() == 'pending')) {
+      bannerBg = const Color(0xFFD96C2C);
+      bannerIcon = Icons.access_time_filled_rounded;
+      statusDesc = 'ส่งสลิปชำระเงินเรียบร้อยแล้ว รอเจ้าหน้าที่ตรวจสอบ';
+    } else {
+      switch (order.orderStatus.toLowerCase()) {
+        case 'pending':
+          bannerBg = const Color(0xFFE76F51);
+          bannerIcon = Icons.hourglass_empty_rounded;
+          statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
+          break;
       case 'paid':
       case 'processing':
         bannerBg = const Color(0xFF2A9D8F);
@@ -151,6 +196,7 @@ class OrderDetailPage extends StatelessWidget {
         bannerBg = const Color(0xFFD96C2C);
         bannerIcon = Icons.info_rounded;
         statusDesc = 'สถานะคำสั่งซื้อปัจจุบันของคุณ';
+      }
     }
 
     final dateStr = order.createdAt != null

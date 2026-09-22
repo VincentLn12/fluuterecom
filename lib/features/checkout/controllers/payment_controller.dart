@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -223,24 +221,13 @@ class PaymentController extends GetxController {
 
     isUploadingSlip.value = true;
     try {
-      String slipData = uploadedSlipPath.value!;
+      final slipFilePath = uploadedSlipPath.value!;
 
-      // Convert local file to Base64 Data URL so real image bytes are sent to backend API
-      if (!slipData.startsWith('data:') && !slipData.startsWith('http')) {
-        final file = File(slipData);
-        if (await file.exists()) {
-          final bytes = await file.readAsBytes();
-          final base64String = base64Encode(bytes);
-          final ext = slipData.split('.').last.toLowerCase();
-          final mimeType = (ext == 'png' || ext == 'webp')
-              ? 'image/$ext'
-              : 'image/jpeg';
-          slipData = 'data:$mimeType;base64,$base64String';
-        }
-      }
-
-      // API call PATCH /api/orders/{id}/status to attach slip and set status to PendingVerify
-      await _orderRepository.updateOrderSlip(currentOrder.orderId, slipData);
+      // API call POST /orders/{orderId}/upload-slip (multipart file, no base64)
+      await _orderRepository.updateOrderSlip(
+        currentOrder.orderId,
+        slipFilePath,
+      );
 
       final updatedOrder = OrderModel(
         orderId: currentOrder.orderId,
@@ -256,7 +243,7 @@ class PaymentController extends GetxController {
         totalAmount: currentOrder.totalAmount,
         orderStatus: 'Pending',
         paymentStatus: 'PendingVerification',
-        slipImageUrl: slipData,
+        slipImageUrl: slipFilePath,
         createdAt: currentOrder.createdAt,
         items: currentOrder.items,
       );

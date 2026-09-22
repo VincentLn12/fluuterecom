@@ -164,73 +164,31 @@ kanchanaburi_platform/
 │       │       ├── content_schedule_section.dart
 │       │       ├── content_shop_section.dart
 │       │       ├── content_product_section.dart
-│       │       ├── content_review_section.dart
-│       │       └── related_content_section.dart
-│       │
-│       ├── cart/
-│       │   ├── controllers/
-│       │   │   └── cart_controller.dart
+│       │       ├── content_revi│       ├── merchant/
 │       │   ├── bindings/
-│       │   │   └── cart_binding.dart
+│       │   │   └── merchant_binding.dart
+│       │   ├── controllers/
+│       │   │   ├── merchant_dashboard_controller.dart
+│       │   │   ├── manage_products_controller.dart
+│       │   │   ├── product_form_controller.dart
+│       │   │   ├── manage_orders_controller.dart
+│       │   │   ├── manage_contents_controller.dart
+│       │   │   ├── content_form_controller.dart
+│       │   │   ├── merchant_export_controller.dart
+│       │   │   └── register_shop_controller.dart
 │       │   ├── models/
-│       │   │   └── cart_item_model.dart
+│       │   │   └── merchant_dashboard_model.dart
 │       │   ├── repositories/
-│       │   │   └── cart_repository.dart
-│       │   └── views/
-│       │       └── cart_page.dart
-│       │
-│       ├── checkout/
-│       │   ├── controllers/
-│       │   │   └── checkout_controller.dart
-│       │   ├── bindings/
-│       │   │   └── checkout_binding.dart
-│       │   └── views/
-│       │       ├── checkout_page.dart
-│       │       ├── payment_page.dart
-│       │       └── payment_success_page.dart
-│       │
-│       ├── orders/
-│       │   ├── controllers/
-│       │   │   └── order_controller.dart
-│       │   ├── bindings/
-│       │   │   └── order_binding.dart
-│       │   ├── models/
-│       │   │   ├── order_model.dart
-│       │   │   └── user_address_model.dart
-│       │   ├── repositories/
-│       │   │   └── order_repository.dart
-│       │   └── views/
-│       │       ├── orders_page.dart
-│       │       └── order_detail_page.dart
-│       │
-│       ├── profile/
-│       │   ├── controllers/
-│       │   │   ├── profile_controller.dart
-│       │   │   ├── my_contents_controller.dart
-│       │   │   └── favorites_controller.dart
-│       │   ├── bindings/
-│       │   │   └── profile_binding.dart
-│       │   ├── models/
-│       │   │   └── favorite_content_model.dart
-│       │   ├── repositories/
-│       │   │   └── profile_repository.dart
-│       │   └── views/
-│       │       ├── profile_page.dart
-│       │       ├── edit_profile_page.dart
-│       │       ├── my_contents_page.dart
-│       │       └── favorites_page.dart
-│       │
-│       ├── merchant/
-│       │   ├── controllers/
-│       │   ├── bindings/
-│       │   ├── models/
-│       │   ├── repositories/
+│       │   │   └── merchant_repository.dart
 │       │   └── views/
 │       │       ├── register_shop_page.dart
 │       │       ├── merchant_dashboard_page.dart
 │       │       ├── manage_products_page.dart
+│       │       ├── product_form_page.dart
 │       │       ├── manage_orders_page.dart
-│       │       └── manage_contents_page.dart
+│       │       ├── manage_contents_page.dart
+│       │       ├── content_form_page.dart
+│       │       └── merchant_export_page.dart
 │       │
 │       └── admin/
 │           ├── controllers/
@@ -316,6 +274,96 @@ Navbar หลักของ Application มีทั้งหมด 5 แท็
    * `cart_page.dart`, `cart_controller.dart`, `cart_repository.dart` & `cart_item_model.dart`
    * **Live OpenAPI Cart Integration**: ดึงและซิงค์ข้อมูลตะกร้าสินค้าส่วนตัวของผู้ใช้กับ Backend Database โดยตรง:
      - `GET /api/cart`: ดึงตะกร้าสินค้าของผู้ใช้แต่ละบัญชีแยกกันเป็นเอกเทศ
+     - `POST /api/cart/items`: เพิ่มสินค้าลงในตะกร้าบนฐานข้อมูล
+     - `PUT /api/cart/items/{id}`: ปรับเปลี่ยนจำนวนสินค้าในตะกร้าบนเซิร์ฟเวอร์
+     - `DELETE /api/cart/items/{id}`: ลบสินค้าออกจากตะกร้าบนเซิร์ฟเวอร์
+   * **Dynamic Navbar Visibility**: ปรับแต่ง Bottom Navigation Bar ให้ซ่อน/แสดง ไอคอนตะกร้าสินค้าอัตโนมัติขึ้นอยู่กับสถานะการเข้าสู่ระบบ (`authService.isLoggedIn.value`)
+   * **Shop-Grouped Display**: จัดกลุ่มรายการสินค้าในตะกร้าแยกตามร้านค้าอัตโนมัติ
+   * **Item & Shop Selection**: ระบบเลือกสินค้าแบบ Checkbox รายชิ้น, เลือกทั้งร้านค้า หรือเลือกสินค้าทั้งหมดในตะกร้า
+   * **Quantity Stepper & Instant Recalculation**: ปุ่มปรับเพิ่ม/ลดจำนวนสินค้า พร้อมคำนวณราคาย่อย (Subtotal) และราคารวมทั้งหมด (Total Price) แบบ Real-time
+   * **Auth-Gated Cart Protection**: หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ จะไม่อนุญาตให้เห็นหรือเข้าถึงตะกร้าสินค้า โดยแสดงหน้าแจ้งเตือนล็อกอิน "กรุณาเข้าสู่ระบบก่อนใช้งานตะกร้าสินค้า" พร้อมปุ่มทางลัดเข้าสู่ระบบ
+   * **Auto Sync on Auth Session Change**: โหลดและซิงค์ข้อมูลตะกร้าใหม่อัตโนมัติเมื่อมีการเข้าสู่ระบบ/สลับบัญชีผู้ใช้
+
+5. **โปรไฟล์ & ระบบสมาชิก (Profile & Authentication System)**
+   * `profile_page.dart`, `login_page.dart` & `register_page.dart`
+   * **Live OpenAPI Authentication**: เชื่อมต่อ API `/api/login`, `/api/register`, `/api/account/me`, `/api/account/profile`
+   * **Automatic Bearer Token Header**: ระบบแนบ `Authorization: Bearer <accessToken>` อัตโนมัติทุก Request ผ่าน `ApiClient` Request Modifier
+   * **Categorized Profile Layout Structure**:
+     - **Header Profile Card**: แสดงภาพอวตาร, ชื่อ, อีเมล, สิทธิ์ และปุ่ม [แก้ไขโปรไฟล์] / [เข้าสู่ระบบ]
+     - **กิจกรรมของฉัน**: ปุ่มลัดทางลัด 3 รายการ (`♡ บันทึก`, `🕘 ประวัติคำสั่งซื้อ`, `⭐ รีวิว`)
+     - **บัญชีของฉัน**: ข้อมูลส่วนตัว, ความปลอดภัย, การแจ้งเตือน, ที่อยู่ของฉัน
+     - **การใช้งาน**: คอนเทนต์ที่บันทึก, ร้านค้าที่ติดตาม / ศูนย์ผู้ขาย, รีวิวของฉัน, Admin Dashboard
+     - **อื่น ๆ**: ช่วยเหลือและ FAQ, ข้อกำหนดและนโยบายความเป็นส่วนตัว, เกี่ยวกับแอปพลิเคชัน
+   * **ระบบคอนเทนต์ของฉัน (`my_contents_page.dart` & `my_contents_controller.dart`)**:
+     - **Full Alignment with Web Repository (`ProfileMyContents.vue` & `MyContentsView.vue`)**:
+     - **Hero CTA Banner**: การ์ดส่วนหัวต้อนรับเฉดสีครีมอุ่น `#FFF9F2` พร้อมปุ่ม **"+ สร้างคอนเทนต์ใหม่"** (`#D96C2C`)
+     - **Status Badges**: ป้ายบอกสถานะบทความตรงตามเว็บ (🟢 *เผยแพร่แล้ว*, 🟠 *รอตรวจสอบ*, ⚪️ *เก็บถาวร/ฉบับร่าง*)
+     - **Automated YouTube Thumbnail Resolver**: ดึงภาพหน้าปกคลิปจากลิงก์ YouTube (`hqdefault.jpg`) หรือภาพปกคอนเทนต์โดยอัตโนมัติ
+     - **Status Filter Chips**: ชิปตัวกรองสถานะคอนเทนต์ (*ทั้งหมด*, *เผยแพร่แล้ว*, *รอตรวจสอบ*, *เก็บถาวร*)
+     - **Interactive Actions & Confirm Dialog**: ปุ่มกดดูคอนเทนต์ (`AppRoutes.contentDetail`), ปุ่มแก้ไข และปุ่มจัดเก็บถาวร (`archiveContent`) พร้อมกล่องยืนยันก่อนดำเนินการ
+     - **Graceful Empty State**: หน้าแสดงสถานะเมื่อยังไม่มีคอนเทนต์พร้อมปุ่ม **"สร้างคอนเทนต์แรกของคุณ"**
+   * **ระบบรายการโปรดที่บันทึกไว้ (`favorites_page.dart`, `favorites_controller.dart` & `favorite_content_model.dart`)**:
+     - **Full Alignment with Web Repository (`ProfileFavoritesList.vue`)**:
+     - **Live OpenAPI Integration**:
+       - `GET /api/content-favorites`: โหลดรายการโปรดของผู้ใช้จริงจากฐานข้อมูล
+       - `POST /api/content-favorites/{contentId}`: เพิ่มบทความลงรายการโปรด
+       - `DELETE /api/content-favorites/{contentId}`: ลบบทความออกจากรายการโปรด
+       - `GET /api/content-favorites/{contentId}`: ตรวจสอบสถานะว่ากดโปรดแล้วหรือไม่ (`isFavorite`)
+     - **Hero Header Banner**: แบนเนอร์หัวข้อสีครีมอุ่น `#FFF9F2` พร้อมสัญลักษณ์หัวใจสีส้มคอรัล `#E76F51`
+     - **Interactive Card & Confirm Dialog**: การ์ดแสดงรูปภาพ (หรือ YouTube Thumbnail), ชื่อเรื่อง, เรื่องย่อ, วันที่บันทึก พร้อมปุ่ม **"อ่านบทความ"** และปุ่มลบรายการโปรดพร้อม Pop-up ยืนยัน
+     - **Empty State**: หน้าแสดงสถานะเมื่อยังไม่มีรายการโปรด พร้อมปุ่มทางลัด **"สำรวจคอนเทนต์ท่องเที่ยว"**
+   * **Guest Unauthenticated Access Control**: หากผู้ใช้ยังไม่ได้เข้าสู่ระบบ จะปรับเป็น Guest Avatar พร้อมซ่อนปุ่มออกจากระบบ และเมื่อกดเลือกเมนูที่ต้องใช้บัญชี (เช่น ประวัติคำสั่งซื้อ หรือข้อมูลส่วนตัว) ระบบจะแสดงป็อปอัปแจ้งเตือนให้เข้าสู่ระบบก่อนอย่างเป็นมิตร
+
+## Checkout & Payment System Feature Highlights
+
+- **Redesigned Payment Selection Gateway (`PaymentPage`)**:
+  - **Hero Order Summary Banner**: การ์ดสรุปหมายเลขคำสั่งซื้อ ยอดสุทธิต้องชำระ และป้ายยืนยันความปลอดภัย 🔒 *SSL 256-Bit Encrypted*
+  - **Interactive Payment Method Cards**: การ์ดเลือกช่องทางชำระเงินคุมโทนพรีเมียม `#FFF9F2`, `#E8D9C9`, `#D96C2C`, `#1F5F58` พร้อม Radio Button และป้าย Badge ยืนยันสิทธิ์
+  - **Option 1: 💳 Stripe Credit Card Gateway (Direct Form Entry)**:
+    - **Direct On-Screen CardFormField**: ฟอร์มกรอกหมายเลขบัตร, วันหมดอายุ, CVC (`CardFormField`) และชื่อบนหน้าบัตร (`cardHolderController`) บนหน้าจอโดยตรง สะดวก รวดเร็ว ไม่ผ่าน Native Sheet ป๊อบอัป
+  - **Option 2: 📱 PromptPay QR & Bank Transfer (โอนเงิน & แนบสลิป)**:
+    - **PromptPay QR Showcase**: กรอบแสดง QR Code ดีไซน์สไตล์แอปธนาคาร
+    - **One-Tap Copy Account Number**: ปุ่มกด [คัดลอกเลขบัญชี] ธนาคารกรุงไทย `701-0-98214-5` ลง Clipboard พร้อมแจ้งเตือน Snackbar
+    - **Real Image Picker Slip Upload (`image_picker`)**: เลือกรูปสลิปจริงจากคลังรูปภาพ พร้อมพรีวิวรูปสลิปและเวลาอัปโหลด
+  - **Sticky Bottom Action Bar**: แถบสรุปยอดเงินและปุ่มยืนยันชำระเงินแบบยึดติดด้านล่างสุดของจอเพื่อความสะดวกสูงสุด
+- **Live Checkout API**: เชื่อมต่อ API `POST /api/orders/checkout` ส่งรายการสั่งซื้อ ชนิดการจัดส่ง (`shippingMethod`), ค่าจัดส่ง (`shippingFee`), ข้อมูลผู้รับ และที่อยู่จัดส่ง
+- **Payment Success View (`PaymentSuccessPage`)**: หน้าแสดงความยินดีทำรายการสำเร็จ พร้อมปุ่มไปดูประวัติคำสั่งซื้อ (`OrdersPage`)
+
+## Orders & Order Details System Redesign Highlights
+
+- **Shopee-Style Horizontal Status Filter Bar (`OrdersPage`)**:
+  - แถบสลับสถานะคำสั่งซื้อแบบแนวนอน 6 แท็บคุมโทนพรีเมียม `#FFF9F2`, `#E8D9C9`, `#D96C2C`: `ทั้งหมด`, `ที่ต้องชำระ`, `ที่ต้องจัดส่ง`, `ที่ต้องได้รับ`, `สำเร็จแล้ว`, `ยกเลิกแล้ว`
+  - ป้ายแสดงจำนวนออเดอร์ (Count Badge) ประจำแต่ละแท็บแบบ Real-time พร้อมไอคอนบอกประเภทสถานะ
+  - **Warm Ivory Order Card**: การ์ดแสดงคำสั่งซื้อเฉดสีครีมอุ่น `#FFF9F2` พร้อมป้ายสถานะ (🟢 *สำเร็จแล้ว*, 🟠 *ที่ต้องชำระ*, 🟦 *กำลังจัดส่ง*, ⚪️ *ยกเลิก*)
+  - **Dynamic Action CTA**: ปุ่มทางลัด **"ชำระเงิน"** (สำหรับออเดอร์ที่รอชำระ) และปุ่ม **"ดูรายละเอียด"** นำทางไปยังหน้ารายละเอียดคำสั่งซื้อ
+- **Modern Order Detail Page (`OrderDetailPage`)**:
+  - **Contextual Status Banner**: แถบป้ายสถานะด้านบนปรับเปลี่ยนสี ไอคอน และคำอธิบายตามสถานะคำสั่งซื้อจริง พร้อมแสดงเวลาสั่งซื้อภาษาไทย
+  - **Recipient Shipping Address**: แสดงชื่อผู้รับ, เบอร์โทรศัพท์ติดต่อ และที่อยู่จัดส่งแบบการ์ดสะอาดตา พร้อมไอคอนหมุดสถานที่
+  - **Shop & Ordered Items Breakdown**: แสดงชื่อร้านค้า พร้อมปุ่มกด **"ดูร้านค้า"** นำทางไปยังหน้าร้านค้านั้นๆ ได้ทันที และแสดงรูปภาพ/ราคาสินค้าแต่ละรายการ
+  - **Payment Breakdown & Slip Modal Preview**: สรุปยอดรวมสินค้า ค่าจัดส่ง ยอดชำระสุทธิ และป็อปอัปสไลด์เปิดดูรูปสลิปหลักฐานการชำระเงินขนาดใหญ่พร้อมปุ่มปิดเรียบร้อย
+
+## Merchant & Shop Management System Highlights
+
+- **Merchant Dashboard Overview (`MerchantDashboardPage`)**:
+  - **Modern Emerald Hero Banner**: ส่วนหัวการ์ดไล่เฉดสีมรกต (`#064E3B` ➔ `#047857` ➔ `#059669`) แสดงข้อมูลร้านค้า รูปปก อวตาร อ.พิกัด หมวดหมู่ และป้ายสถานะการลงทะเบียน (*เปิดใช้งาน*, *รออนุมัติ*, *ถูกปฏิเสธ*)
+  - **Order Processing Status Counters**: การ์ดตัวนับสถานะออเดอร์เรียลไทม์ (*รอตรวจสลิป*, *รอจัดส่ง*, *สำเร็จแล้ว*) พร้อมปุ่มกดทางลัดไปยังหน้าจัดการออเดอร์
+  - **Revenue & Stock Metrics Grid**: 4 การ์ดสรุปยอดขายรวมทั้งหมด ยอดขายเดือนนี้ จำนวนสินค้าทั้งหมด และจำนวนสินค้าสต็อกต่ำ
+  - **Quick Action Grid**: เมนูทางลัด 2 คอลัมน์ เข้าถึง *จัดการสินค้า*, *จัดการคำสั่งซื้อ*, *บทความร้านค้า*, *ส่งออกรายงาน*, *ข้อมูลร้านค้า*
+  - **Recent Orders List**: แสดง 5 ออเดอร์ล่าสุดเข้ามาในระบบ พร้อมสถานะการชำระเงิน
+- **Manage Products & Product Form (`ManageProductsPage`, `ProductFormPage`)**:
+  - **Live Image Upload with MIME Parsing**: อัปโหลดรูปภาพปกสินค้าไปยัง API `/api/products/{id}/cover-image` ด้วย `http.MultipartRequest` + `http_parser` `MediaType` (`image/jpeg`, `image/png`, `image/webp`)
+  - **Product CRUD**: เพิ่ม แก้ไข ลบรายการสินค้า กำหนดราคา สต็อก รายละเอียด และสถานะสินค้า
+- **Manage Contents & Content Form (`ManageContentsPage`, `ContentFormPage`)**:
+  - **Merchant Articles & Stories**: เพิ่มและแก้ไขบทความส่งเสริมการขายประจำร้านค้า
+  - **YouTube Video Integration**: แนบวิดีโอ YouTube พร้อมระบบ Live Preview ไม่บังคับใส่รูปปก (ใช้ภาพตัวอย่างจาก YouTube แทนได้)
+- **Manage Orders (`ManageOrdersPage`)**:
+  - **Shopee-Style Status Filter Chips**: ตัวกรองออเดอร์ตามสถานะการชำระเงินและการจัดส่ง
+  - **Customer Info Card**: แสดงชื่อผู้รับ เบอร์โทรศัพท์ และที่อยู่จัดส่งแบบการ์ดสะอาดตา
+  - **Shipment Bottom Sheet Modal**: ป็อปอัปสไลด์บันทึกชื่อบริษัทขนส่งและเลขติดตามพัสดุ (Tracking Number) พร้อมอัปเดตสถานะเป็น "จัดส่งแล้ว"
+- **Merchant Export Reports (`MerchantExportPage`)**:
+  - **PDF & CSV Report Generator**: ส่งออกรายงานสรุปยอดขาย รายงานสินค้า และรายงานคำสั่งซื้อ
+  - **Date Range Selector**: ตัวเลือกช่วงเวลาส่งออกรายงาน (ย้อนหลัง 7 วัน, 30 วัน, เดือนนี้, หรือกำหนดช่วงวันที่เอง)
+�เอกเทศ
      - `POST /api/cart/items`: เพิ่มสินค้าลงในตะกร้าบนฐานข้อมูล
      - `PUT /api/cart/items/{id}`: ปรับเปลี่ยนจำนวนสินค้าในตะกร้าบนเซิร์ฟเวอร์
      - `DELETE /api/cart/items/{id}`: ลบสินค้าออกจากตะกร้าบนเซิร์ฟเวอร์

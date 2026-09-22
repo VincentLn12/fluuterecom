@@ -39,12 +39,17 @@ import '../../features/merchant/views/manage_orders_page.dart';
 import '../../features/merchant/views/manage_contents_page.dart';
 import '../../features/merchant/views/content_form_page.dart';
 import '../../features/merchant/views/merchant_export_page.dart';
+import '../../features/admin/bindings/admin_binding.dart';
 import '../../features/admin/views/admin_dashboard_page.dart';
+import '../../features/admin/views/admin_orders_page.dart';
+import '../../features/admin/views/admin_payouts_page.dart';
 import '../../features/admin/views/manage_shops_page.dart';
 import '../../features/admin/views/manage_categories_page.dart';
 import '../../features/admin/views/manage_contents_page.dart';
 import '../../features/admin/views/manage_tags_page.dart';
+import '../../features/admin/views/manage_schedules_page.dart';
 import '../../features/admin/views/reports_page.dart';
+import '../../features/admin/views/admin_export_page.dart';
 
 class AppPages {
   static const initial = AppRoutes.initial;
@@ -181,17 +186,65 @@ class AppPages {
       page: () => const MerchantExportPage(),
       binding: MerchantBinding(),
     ),
-    GetPage(name: AppRoutes.admin, page: () => const AdminDashboardPage()),
-    GetPage(name: AppRoutes.adminShops, page: () => const ManageShopsPage()),
+    GetPage(
+      name: AppRoutes.admin,
+      page: () => const AdminDashboardPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminOrders,
+      page: () => const AdminOrdersPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminPayouts,
+      page: () => const AdminPayoutsPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminShops,
+      page: () => const ManageShopsPage(),
+      binding: AdminBinding(),
+    ),
     GetPage(
       name: AppRoutes.adminCategories,
       page: () => const ManageCategoriesPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminProductCategories,
+      page: () => const ManageCategoriesPage(),
+      binding: AdminBinding(),
     ),
     GetPage(
       name: AppRoutes.adminContents,
       page: () => const ManageAdminContentsPage(),
+      binding: AdminBinding(),
     ),
-    GetPage(name: AppRoutes.adminTags, page: () => const ManageTagsPage()),
-    GetPage(name: AppRoutes.adminReports, page: () => const ReportsPage()),
+    GetPage(
+      name: AppRoutes.adminContentCategories,
+      page: () => const ManageAdminContentsPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminTags,
+      page: () => const ManageTagsPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminSchedules,
+      page: () => const ManageSchedulesPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminReports,
+      page: () => const ReportsPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminExports,
+      page: () => const AdminExportPage(),
+      binding: AdminBinding(),
+    ),
   ];
 }
