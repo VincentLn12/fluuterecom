@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,8 +7,29 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../models/order_model.dart';
 
-class OrderDetailPage extends StatelessWidget {
+class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({super.key});
+
+  @override
+  State<OrderDetailPage> createState() => _OrderDetailPageState();
+}
+
+class _OrderDetailPageState extends State<OrderDetailPage> {
+  Timer? _countdownTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +86,11 @@ class OrderDetailPage extends StatelessWidget {
                   // 1. Status Banner Header
                   _buildStatusBanner(order),
 
+                  if (order.isAwaitingPayment || order.isPaymentExpired) ...[
+                    const SizedBox(height: 12),
+                    _buildPaymentExpiryNotice(order),
+                  ],
+
                   const SizedBox(height: 16),
 
                   // 2. Shipping Address Card
@@ -82,9 +109,12 @@ class OrderDetailPage extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   // 5. Payment Button if Pending
-                  if (order.orderStatus.toLowerCase() == 'pending')
-                    if (order.paymentStatus.toLowerCase() == 'pendingverification' ||
-                        (order.slipImageUrl != null && order.slipImageUrl!.isNotEmpty))
+                  if (order.orderStatus.toLowerCase() == 'pending' &&
+                      !order.isPaymentExpired)
+                    if (order.paymentStatus.toLowerCase() ==
+                            'pendingverification' ||
+                        (order.slipImageUrl != null &&
+                            order.slipImageUrl!.isNotEmpty))
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(
@@ -170,32 +200,38 @@ class OrderDetailPage extends StatelessWidget {
           bannerIcon = Icons.hourglass_empty_rounded;
           statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
           break;
-      case 'paid':
-      case 'processing':
-        bannerBg = const Color(0xFF2A9D8F);
-        bannerIcon = Icons.inventory_2_rounded;
-        statusDesc = 'ผู้ขายกำลังจัดเตรียมสินค้าของคุณเพื่อการจัดส่ง';
-        break;
-      case 'shipped':
-        bannerBg = const Color(0xFF2980B9);
-        bannerIcon = Icons.local_shipping_rounded;
-        statusDesc = 'พัสดุของคุณอยู่ระหว่างการจัดส่งไปยังที่อยู่ระบุ';
-        break;
-      case 'completed':
-        bannerBg = const Color(0xFF059669);
-        bannerIcon = Icons.check_circle_rounded;
-        statusDesc =
-            'คำสั่งซื้อสำเร็จ ขอบคุณที่ร่วมอุดหนุนสินค้าโอทอปกาญจนบุรี';
-        break;
-      case 'cancelled':
-        bannerBg = const Color(0xFF786B62);
-        bannerIcon = Icons.cancel_rounded;
-        statusDesc = 'คำสั่งซื้อนี้ถูกยกเลิกเรียบร้อยแล้ว';
-        break;
-      default:
-        bannerBg = const Color(0xFFD96C2C);
-        bannerIcon = Icons.info_rounded;
-        statusDesc = 'สถานะคำสั่งซื้อปัจจุบันของคุณ';
+        case 'paid':
+        case 'processing':
+          bannerBg = const Color(0xFF2A9D8F);
+          bannerIcon = Icons.inventory_2_rounded;
+          statusDesc = 'ผู้ขายกำลังจัดเตรียมสินค้าของคุณเพื่อการจัดส่ง';
+          break;
+        case 'shipped':
+          bannerBg = const Color(0xFF2980B9);
+          bannerIcon = Icons.local_shipping_rounded;
+          statusDesc = 'พัสดุของคุณอยู่ระหว่างการจัดส่งไปยังที่อยู่ระบุ';
+          break;
+        case 'completed':
+          bannerBg = const Color(0xFF059669);
+          bannerIcon = Icons.check_circle_rounded;
+          statusDesc =
+              'คำสั่งซื้อสำเร็จ ขอบคุณที่ร่วมอุดหนุนสินค้าโอทอปกาญจนบุรี';
+          break;
+        case 'cancelled':
+          bannerBg = const Color(0xFF786B62);
+          bannerIcon = Icons.cancel_rounded;
+          statusDesc = 'คำสั่งซื้อนี้ถูกยกเลิกเรียบร้อยแล้ว';
+          break;
+        case 'expired':
+          bannerBg = const Color(0xFF786B62);
+          bannerIcon = Icons.timer_off_rounded;
+          statusDesc =
+              'คำสั่งซื้อนี้ถูกยกเลิก เพราะไม่ได้ชำระเงินภายใน 30 นาที หากยังต้องการสินค้า กรุณาสั่งซื้อใหม่';
+          break;
+        default:
+          bannerBg = const Color(0xFFD96C2C);
+          bannerIcon = Icons.info_rounded;
+          statusDesc = 'สถานะคำสั่งซื้อปัจจุบันของคุณ';
       }
     }
 
@@ -256,6 +292,60 @@ class OrderDetailPage extends StatelessWidget {
             bannerIcon,
             size: 44,
             color: Colors.white.withValues(alpha: 0.9),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPaymentExpiryNotice(OrderModel order) {
+    final expired = order.isPaymentExpired;
+    final remaining = order.remainingPaymentTime ?? Duration.zero;
+    final hours = remaining.inHours.toString().padLeft(2, '0');
+    final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');
+    final color = expired ? const Color(0xFFC62828) : const Color(0xFFE65100);
+    final expiresAtText = order.paymentExpiresAt == null
+        ? null
+        : _formatDate(order.paymentExpiresAt!);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.45)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            expired ? Icons.timer_off_rounded : Icons.timer_outlined,
+            color: color,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  expired
+                  ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
+                      : 'กรุณาชำระภายใน $hours:$minutes:$seconds นาที',
+                  style: GoogleFonts.krub(
+                    color: color,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                if (expiresAtText != null) ...[
+                  const SizedBox(height: 3),
+                  Text(
+                    'ชำระได้ถึง $expiresAtText',
+                    style: GoogleFonts.krub(color: color, fontSize: 12),
+                  ),
+                ],
+              ],
+            ),
           ),
         ],
       ),
@@ -698,10 +788,11 @@ class OrderDetailPage extends StatelessWidget {
       'พ.ย.',
       'ธ.ค.',
     ];
-    final monthName = months[dt.month - 1];
-    final yearThai = dt.year + 543;
-    final minuteStr = dt.minute.toString().padLeft(2, '0');
-    return '${dt.day} $monthName $yearThai - ${dt.hour}:$minuteStr น.';
+    final thaiTime = dt.toUtc().add(const Duration(hours: 7));
+    final monthName = months[thaiTime.month - 1];
+    final yearThai = thaiTime.year + 543;
+    final minuteStr = thaiTime.minute.toString().padLeft(2, '0');
+    return '${thaiTime.day} $monthName $yearThai - ${thaiTime.hour}:$minuteStr น.';
   }
 
   Widget _buildSlipImageWidget(

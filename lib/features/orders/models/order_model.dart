@@ -56,6 +56,9 @@ class OrderModel {
   final String? carrierName;
   final String? trackingNumber;
   final DateTime? createdAt;
+
+  /// UTC instant supplied by the API. Never derive this from [createdAt].
+  final DateTime? paymentExpiresAt;
   final List<OrderItemModel> items;
 
   String get id => orderId;
@@ -79,10 +82,24 @@ class OrderModel {
     this.carrierName,
     this.trackingNumber,
     this.createdAt,
+    this.paymentExpiresAt,
     this.items = const [],
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parseUtcDate(dynamic value) {
+      if (value == null) return null;
+      final raw = value.toString().trim();
+      if (raw.isEmpty) return null;
+      // The API defines timestamps without a suffix as UTC; DateTime.parse
+      // would otherwise interpret them using the device timezone.
+      final hasTimezone = RegExp(
+        r'(Z|[+-]\d{2}:?\d{2})$',
+        caseSensitive: false,
+      ).hasMatch(raw);
+      return DateTime.tryParse(hasTimezone ? raw : '${raw}Z')?.toUtc();
+    }
+
     String? resolveUrl(dynamic val) {
       if (val == null) return null;
       String str = val.toString();
@@ -125,11 +142,30 @@ class OrderModel {
       trackingNumber:
           json['trackingNumber']?.toString() ??
           json['shipment']?['trackingNumber']?.toString(),
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'].toString())
-          : null,
+      createdAt: parseUtcDate(json['createdAt']),
+      paymentExpiresAt: parseUtcDate(json['paymentExpiresAt']),
       items: parsedItems,
     );
+  }
+
+  bool get isAwaitingPayment =>
+      orderStatus.toLowerCase() == 'pending' &&
+      paymentStatus.toLowerCase() == 'pending';
+
+  bool get isPaymentExpired {
+    if (orderStatus.toLowerCase() == 'expired' ||
+        paymentStatus.toLowerCase() == 'expired') {
+      return true;
+    }
+    return isAwaitingPayment &&
+        paymentExpiresAt != null &&
+        !paymentExpiresAt!.isAfter(DateTime.now().toUtc());
+  }
+
+  Duration? get remainingPaymentTime {
+    if (!isAwaitingPayment || paymentExpiresAt == null) return null;
+    final remaining = paymentExpiresAt!.difference(DateTime.now().toUtc());
+    return remaining.isNegative ? Duration.zero : remaining;
   }
 
   String get statusLabel {
@@ -152,6 +188,8 @@ class OrderModel {
         return 'สำเร็จแล้ว';
       case 'cancelled':
         return 'ยกเลิกแล้ว';
+      case 'expired':
+        return 'หมดเวลาชำระ';
       default:
         return orderStatus;
     }

@@ -12,6 +12,7 @@ class PaymentBottomBar extends GetView<PaymentController> {
       final currentOrder = controller.order.value;
       final total = currentOrder?.totalAmount ?? 0.0;
       final isStripe = controller.selectedMethod.value == 'stripe';
+      final isExpired = controller.isPaymentExpired;
 
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
@@ -57,13 +58,15 @@ class PaymentBottomBar extends GetView<PaymentController> {
                 child: SizedBox(
                   height: 48,
                   child: ElevatedButton.icon(
-                    onPressed: () {
-                      if (isStripe) {
-                        controller.processStripePayment();
-                      } else {
-                        controller.submitSlipPayment();
-                      }
-                    },
+                    onPressed: isExpired
+                        ? null
+                        : () {
+                            if (isStripe) {
+                              controller.processStripePayment();
+                            } else {
+                              controller.submitSlipPayment();
+                            }
+                          },
                     icon: Icon(
                       isStripe ? Icons.lock_rounded : Icons.send_rounded,
                       size: 18,
@@ -76,7 +79,9 @@ class PaymentBottomBar extends GetView<PaymentController> {
                       ),
                     ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isStripe
+                      backgroundColor: isExpired
+                          ? const Color(0xFF9E9E9E)
+                          : isStripe
                           ? const Color(0xFF1F5F58)
                           : const Color(0xFFD96C2C),
                       foregroundColor: Colors.white,

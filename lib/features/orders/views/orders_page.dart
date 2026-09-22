@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,8 +8,30 @@ import '../models/order_model.dart';
 
 import '../../../shared/widgets/loading_widget.dart';
 
-class OrdersPage extends GetView<OrderController> {
+class OrdersPage extends StatefulWidget {
   const OrdersPage({super.key});
+
+  @override
+  State<OrdersPage> createState() => _OrdersPageState();
+}
+
+class _OrdersPageState extends State<OrdersPage> {
+  final OrderController controller = Get.find<OrderController>();
+  Timer? _countdownTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _countdownTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -293,33 +316,40 @@ class OrdersPage extends GetView<OrderController> {
                 const SizedBox(width: 8),
                 // Status Badge Chip
                 Flexible(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 9,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: statusConfig.bg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(statusConfig.icon, size: 12, color: Colors.white),
-                        const SizedBox(width: 4),
-                        Flexible(
-                          child: Text(
-                            order.statusLabel,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.krub(
-                              fontSize: 11.5,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: statusConfig.bg,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            statusConfig.icon,
+                            size: 12,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 4),
+                          Flexible(
+                            child: Text(
+                              order.statusLabel,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: GoogleFonts.krub(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -361,6 +391,12 @@ class OrdersPage extends GetView<OrderController> {
           ),
 
           const Divider(height: 1, color: Color(0xFFE8D9C9)),
+
+          if (order.isAwaitingPayment || order.isPaymentExpired)
+            _buildPaymentExpiryNotice(order),
+
+          if (order.isAwaitingPayment || order.isPaymentExpired)
+            const Divider(height: 1, color: Color(0xFFE8D9C9)),
 
           // 3. Products List
           Padding(
@@ -495,7 +531,8 @@ class OrdersPage extends GetView<OrderController> {
               alignment: WrapAlignment.end,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (order.orderStatus.toLowerCase() == 'pending') ...[
+                if (order.orderStatus.toLowerCase() == 'pending' &&
+                    !order.isPaymentExpired) ...[
                   if (order.paymentStatus.toLowerCase() ==
                           'pendingverification' ||
                       (order.slipImageUrl != null &&
@@ -670,6 +707,51 @@ class OrdersPage extends GetView<OrderController> {
     );
   }
 
+  Widget _buildPaymentExpiryNotice(OrderModel order) {
+    final expired = order.isPaymentExpired;
+    final remaining = order.remainingPaymentTime ?? Duration.zero;
+    final hours = remaining.inHours.toString().padLeft(2, '0');
+    final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
+    final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');
+    final color = expired ? const Color(0xFFC62828) : const Color(0xFFE65100);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: Row(
+        children: [
+          Icon(
+            expired ? Icons.timer_off_rounded : Icons.timer_outlined,
+            size: 18,
+            color: color,
+          ),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  expired
+                      ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
+                      : 'กรุณาชำระภายใน $hours:$minutes:$seconds นาที',
+                  style: GoogleFonts.krub(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+                if (order.paymentExpiresAt != null)
+                  Text(
+                    'ชำระได้ถึง ${_formatDate(order.paymentExpiresAt!)}',
+                    style: GoogleFonts.krub(fontSize: 11.5, color: color),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   _StatusConfig _getStatusConfig(String status) {
     switch (status.toLowerCase()) {
       case 'pending':
@@ -698,6 +780,11 @@ class OrdersPage extends GetView<OrderController> {
           bg: const Color(0xFF786B62),
           icon: Icons.cancel_outlined,
         );
+      case 'expired':
+        return _StatusConfig(
+          bg: const Color(0xFF786B62),
+          icon: Icons.timer_off_rounded,
+        );
       default:
         return _StatusConfig(
           bg: const Color(0xFFD96C2C),
@@ -721,10 +808,11 @@ class OrdersPage extends GetView<OrderController> {
       'พ.ย.',
       'ธ.ค.',
     ];
-    final monthName = months[dt.month - 1];
-    final yearThai = dt.year + 543;
-    final minuteStr = dt.minute.toString().padLeft(2, '0');
-    return '${dt.day} $monthName $yearThai - ${dt.hour}:$minuteStr น.';
+    final thaiTime = dt.toUtc().add(const Duration(hours: 7));
+    final monthName = months[thaiTime.month - 1];
+    final yearThai = thaiTime.year + 543;
+    final minuteStr = thaiTime.minute.toString().padLeft(2, '0');
+    return '${thaiTime.day} $monthName $yearThai - ${thaiTime.hour}:$minuteStr น.';
   }
 }
 

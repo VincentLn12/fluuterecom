@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,8 @@ class PaymentController extends GetxController {
   final slipUploadTime = Rxn<DateTime>();
 
   final Rxn<OrderModel> order = Rxn<OrderModel>();
+  final currentTime = DateTime.now().toUtc().obs;
+  Timer? _countdownTimer;
 
   @override
   void onInit() {
@@ -36,9 +39,33 @@ class PaymentController extends GetxController {
     if (args is OrderModel) {
       order.value = args;
     }
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      currentTime.value = DateTime.now().toUtc();
+    });
+  }
+
+  bool get isPaymentExpired {
+    currentTime.value;
+    return order.value?.isPaymentExpired ?? false;
+  }
+
+  bool get canMakePayment =>
+      order.value?.isAwaitingPayment == true && !isPaymentExpired;
+
+  bool _ensurePaymentStillAvailable() {
+    if (canMakePayment) return true;
+    Get.snackbar(
+      'ชำระเงินไม่ทันเวลา',
+      'คำสั่งซื้อนี้ถูกยกเลิก เพราะไม่ได้ชำระเงินภายใน 30 นาที หากยังต้องการสินค้า กรุณาสั่งซื้อใหม่',
+      backgroundColor: const Color(0xFFC62828),
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+    );
+    return false;
   }
 
   void setPaymentMethod(String method) {
+    if (!canMakePayment) return;
     selectedMethod.value = method;
   }
 
@@ -46,6 +73,7 @@ class PaymentController extends GetxController {
   Future<void> presentStripePaymentSheet() async {
     final currentOrder = order.value;
     if (currentOrder == null) return;
+    if (!_ensurePaymentStillAvailable()) return;
 
     isLoading.value = true;
     try {
@@ -115,6 +143,7 @@ class PaymentController extends GetxController {
   Future<void> processStripePayment() async {
     final currentOrder = order.value;
     if (currentOrder == null) return;
+    if (!_ensurePaymentStillAvailable()) return;
 
     isLoading.value = true;
     try {
@@ -208,6 +237,7 @@ class PaymentController extends GetxController {
   Future<void> submitSlipPayment() async {
     final currentOrder = order.value;
     if (currentOrder == null) return;
+    if (!_ensurePaymentStillAvailable()) return;
 
     if (uploadedSlipPath.value == null) {
       Get.snackbar(
@@ -245,6 +275,7 @@ class PaymentController extends GetxController {
         paymentStatus: 'PendingVerification',
         slipImageUrl: slipFilePath,
         createdAt: currentOrder.createdAt,
+        paymentExpiresAt: currentOrder.paymentExpiresAt,
         items: currentOrder.items,
       );
 
@@ -273,6 +304,7 @@ class PaymentController extends GetxController {
 
   @override
   void onClose() {
+    _countdownTimer?.cancel();
     cardNumberController.dispose();
     cardExpiryController.dispose();
     cardCvcController.dispose();
