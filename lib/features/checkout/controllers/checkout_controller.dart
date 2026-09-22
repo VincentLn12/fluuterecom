@@ -78,6 +78,8 @@ class CheckoutController extends GetxController {
   }
 
   Future<void> submitCheckout() async {
+    // Prices and deal allocations may have changed while this page was open.
+    await cartController.fetchCart();
     final name = receiverNameController.text.trim();
     final phone = receiverPhoneController.text.trim();
     final addressLine = addressLineController.text.trim();

@@ -219,6 +219,14 @@ class CartShopGroupCard extends GetView<CartController> {
                             ),
                           if (item.dealQuantity > 0 || item.normalQuantity > 0)
                             const SizedBox(height: 4),
+                          if (item.dealQuantity > 0 && item.dealEndsAt != null)
+                            Text(
+                              'สิทธิ์ราคาพิเศษสิ้นสุด ${_formatThaiDateTime(item.dealEndsAt!)}',
+                              style: GoogleFonts.krub(
+                                fontSize: 10.5,
+                                color: const Color(0xFFE65100),
+                              ),
+                            ),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -327,5 +335,11 @@ class CartShopGroupCard extends GetView<CartController> {
         ],
       ),
     );
+  }
+
+  String _formatThaiDateTime(DateTime utcDateTime) {
+    final thaiTime = utcDateTime.toUtc().add(const Duration(hours: 7));
+    return '${thaiTime.day}/${thaiTime.month}/${thaiTime.year + 543} '
+        '${thaiTime.hour.toString().padLeft(2, '0')}:${thaiTime.minute.toString().padLeft(2, '0')} น.';
   }
 }

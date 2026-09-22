@@ -12,6 +12,7 @@ class CartItemModel {
   final double? dealUnitPrice;
   final double? normalUnitPrice;
   final String? dealType;
+  final DateTime? dealEndsAt;
 
   CartItemModel({
     required this.id,
@@ -25,6 +26,7 @@ class CartItemModel {
     this.dealUnitPrice,
     this.normalUnitPrice,
     this.dealType,
+    this.dealEndsAt,
   });
 
   double get subtotal =>
@@ -40,6 +42,16 @@ class CartItemModel {
       : 'ร้านค้าชุมชน';
 
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    DateTime? parseUtc(dynamic value) {
+      if (value == null) return null;
+      final raw = value.toString();
+      final hasTimezone = RegExp(
+        r'(Z|[+-]\d{2}:?\d{2})$',
+        caseSensitive: false,
+      ).hasMatch(raw);
+      return DateTime.tryParse(hasTimezone ? raw : '${raw}Z')?.toUtc();
+    }
+
     final productId = json['productId']?.toString() ?? '';
     final productName = json['productName']?.toString() ?? 'สินค้า';
     final shopId = json['shopId']?.toString() ?? '';
@@ -80,6 +92,7 @@ class CartItemModel {
         json['normalUnitPrice']?.toString() ?? '',
       ),
       dealType: json['dealType']?.toString(),
+      dealEndsAt: parseUtc(json['dealEndsAt']),
     );
   }
 
@@ -102,6 +115,7 @@ class CartItemModel {
       dealUnitPrice: dealUnitPrice,
       normalUnitPrice: normalUnitPrice,
       dealType: dealType,
+      dealEndsAt: dealEndsAt,
     );
   }
 }

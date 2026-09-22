@@ -124,6 +124,23 @@ class CheckoutItemsSection extends GetView<CheckoutController> {
                           color: Colors.grey[600],
                         ),
                       ),
+                      if (item.dealQuantity > 0)
+                        Text(
+                          '${item.dealType?.toLowerCase() == 'localdeal' ? 'โปรเด็ดชุมชน' : 'โปรโมชันพิเศษ'} ${item.dealQuantity} ชิ้น x ฿${(item.dealUnitPrice ?? 0).toStringAsFixed(2)}',
+                          style: GoogleFonts.krub(
+                            fontSize: 11,
+                            color: const Color(0xFF047857),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      if (item.normalQuantity > 0)
+                        Text(
+                          'ราคาปกติ ${item.normalQuantity} ชิ้น x ฿${(item.normalUnitPrice ?? item.product.price).toStringAsFixed(2)}',
+                          style: GoogleFonts.krub(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                          ),
+                        ),
                     ],
                   ),
                 ),
