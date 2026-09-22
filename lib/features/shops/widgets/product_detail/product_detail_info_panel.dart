@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,10 @@ class ProductDetailInfoPanel extends GetView<ProductDetailController> {
   @override
   Widget build(BuildContext context) {
     final inStock = product.quantity > 0;
+    final deal = product.activeDeal;
+    final hasDeal =
+        deal != null && !deal.isExpired && deal.availableQuantity > 0;
+    final thaiEnd = deal?.endsAt?.toUtc().add(const Duration(hours: 7));
     final reviews = controller.shopReviews;
 
     // Real review stats computation
@@ -26,6 +31,23 @@ class ProductDetailInfoPanel extends GetView<ProductDetailController> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (deal != null && !deal.isExpired && deal.availableQuantity > 0)
+          Container(
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE76F51),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(
+              deal.label,
+              style: GoogleFonts.krub(
+                color: Colors.white,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         // Category Tag Pill
         if (shop?.categoryName != null && shop!.categoryName!.isNotEmpty)
           Container(
@@ -194,78 +216,185 @@ class ProductDetailInfoPanel extends GetView<ProductDetailController> {
 
         // Price Display Box (Mobile Optimized)
         Container(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: const Color(0xFFD96C2C).withValues(alpha: 0.08),
-            borderRadius: BorderRadius.circular(18),
+            gradient: hasDeal
+                ? const LinearGradient(
+                    colors: [Color(0xFFFFF1E8), Color(0xFFFFD8C1)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  )
+                : null,
+            color: hasDeal
+                ? null
+                : const Color(0xFFD96C2C).withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFFD96C2C).withValues(alpha: 0.3),
+              color: const Color(0xFFD96C2C).withValues(alpha: 0.45),
               width: 1.2,
             ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
-                  Text(
-                    'ราคาขาย',
-                    style: GoogleFonts.krub(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF786B62),
+                  if (hasDeal)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 9,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE65100),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.local_fire_department_rounded,
+                            color: Colors.white,
+                            size: 15,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            deal.label,
+                            style: GoogleFonts.krub(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  else
+                    Text(
+                      'ราคาขาย',
+                      style: GoogleFonts.krub(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF786B62),
+                      ),
                     ),
-                  ),
+                  const Spacer(),
                   Text(
-                    '฿${product.price.toStringAsFixed(0)}',
+                    inStock
+                        ? 'พร้อมส่ง • ${product.quantity} ชิ้น'
+                        : 'สินค้าหมด',
                     style: GoogleFonts.krub(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w900,
-                      color: const Color(0xFFD96C2C),
+                      fontSize: 11,
+                      color: inStock
+                          ? const Color(0xFF2E7D32)
+                          : const Color(0xFFC62828),
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-
-              // Stock Pill Badge
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: const Color(0xFFD96C2C).withValues(alpha: 0.3),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '฿${(hasDeal ? product.dealPrice : product.price).toStringAsFixed(0)}',
+                    style: GoogleFonts.krub(
+                      fontSize: 34,
+                      fontWeight: FontWeight.w900,
+                      color: const Color(0xFFD96C2C),
+                    ),
+                  ),
+                  if (hasDeal)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 9, bottom: 7),
+                      child: Text(
+                        '฿${product.price.toStringAsFixed(0)}',
+                        style: GoogleFonts.krub(
+                          fontSize: 14,
+                          color: const Color(0xFF786B62),
+                          decoration: TextDecoration.lineThrough,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              if (hasDeal) ...[
+                const SizedBox(height: 10),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.68),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: StreamBuilder<int>(
+                    stream: Stream.periodic(
+                      const Duration(seconds: 1),
+                      (tick) => tick,
+                    ),
+                    builder: (context, snapshot) {
+                      final remainingNow = deal.endsAt == null
+                          ? Duration.zero
+                          : deal.endsAt!.difference(DateTime.now().toUtc());
+                      final countdown = remainingNow.isNegative
+                          ? Duration.zero
+                          : remainingNow;
+                      final h = countdown.inHours.toString().padLeft(2, '0');
+                      final m = (countdown.inMinutes % 60).toString().padLeft(
+                        2,
+                        '0',
+                      );
+                      final s = (countdown.inSeconds % 60).toString().padLeft(
+                        2,
+                        '0',
+                      );
+                      return Row(
+                        children: [
+                          const Icon(
+                            Icons.timer_outlined,
+                            color: Color(0xFFE65100),
+                            size: 18,
+                          ),
+                          const SizedBox(width: 7),
+                          Expanded(
+                            child: Text(
+                              'เหลือเวลา $h:$m:$s',
+                              style: GoogleFonts.krub(
+                                fontSize: 13,
+                                color: const Color(0xFFE65100),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            'เหลือ ${deal.availableQuantity} สิทธิ์',
+                            style: GoogleFonts.krub(
+                              fontSize: 11,
+                              color: const Color(0xFF786B62),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: inStock
-                            ? const Color(0xFF2E7D32)
-                            : const Color(0xFFC62828),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      inStock ? 'สต็อก ${product.quantity} ชิ้น' : 'สินค้าหมด',
+                if (thaiEnd != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 6),
+                    child: Text(
+                      'สิ้นสุด ${thaiEnd.day}/${thaiEnd.month}/${thaiEnd.year + 543} เวลา ${thaiEnd.hour.toString().padLeft(2, '0')}:${thaiEnd.minute.toString().padLeft(2, '0')} น.',
                       style: GoogleFonts.krub(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFFD96C2C),
+                        fontSize: 10.5,
+                        color: const Color(0xFF786B62),
                       ),
                     ),
-                  ],
-                ),
-              ),
+                  ),
+              ],
             ],
           ),
         ),

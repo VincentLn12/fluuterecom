@@ -156,6 +156,29 @@ class ShopRepository {
     return [];
   }
 
+  Future<List<ProductModel>> fetchActiveDeals({int limit = 12}) async {
+    try {
+      final response = await _apiClient.get(
+        '/products/deals/active',
+        query: {'limit': limit.clamp(1, 24).toString()},
+      );
+      if (response.isOk && response.body != null) {
+        final data = response.body;
+        final items = data is List
+            ? data
+            : (data is Map && data['items'] is List
+                  ? data['items'] as List
+                  : <dynamic>[]);
+        return items
+            .map((e) => ProductModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching active deals: $e');
+    }
+    return [];
+  }
+
   Future<ProductModel?> fetchProductById(String id) async {
     try {
       final response = await _apiClient.get('/products/$id');

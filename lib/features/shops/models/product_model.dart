@@ -1,4 +1,5 @@
 import '../../../../app/config/api_config.dart';
+import 'product_deal_model.dart';
 
 class ProductModel {
   final String id;
@@ -12,6 +13,7 @@ class ProductModel {
   final String? imageUrl;
   final String status;
   final List<String> detailImages;
+  final ProductDealModel? activeDeal;
 
   ProductModel({
     required this.id,
@@ -25,6 +27,7 @@ class ProductModel {
     this.imageUrl,
     this.status = 'Active',
     this.detailImages = const [],
+    this.activeDeal,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -70,6 +73,19 @@ class ProductModel {
       imageUrl: rawImage,
       status: json['status']?.toString() ?? 'Active',
       detailImages: parsedDetailImages,
+      activeDeal: json['activeDeal'] is Map<String, dynamic>
+          ? ProductDealModel.fromJson(
+              json['activeDeal'] as Map<String, dynamic>,
+            )
+          : null,
     );
+  }
+
+  double get dealPrice {
+    final deal = activeDeal;
+    if (deal == null) return price;
+    return deal.discountType.toLowerCase() == 'percent'
+        ? price * (1 - deal.discountValue / 100)
+        : (price - deal.discountValue).clamp(0, price);
   }
 }

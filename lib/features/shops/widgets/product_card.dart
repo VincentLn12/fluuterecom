@@ -12,6 +12,9 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final deal = item.activeDeal;
+    final hasDeal =
+        deal != null && !deal.isExpired && deal.availableQuantity > 0;
     return GestureDetector(
       onTap: () {
         Get.toNamed(AppRoutes.productDetail, arguments: item);
@@ -36,14 +39,43 @@ class ProductCard extends StatelessWidget {
             // Product Image
             AspectRatio(
               aspectRatio: 1,
-              child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      item.imageUrl!,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                          _buildPlaceholder(),
-                    )
-                  : _buildPlaceholder(),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                        ? Image.network(
+                            item.imageUrl!,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                _buildPlaceholder(),
+                          )
+                        : _buildPlaceholder(),
+                  ),
+                  if (hasDeal)
+                    Positioned(
+                      top: 8,
+                      left: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 3,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE76F51),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          deal.label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
             ),
 
             // Product Details Column
@@ -70,19 +102,42 @@ class ProductCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Expanded(
-                          child: Text(
-                            '฿${item.price.toStringAsFixed(0)}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFFE76F51),
-                            ),
-                          ),
+                          child: hasDeal
+                              ? Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '฿${item.dealPrice.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFFE76F51),
+                                      ),
+                                    ),
+                                    Text(
+                                      '฿${item.price.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                        fontSize: 10,
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Text(
+                                  '฿${item.price.toStringAsFixed(0)}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    color: Color(0xFFE76F51),
+                                  ),
+                                ),
                         ),
                         InkWell(
-                          onTap: onAddToCart ??
+                          onTap:
+                              onAddToCart ??
                               () {
                                 Get.find<CartController>().addToCart(item);
                               },
@@ -96,7 +151,9 @@ class ProductCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF2A9D8F).withValues(alpha: 0.3),
+                                  color: const Color(
+                                    0xFF2A9D8F,
+                                  ).withValues(alpha: 0.3),
                                   blurRadius: 4,
                                   offset: const Offset(0, 2),
                                 ),

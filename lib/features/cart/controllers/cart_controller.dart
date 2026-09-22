@@ -9,6 +9,7 @@ import '../repositories/cart_repository.dart';
 class CartController extends GetxController {
   final CartRepository _repository = CartRepository();
   final cartItems = <CartItemModel>[].obs;
+  final cartTotal = 0.0.obs;
   final isLoading = false.obs;
 
   @override
@@ -41,6 +42,8 @@ class CartController extends GetxController {
             .map((e) => CartItemModel.fromJson(e as Map<String, dynamic>))
             .toList();
         cartItems.assignAll(parsedItems);
+        cartTotal.value =
+            double.tryParse(cartData['total']?.toString() ?? '') ?? 0;
       }
     } catch (e) {
       debugPrint('Error loading backend cart: $e');
@@ -56,9 +59,11 @@ class CartController extends GetxController {
       .where((item) => item.isSelected)
       .fold(0, (sum, item) => sum + item.quantity);
 
-  double get totalPrice => cartItems
-      .where((item) => item.isSelected)
-      .fold(0.0, (sum, item) => sum + item.subtotal);
+  double get totalPrice => cartItems.every((item) => item.isSelected)
+      ? cartTotal.value
+      : cartItems
+            .where((item) => item.isSelected)
+            .fold(0.0, (sum, item) => sum + item.subtotal);
 
   bool get isAllSelected =>
       cartItems.isNotEmpty && cartItems.every((item) => item.isSelected);
@@ -189,11 +194,11 @@ class CartController extends GetxController {
   }
 
   Future<void> removeFromCart(String id) async {
-    cartItems.removeWhere((item) => item.id == id);
     try {
       final authService = Get.find<AuthService>();
       if (authService.isLoggedIn.value) {
         await _repository.deleteCartItem(id);
+        await fetchCart();
       }
     } catch (e) {
       debugPrint('Error removing cart item: $e');
@@ -205,7 +210,6 @@ class CartController extends GetxController {
         .where((item) => item.isSelected)
         .map((e) => e.id)
         .toList();
-    cartItems.removeWhere((item) => item.isSelected);
 
     try {
       final authService = Get.find<AuthService>();
@@ -213,6 +217,7 @@ class CartController extends GetxController {
         for (final id in selectedIds) {
           await _repository.deleteCartItem(id);
         }
+        await fetchCart();
       }
     } catch (e) {
       debugPrint('Error removing selected cart items: $e');
@@ -241,12 +246,11 @@ class CartController extends GetxController {
       }
 
       final newQty = item.quantity + 1;
-      cartItems[index] = item.copyWith(quantity: newQty);
-
       try {
         final authService = Get.find<AuthService>();
         if (authService.isLoggedIn.value) {
           await _repository.updateCartItemQuantity(id, newQty);
+          await fetchCart();
         }
       } catch (e) {
         debugPrint('Error incrementing cart quantity: $e');
@@ -260,12 +264,11 @@ class CartController extends GetxController {
       final item = cartItems[index];
       if (item.quantity > 1) {
         final newQty = item.quantity - 1;
-        cartItems[index] = item.copyWith(quantity: newQty);
-
         try {
           final authService = Get.find<AuthService>();
           if (authService.isLoggedIn.value) {
             await _repository.updateCartItemQuantity(id, newQty);
+            await fetchCart();
           }
         } catch (e) {
           debugPrint('Error decrementing cart quantity: $e');

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../core/services/auth_service.dart';
 import '../../cart/controllers/cart_controller.dart';
-import '../../orders/models/order_model.dart';
 import '../../orders/models/user_address_model.dart';
 import '../../orders/repositories/order_repository.dart';
 
@@ -140,51 +139,17 @@ class CheckoutController extends GetxController {
         shippingAddress: fullAddress,
       );
 
-      OrderModel targetOrder;
-      if (orders.isNotEmpty) {
-        targetOrder = orders.first;
-      } else {
-        // Fallback local order creation so checkout ALWAYS succeeds smoothly!
-        final selectedItems = cartController.cartItems
-            .where((item) => item.isSelected)
-            .toList();
-
-        final orderItems = selectedItems
-            .map(
-              (i) => OrderItemModel(
-                orderItemId: DateTime.now().millisecondsSinceEpoch.toString(),
-                productId: i.product.id,
-                productName: i.product.name,
-                imageUrl: i.product.imageUrl,
-                quantity: i.quantity,
-                unitPrice: i.product.price,
-                totalPrice: i.subtotal,
-              ),
-            )
-            .toList();
-
-        targetOrder = OrderModel(
-          orderId: DateTime.now().millisecondsSinceEpoch.toString(),
-          shopId: selectedItems.isNotEmpty
-              ? selectedItems.first.product.shopId
-              : null,
-          shopName: selectedItems.isNotEmpty
-              ? selectedItems.first.effectiveShopName
-              : 'ร้านค้าชุมชน',
-          orderNumber: 'ORD-${DateTime.now().millisecondsSinceEpoch}',
-          subtotal: subtotal,
-          shippingFee: shippingFee.value,
-          totalAmount: totalAmount,
-          shippingMethod: selectedShippingMethod.value,
-          orderStatus: 'Pending',
-          paymentStatus: 'Pending',
-          receiverName: name,
-          receiverPhone: phone,
-          shippingAddress: fullAddress,
-          createdAt: DateTime.now(),
-          items: orderItems,
+      if (orders.isEmpty) {
+        await cartController.fetchCart();
+        Get.snackbar(
+          'ไม่สามารถสั่งซื้อได้',
+          'ราคาโปรโมชันหรือสต็อกอาจเปลี่ยน กรุณาตรวจสอบตะกร้าอีกครั้ง',
+          backgroundColor: const Color(0xFFC62828),
+          colorText: Colors.white,
         );
+        return;
       }
+      final targetOrder = orders.first;
 
       // Remove checkout items from cart
       cartController.removeSelectedItems();

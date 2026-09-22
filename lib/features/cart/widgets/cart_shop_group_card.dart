@@ -199,6 +199,27 @@ class CartShopGroupCard extends GetView<CartController> {
                           ),
                           const SizedBox(height: 6),
 
+                          if (item.dealQuantity > 0) ...[
+                            Text(
+                              '${item.dealType?.toLowerCase() == 'localdeal' ? 'โปรเด็ดชุมชน' : 'โปรโมชันพิเศษ'} ${item.dealQuantity} ชิ้น x ฿${(item.dealUnitPrice ?? 0).toStringAsFixed(2)}',
+                              style: GoogleFonts.krub(
+                                fontSize: 11,
+                                color: const Color(0xFF047857),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                          if (item.normalQuantity > 0)
+                            Text(
+                              'ราคาปกติ ${item.normalQuantity} ชิ้น x ฿${(item.normalUnitPrice ?? item.product.price).toStringAsFixed(2)}',
+                              style: GoogleFonts.krub(
+                                fontSize: 11,
+                                color: const Color(0xFF786B62),
+                              ),
+                            ),
+                          if (item.dealQuantity > 0 || item.normalQuantity > 0)
+                            const SizedBox(height: 4),
+
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -207,7 +228,7 @@ class CartShopGroupCard extends GetView<CartController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    '฿${item.product.price.toStringAsFixed(2)}',
+                                    'รวม ฿${item.subtotal.toStringAsFixed(2)}',
                                     style: GoogleFonts.krub(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,

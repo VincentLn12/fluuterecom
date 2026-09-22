@@ -20,6 +20,7 @@ class HomeController extends GetxController {
   final districts = <District>[].obs;
   final shops = <ShopModel>[].obs;
   final products = <ProductModel>[].obs;
+  final activeDeals = <ProductModel>[].obs;
 
   final searchInputController = TextEditingController();
   final popularTags = const [
@@ -121,6 +122,7 @@ class HomeController extends GetxController {
         _contentRepository.fetchDistricts(),
         _shopRepository.fetchShops(pageSize: 6),
         _shopRepository.fetchProducts(pageSize: 6),
+        _shopRepository.fetchActiveDeals(limit: 12),
       ]);
 
       categories.value = results[0] as List<ContentCategory>;
@@ -135,6 +137,7 @@ class HomeController extends GetxController {
       districts.value = results[2] as List<District>;
       shops.value = results[3] as List<ShopModel>;
       products.value = results[4] as List<ProductModel>;
+      activeDeals.value = results[5] as List<ProductModel>;
     } catch (e) {
       debugPrint('Error loading home data: $e');
     } finally {

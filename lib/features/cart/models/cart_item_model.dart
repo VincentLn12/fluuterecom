@@ -6,6 +6,12 @@ class CartItemModel {
   final String? shopName;
   int quantity;
   bool isSelected;
+  final double subtotalFromApi;
+  final int dealQuantity;
+  final int normalQuantity;
+  final double? dealUnitPrice;
+  final double? normalUnitPrice;
+  final String? dealType;
 
   CartItemModel({
     required this.id,
@@ -13,9 +19,16 @@ class CartItemModel {
     this.shopName,
     this.quantity = 1,
     this.isSelected = true,
+    this.subtotalFromApi = 0,
+    this.dealQuantity = 0,
+    this.normalQuantity = 0,
+    this.dealUnitPrice,
+    this.normalUnitPrice,
+    this.dealType,
   });
 
-  double get subtotal => product.price * quantity;
+  double get subtotal =>
+      subtotalFromApi > 0 ? subtotalFromApi : product.price * quantity;
 
   String get effectiveShopId =>
       product.shopId.isNotEmpty ? product.shopId : 'unknown_shop';
@@ -39,7 +52,8 @@ class CartItemModel {
       id: productId,
       name: productName,
       description: '',
-      price: unitPrice,
+      price:
+          double.tryParse(json['originalPrice']?.toString() ?? '') ?? unitPrice,
       quantity: (json['availableQuantity'] as num?)?.toInt() ?? 100,
       imageUrl: imageUrl,
       shopId: shopId,
@@ -55,6 +69,17 @@ class CartItemModel {
       shopName: shopName,
       quantity: quantity,
       isSelected: true,
+      subtotalFromApi:
+          double.tryParse(json['subtotal']?.toString() ?? '') ??
+          unitPrice * quantity,
+      dealQuantity: int.tryParse(json['dealQuantity']?.toString() ?? '') ?? 0,
+      normalQuantity:
+          int.tryParse(json['normalQuantity']?.toString() ?? '') ?? 0,
+      dealUnitPrice: double.tryParse(json['dealUnitPrice']?.toString() ?? ''),
+      normalUnitPrice: double.tryParse(
+        json['normalUnitPrice']?.toString() ?? '',
+      ),
+      dealType: json['dealType']?.toString(),
     );
   }
 
@@ -71,6 +96,12 @@ class CartItemModel {
       shopName: shopName ?? this.shopName,
       quantity: quantity ?? this.quantity,
       isSelected: isSelected ?? this.isSelected,
+      subtotalFromApi: subtotalFromApi,
+      dealQuantity: dealQuantity,
+      normalQuantity: normalQuantity,
+      dealUnitPrice: dealUnitPrice,
+      normalUnitPrice: normalUnitPrice,
+      dealType: dealType,
     );
   }
 }
