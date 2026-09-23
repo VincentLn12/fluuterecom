@@ -88,7 +88,11 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                           color: Color(0xFF047857),
                         ),
                       )
-                    : const Icon(Icons.refresh_rounded, color: Color(0xFF047857), size: 22),
+                    : const Icon(
+                        Icons.refresh_rounded,
+                        color: Color(0xFF047857),
+                        size: 22,
+                      ),
                 onPressed: controller.isRefreshing.value
                     ? null
                     : () => controller.refreshData(),
@@ -100,7 +104,9 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const LoadingWidget(message: 'กำลังโหลดข้อมูลแดชบอร์ดร้านค้า...');
+          return const LoadingWidget(
+            message: 'กำลังโหลดข้อมูลแดชบอร์ดร้านค้า...',
+          );
         }
 
         final shop = controller.myShop.value;
@@ -131,6 +137,9 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
 
                 // Revenue & Inventory Metrics Grid
                 _buildMetricsGrid(report),
+                const SizedBox(height: 20),
+
+                _buildPromotionAnalytics(report),
                 const SizedBox(height: 20),
 
                 // Quick Navigation Actions
@@ -211,15 +220,21 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.2),
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.6), width: 2),
-                        image: (coverImage != null && coverImage.toString().isNotEmpty)
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.6),
+                          width: 2,
+                        ),
+                        image:
+                            (coverImage != null &&
+                                coverImage.toString().isNotEmpty)
                             ? DecorationImage(
                                 image: NetworkImage(coverImage.toString()),
                                 fit: BoxFit.cover,
                               )
                             : null,
                       ),
-                      child: (coverImage == null || coverImage.toString().isEmpty)
+                      child:
+                          (coverImage == null || coverImage.toString().isEmpty)
                           ? const Icon(
                               Icons.storefront_rounded,
                               color: Colors.white,
@@ -281,18 +296,27 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                 ),
                 const SizedBox(height: 16),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 8,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.15),
+                    ),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          const Icon(Icons.verified_user_rounded, color: Color(0xFFA7F3D0), size: 16),
+                          const Icon(
+                            Icons.verified_user_rounded,
+                            color: Color(0xFFA7F3D0),
+                            size: 16,
+                          ),
                           const SizedBox(width: 6),
                           Text(
                             'ระบบแดชบอร์ดร้านค้ากาญจนบุรี',
@@ -308,7 +332,10 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                         onTap: () => Get.toNamed(AppRoutes.registerShop),
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
                           child: Row(
                             children: [
                               Text(
@@ -320,7 +347,11 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                                 ),
                               ),
                               const SizedBox(width: 2),
-                              const Icon(Icons.chevron_right_rounded, color: Color(0xFFA7F3D0), size: 16),
+                              const Icon(
+                                Icons.chevron_right_rounded,
+                                color: Color(0xFFA7F3D0),
+                                size: 16,
+                              ),
                             ],
                           ),
                         ),
@@ -412,7 +443,11 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                   color: const Color(0xFFFEF3C7),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.warning_amber_rounded, color: Color(0xFFD97706), size: 20),
+                child: const Icon(
+                  Icons.warning_amber_rounded,
+                  color: Color(0xFFD97706),
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -456,7 +491,10 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
               icon: const Icon(Icons.edit_document, size: 18),
               label: Text(
                 'ลงทะเบียน / แก้ไขข้อมูลร้านค้า',
-                style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 13),
+                style: GoogleFonts.krub(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
               ),
             ),
           ),
@@ -466,8 +504,12 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
   }
 
   String _getStatusDescription(String? status) {
-    if (status == 'PendingApproval') return 'คำขอร้านค้าของคุณกำลังอยู่ระหว่างการตรวจสอบโดยผู้ดูแลระบบ';
-    if (status == 'Rejected') return 'ร้านค้าของคุณยังไม่ได้รับการอนุมัติ กรุณาปรับปรุงข้อมูลตามคำแนะนำ';
+    if (status == 'PendingApproval') {
+      return 'คำขอร้านค้าของคุณกำลังอยู่ระหว่างการตรวจสอบโดยผู้ดูแลระบบ';
+    }
+    if (status == 'Rejected') {
+      return 'ร้านค้าของคุณยังไม่ได้รับการอนุมัติ กรุณาปรับปรุงข้อมูลตามคำแนะนำ';
+    }
     if (status == 'Suspended') return 'ร้านค้าของคุณถูกระงับการใช้งานชั่วคราว';
     return 'ยังไม่มีข้อมูลร้านค้าในระบบ กรุณาลงทะเบียนร้านค้า';
   }
@@ -567,6 +609,163 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                 ),
               ),
             ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPromotionAnalytics(MerchantDashboardModel? report) {
+    final analytics = report?.promotionAnalytics ?? const PromotionAnalytics();
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFFBCFE8)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.local_fire_department_rounded,
+                color: Color(0xFFE11D48),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'วิเคราะห์โปรโมชัน',
+                style: GoogleFonts.krub(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _promotionMetric(
+                  'ยอดขายจากโปร',
+                  analytics.promotionRevenue,
+                  Icons.payments_rounded,
+                  const Color(0xFFBE123C),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _promotionMetric(
+                  'ส่วนลดรวม',
+                  analytics.totalDiscountAmount,
+                  Icons.discount_rounded,
+                  const Color(0xFFEA580C),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Expanded(
+                child: _promotionMetric(
+                  'ใช้สิทธิ์แล้ว',
+                  analytics.usedQuantity.toDouble(),
+                  Icons.shopping_bag_rounded,
+                  const Color(0xFF7C3AED),
+                  suffix: ' ชิ้น',
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: _promotionMetric(
+                  'ดีลที่ใช้งาน',
+                  analytics.activeDealsCount.toDouble(),
+                  Icons.bolt_rounded,
+                  const Color(0xFF0284C7),
+                  suffix: ' ดีล',
+                ),
+              ),
+            ],
+          ),
+          if (analytics.deals.isNotEmpty) ...[
+            const Divider(height: 24),
+            ...analytics.deals.map(
+              (deal) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            deal.productName,
+                            style: GoogleFonts.krub(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${deal.dealTypeLabel} • ใช้แล้ว ${deal.usedQuantity}/${deal.totalQuantity} ชิ้น • ${deal.status}',
+                            style: GoogleFonts.krub(
+                              fontSize: 11,
+                              color: const Color(0xFF64748B),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      formatCurrency(deal.revenue),
+                      style: GoogleFonts.krub(
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFFBE123C),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _promotionMetric(
+    String label,
+    double value,
+    IconData icon,
+    Color color, {
+    String suffix = '',
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.07),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 7),
+          Expanded(
+            child: Text(
+              '$label\n${formatCurrency(value)}$suffix',
+              style: GoogleFonts.krub(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
           ),
         ],
       ),
@@ -692,9 +891,15 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
               title: 'สินค้าสต็อกต่ำ',
               value: '$lowStock รายการ',
               icon: Icons.warning_amber_rounded,
-              color: lowStock > 0 ? const Color(0xFFE11D48) : const Color(0xFF64748B),
-              bg: lowStock > 0 ? const Color(0xFFFFF1F2) : const Color(0xFFF8FAFC),
-              borderColor: lowStock > 0 ? const Color(0xFFFECDD3) : const Color(0xFFE2E8F0),
+              color: lowStock > 0
+                  ? const Color(0xFFE11D48)
+                  : const Color(0xFF64748B),
+              bg: lowStock > 0
+                  ? const Color(0xFFFFF1F2)
+                  : const Color(0xFFF8FAFC),
+              borderColor: lowStock > 0
+                  ? const Color(0xFFFECDD3)
+                  : const Color(0xFFE2E8F0),
             ),
           ],
         ),
@@ -1087,7 +1292,10 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        _buildOrderStatusBadge(item.orderStatus, item.paymentStatus),
+                        _buildOrderStatusBadge(
+                          item.orderStatus,
+                          item.paymentStatus,
+                        ),
                       ],
                     ),
                   ],
@@ -1146,4 +1354,3 @@ class MerchantDashboardPage extends GetView<MerchantDashboardController> {
     );
   }
 }
-

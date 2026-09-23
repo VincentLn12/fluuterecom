@@ -13,7 +13,11 @@ class ProductDetailBottomBar extends GetView<ProductDetailController> {
       if (product == null) return const SizedBox.shrink();
 
       final inStock = product.quantity > 0;
-      final subtotal = product.price * controller.quantity.value;
+      final deal = product.activeDeal;
+      final hasActiveDeal =
+          deal != null && !deal.isExpired && deal.availableQuantity > 0;
+      final unitPrice = hasActiveDeal ? product.dealPrice : product.price;
+      final subtotal = unitPrice * controller.quantity.value;
 
       return Container(
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 12),

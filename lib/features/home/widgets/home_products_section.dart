@@ -99,6 +99,11 @@ class HomeProductsSection extends GetView<HomeController> {
               separatorBuilder: (ctx, idx) => const SizedBox(width: 14),
               itemBuilder: (context, index) {
                 final product = list[index];
+                final deal = product.activeDeal;
+                final hasDeal =
+                    deal != null &&
+                    !deal.isExpired &&
+                    deal.availableQuantity > 0;
                 final hasImage =
                     product.imageUrl != null && product.imageUrl!.isNotEmpty;
 
@@ -213,8 +218,10 @@ class HomeProductsSection extends GetView<HomeController> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              const Text(
-                                                'ราคา',
+                                              Text(
+                                                hasDeal
+                                                    ? 'ราคาพิเศษ'
+                                                    : 'ราคาปกติ',
                                                 style: TextStyle(
                                                   fontSize: 10.5,
                                                   fontWeight: FontWeight.bold,
@@ -222,7 +229,7 @@ class HomeProductsSection extends GetView<HomeController> {
                                                 ),
                                               ),
                                               Text(
-                                                '฿${product.price.toStringAsFixed(0)}',
+                                                '฿${(hasDeal ? product.dealPrice : product.price).toStringAsFixed(0)}',
                                                 style: const TextStyle(
                                                   fontSize: 16.5,
                                                   fontWeight: FontWeight.w900,
@@ -231,6 +238,16 @@ class HomeProductsSection extends GetView<HomeController> {
                                                 maxLines: 1,
                                                 overflow: TextOverflow.ellipsis,
                                               ),
+                                              if (hasDeal)
+                                                Text(
+                                                  '฿${product.price.toStringAsFixed(0)}',
+                                                  style: const TextStyle(
+                                                    fontSize: 10,
+                                                    color: textMuted,
+                                                    decoration: TextDecoration
+                                                        .lineThrough,
+                                                  ),
+                                                ),
                                             ],
                                           ),
                                         ),

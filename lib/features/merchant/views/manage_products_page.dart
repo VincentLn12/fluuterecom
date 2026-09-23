@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../shared/widgets/loading_widget.dart';
 import '../../shops/models/product_model.dart';
+import '../repositories/merchant_repository.dart';
 import '../controllers/manage_products_controller.dart';
 
 String formatCurrency(double amount) {
@@ -22,11 +23,17 @@ class ManageProductsPage extends GetView<ManageProductsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9), // High contrast grey page background
+      backgroundColor: const Color(
+        0xFFF1F5F9,
+      ), // High contrast grey page background
       appBar: AppBar(
         title: Text(
           'จัดการสินค้าในร้าน',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+          style: GoogleFonts.krub(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            color: Colors.white,
+          ),
         ),
         elevation: 0,
         flexibleSpace: Container(
@@ -73,7 +80,9 @@ class ManageProductsPage extends GetView<ManageProductsController> {
 
         final list = controller.filteredProducts;
         final totalCount = controller.products.length;
-        final lowStockCount = controller.products.where((p) => p.quantity <= 5).length;
+        final lowStockCount = controller.products
+            .where((p) => p.quantity <= 5)
+            .length;
 
         return CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -89,7 +98,11 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                     padding: const EdgeInsets.fromLTRB(20, 10, 20, 48),
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Color(0xFF064E3B), Color(0xFF047857), Color(0xFF059669)],
+                        colors: [
+                          Color(0xFF064E3B),
+                          Color(0xFF047857),
+                          Color(0xFF059669),
+                        ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                       ),
@@ -105,7 +118,11 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                             color: Colors.white.withValues(alpha: 0.18),
                             borderRadius: BorderRadius.circular(14),
                           ),
-                          child: const Icon(Icons.storefront_rounded, color: Colors.amberAccent, size: 24),
+                          child: const Icon(
+                            Icons.storefront_rounded,
+                            color: Colors.amberAccent,
+                            size: 24,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
@@ -113,7 +130,8 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                controller.myShop.value?.shopName ?? 'รายการสินค้าในคลัง',
+                                controller.myShop.value?.shopName ??
+                                    'รายการสินค้าในคลัง',
                                 style: GoogleFonts.krub(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -156,12 +174,28 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: _buildHeaderStatCard(
-                            title: lowStockCount > 0 ? 'สต็อกเตือน/หมด' : 'สต็อกพร้อมขาย',
-                            value: lowStockCount > 0 ? '$lowStockCount รายการ' : 'ปกติทุกรายการ',
-                            icon: lowStockCount > 0 ? Icons.warning_amber_rounded : Icons.check_circle_rounded,
+                            title: lowStockCount > 0
+                                ? 'สต็อกเตือน/หมด'
+                                : 'สต็อกพร้อมขาย',
+                            value: lowStockCount > 0
+                                ? '$lowStockCount รายการ'
+                                : 'ปกติทุกรายการ',
+                            icon: lowStockCount > 0
+                                ? Icons.warning_amber_rounded
+                                : Icons.check_circle_rounded,
                             gradient: lowStockCount > 0
-                                ? const LinearGradient(colors: [Color(0xFFE11D48), Color(0xFFF43F5E)])
-                                : const LinearGradient(colors: [Color(0xFF0284C7), Color(0xFF38BDF8)]),
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFFE11D48),
+                                      Color(0xFFF43F5E),
+                                    ],
+                                  )
+                                : const LinearGradient(
+                                    colors: [
+                                      Color(0xFF0284C7),
+                                      Color(0xFF38BDF8),
+                                    ],
+                                  ),
                           ),
                         ),
                       ],
@@ -191,20 +225,38 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                   ),
                   child: TextField(
                     onChanged: (val) => controller.searchQuery.value = val,
-                    style: GoogleFonts.krub(fontSize: 14, color: const Color(0xFF0F172A)),
+                    style: GoogleFonts.krub(
+                      fontSize: 14,
+                      color: const Color(0xFF0F172A),
+                    ),
                     decoration: InputDecoration(
                       hintText: 'ค้นหาชื่อสินค้า...',
-                      hintStyle: GoogleFonts.krub(color: const Color(0xFF94A3B8), fontSize: 13),
-                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF059669), size: 22),
+                      hintStyle: GoogleFonts.krub(
+                        color: const Color(0xFF94A3B8),
+                        fontSize: 13,
+                      ),
+                      prefixIcon: const Icon(
+                        Icons.search_rounded,
+                        color: Color(0xFF059669),
+                        size: 22,
+                      ),
                       suffixIcon: controller.searchQuery.value.isNotEmpty
                           ? IconButton(
-                              icon: const Icon(Icons.clear_rounded, size: 18, color: Color(0xFF94A3B8)),
-                              onPressed: () => controller.searchQuery.value = '',
+                              icon: const Icon(
+                                Icons.clear_rounded,
+                                size: 18,
+                                color: Color(0xFF94A3B8),
+                              ),
+                              onPressed: () =>
+                                  controller.searchQuery.value = '',
                             )
                           : null,
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
                         borderSide: BorderSide.none,
@@ -227,16 +279,13 @@ class ManageProductsPage extends GetView<ManageProductsController> {
               SliverPadding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
                 sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final product = list[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 14),
-                        child: _buildProductCard(context, product),
-                      );
-                    },
-                    childCount: list.length,
-                  ),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final product = list[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: _buildProductCard(context, product),
+                    );
+                  }, childCount: list.length),
                 ),
               ),
           ],
@@ -339,7 +388,8 @@ class ManageProductsPage extends GetView<ManageProductsController> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(16),
-                child: (product.imageUrl != null && product.imageUrl!.isNotEmpty)
+                child:
+                    (product.imageUrl != null && product.imageUrl!.isNotEmpty)
                     ? Image.network(
                         product.imageUrl!,
                         width: 80,
@@ -447,7 +497,10 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 7,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF059669),
                     borderRadius: BorderRadius.circular(12),
@@ -455,7 +508,11 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.edit_rounded, size: 14, color: Colors.white),
+                      const Icon(
+                        Icons.edit_rounded,
+                        size: 14,
+                        color: Colors.white,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         'แก้ไข',
@@ -463,6 +520,44 @@ class ManageProductsPage extends GetView<ManageProductsController> {
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              InkWell(
+                onTap: () => Get.toNamed(
+                  AppRoutes.myShopProductDeals,
+                  arguments: product,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 9,
+                    vertical: 7,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF3E0),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFFFB74D)),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.local_fire_department_rounded,
+                        size: 14,
+                        color: Color(0xFFE65100),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'โปรโมชัน',
+                        style: GoogleFonts.krub(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFE65100),
                         ),
                       ),
                     ],
@@ -492,6 +587,218 @@ class ManageProductsPage extends GetView<ManageProductsController> {
         ],
       ),
     );
+  }
+
+  // ignore: unused_element
+  Future<void> _showPromotionSheet(
+    BuildContext context,
+    ProductModel product,
+  ) async {
+    final repository = MerchantRepository();
+    var deals = await repository.fetchProductDeals(product.id);
+    if (!context.mounted) return;
+    final discountController = TextEditingController();
+    final quantityController = TextEditingController(
+      text: product.quantity.toString(),
+    );
+    var dealType = 'FlashDeal';
+    var discountType = 'Percent';
+    var startsAt = DateTime.now().toUtc();
+    var endsAt = startsAt.add(const Duration(days: 1));
+
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => StatefulBuilder(
+        builder: (context, setState) {
+          final activeDeals = deals
+              .where(
+                (deal) =>
+                    deal.status.toLowerCase() == 'active' && !deal.isExpired,
+              )
+              .toList();
+          return Padding(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              20,
+              20,
+              MediaQuery.of(context).viewInsets.bottom + 20,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'โปรโมชัน: ${product.name}',
+                    style: GoogleFonts.krub(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (deals.isNotEmpty) ...[
+                    Text(
+                      'ดีลของสินค้านี้',
+                      style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                    ),
+                    ...deals.map(
+                      (deal) => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          '${deal.label} • ลด ${deal.discountValue}${deal.discountType == 'Percent' ? '%' : ' บาท'}',
+                        ),
+                        subtitle: Text(
+                          '${deal.status} • ใช้แล้ว ${deal.usedQuantity}/${deal.totalQuantity} • สิ้นสุด ${_thaiDate(deal.endsAt)}',
+                        ),
+                        trailing: deal.status.toLowerCase() == 'active'
+                            ? TextButton(
+                                onPressed: () async {
+                                  final ok = await repository.stopProductDeal(
+                                    deal.id ?? '',
+                                  );
+                                  if (ok) {
+                                    deals = await repository.fetchProductDeals(
+                                      product.id,
+                                    );
+                                    setState(() {});
+                                  }
+                                },
+                                child: const Text('หยุดดีล'),
+                              )
+                            : null,
+                      ),
+                    ),
+                    const Divider(),
+                  ],
+                  Text(
+                    'สร้างโปรโมชันใหม่',
+                    style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                  ),
+                  DropdownButtonFormField<String>(
+                    initialValue: dealType,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'FlashDeal',
+                        child: Text('โปรโมชันพิเศษ'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'LocalDeal',
+                        child: Text('โปรเด็ดชุมชน'),
+                      ),
+                    ],
+                    onChanged: (value) =>
+                        setState(() => dealType = value ?? dealType),
+                    decoration: const InputDecoration(
+                      labelText: 'ประเภทโปรโมชัน',
+                    ),
+                  ),
+                  DropdownButtonFormField<String>(
+                    initialValue: discountType,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'Percent',
+                        child: Text('ลดเป็นเปอร์เซ็นต์'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'FixedAmount',
+                        child: Text('ลดเป็นจำนวนเงิน'),
+                      ),
+                    ],
+                    onChanged: (value) =>
+                        setState(() => discountType = value ?? discountType),
+                    decoration: const InputDecoration(
+                      labelText: 'รูปแบบส่วนลด',
+                    ),
+                  ),
+                  TextField(
+                    controller: discountController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: discountType == 'Percent'
+                          ? 'ส่วนลด (%)'
+                          : 'ส่วนลด (บาท)',
+                    ),
+                  ),
+                  TextField(
+                    controller: quantityController,
+                    keyboardType: TextInputType.number,
+                    decoration: const InputDecoration(
+                      labelText: 'จำนวนสิทธิ์ทั้งหมด',
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'เริ่ม ${_thaiDate(startsAt)}',
+                    style: GoogleFonts.krub(fontSize: 12),
+                  ),
+                  Text(
+                    'สิ้นสุด ${_thaiDate(endsAt)}',
+                    style: GoogleFonts.krub(fontSize: 12),
+                  ),
+                  const SizedBox(height: 14),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: activeDeals.isNotEmpty
+                          ? null
+                          : () async {
+                              final discount =
+                                  double.tryParse(discountController.text) ?? 0;
+                              final totalQuantity =
+                                  int.tryParse(quantityController.text) ?? 0;
+                              if (discount <= 0 ||
+                                  totalQuantity <= 0 ||
+                                  endsAt.isBefore(startsAt) ||
+                                  (discountType == 'Percent' &&
+                                      discount >= 100) ||
+                                  (discountType == 'FixedAmount' &&
+                                      discount >= product.price)) {
+                                Get.snackbar(
+                                  'ข้อมูลโปรโมชันไม่ถูกต้อง',
+                                  'กรุณาตรวจสอบส่วนลด จำนวนสิทธิ์ และช่วงเวลา',
+                                );
+                                return;
+                              }
+                              final ok = await repository
+                                  .createProductDeal(product.id, {
+                                    'dealType': dealType,
+                                    'discountType': discountType,
+                                    'discountValue': discount,
+                                    'totalQuantity': totalQuantity,
+                                    'startsAt': startsAt.toIso8601String(),
+                                    'endsAt': endsAt.toIso8601String(),
+                                  });
+                              if (ok) {
+                                Get.back();
+                                Get.snackbar(
+                                  'สร้างโปรโมชันสำเร็จ',
+                                  'ระบบบันทึกโปรโมชันของสินค้าแล้ว',
+                                );
+                              } else {
+                                Get.snackbar(
+                                  'สร้างโปรโมชันไม่สำเร็จ',
+                                  'กรุณาตรวจสอบสต็อกและสิทธิ์ที่เหลือ',
+                                );
+                              }
+                            },
+                      child: const Text('สร้างโปรโมชัน'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+    discountController.dispose();
+    quantityController.dispose();
+  }
+
+  String _thaiDate(DateTime? value) {
+    if (value == null) return '-';
+    final thai = value.toUtc().add(const Duration(hours: 7));
+    return '${thai.day}/${thai.month}/${thai.year + 543} ${thai.hour.toString().padLeft(2, '0')}:${thai.minute.toString().padLeft(2, '0')} น.';
   }
 
   Widget _buildStockBadge(int quantity) {
@@ -550,7 +857,8 @@ class ManageProductsPage extends GetView<ManageProductsController> {
     final isSearching = controller.searchQuery.value.isNotEmpty;
 
     String title = 'ยังไม่มีสินค้าในร้านของคุณ';
-    String subtitle = 'เพิ่มสินค้าเข้าสู่ร้านค้าเพื่อให้ผู้ใช้งานสามารถสั่งซื้อได้';
+    String subtitle =
+        'เพิ่มสินค้าเข้าสู่ร้านค้าเพื่อให้ผู้ใช้งานสามารถสั่งซื้อได้';
     IconData icon = Icons.inventory_2_outlined;
     String btnText = 'เพิ่มสินค้าแรกของคุณ';
     Color btnColor = const Color(0xFF047857);
@@ -577,17 +885,23 @@ class ManageProductsPage extends GetView<ManageProductsController> {
             Container(
               padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
-                color: isNoShop ? const Color(0xFFFFF7ED) : const Color(0xFFECFDF5),
+                color: isNoShop
+                    ? const Color(0xFFFFF7ED)
+                    : const Color(0xFFECFDF5),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: isNoShop ? const Color(0xFFFFEDD5) : const Color(0xFFA7F3D0),
+                  color: isNoShop
+                      ? const Color(0xFFFFEDD5)
+                      : const Color(0xFFA7F3D0),
                   width: 2,
                 ),
               ),
               child: Icon(
                 icon,
                 size: 54,
-                color: isNoShop ? const Color(0xFFD97706) : const Color(0xFF059669),
+                color: isNoShop
+                    ? const Color(0xFFD97706)
+                    : const Color(0xFF059669),
               ),
             ),
             const SizedBox(height: 18),
@@ -624,7 +938,10 @@ class ManageProductsPage extends GetView<ManageProductsController> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: btnColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 14,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),

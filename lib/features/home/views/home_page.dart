@@ -6,6 +6,7 @@ import '../widgets/home_cta_banner.dart';
 import '../widgets/home_district_transit_map.dart';
 import '../widgets/home_hero_slider.dart';
 import '../widgets/home_products_section.dart';
+import '../widgets/home_deals_section.dart';
 import '../widgets/home_search_header.dart';
 import '../widgets/home_shops_section.dart';
 import '../widgets/home_stories_section.dart';
@@ -123,6 +124,10 @@ class HomePage extends GetView<HomeController> {
                 SizedBox(height: 26),
 
                 HomeProductsSection(),
+
+                SizedBox(height: 26),
+
+                HomeDealsSection(),
 
                 SizedBox(height: 26),
 

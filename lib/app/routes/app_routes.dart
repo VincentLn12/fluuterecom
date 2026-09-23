@@ -33,6 +33,8 @@ abstract class AppRoutes {
   static const myShopContents = '/my-shop/contents';
   static const myShopContentForm = '/my-shop/contents/form';
   static const myShopExports = '/my-shop/exports';
+  static const myShopProductDeals = '/my-shop/products/deals';
+  static const myShopProductDealForm = '/my-shop/products/deals/form';
 
   static const admin = '/admin';
   static const adminOrders = '/admin/orders';

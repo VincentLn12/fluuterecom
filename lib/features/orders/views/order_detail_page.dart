@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../models/order_model.dart';
+import '../repositories/order_repository.dart';
 
 class OrderDetailPage extends StatefulWidget {
   const OrderDetailPage({super.key});
@@ -16,6 +17,7 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
   Timer? _countdownTimer;
+  final OrderRepository _repository = OrderRepository();
 
   @override
   void initState() {
@@ -109,8 +111,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   const SizedBox(height: 24),
 
                   // 5. Payment Button if Pending
-                  if (order.orderStatus.toLowerCase() == 'pending' &&
-                      !order.isPaymentExpired)
+                  if (order.canPay)
                     if (order.paymentStatus.toLowerCase() ==
                             'pendingverification' ||
                         (order.slipImageUrl != null &&
@@ -175,10 +176,76 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           ),
                         ),
                       ),
+                  if (order.orderStatus.toLowerCase() == 'shipped' &&
+                      order.paymentStatus.toLowerCase() == 'paid') ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        onPressed: () => _confirmReceived(order),
+                        icon: const Icon(Icons.inventory_rounded),
+                        label: Text(
+                          'ยืนยันว่าได้รับสินค้าแล้ว',
+                          style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1F5F58),
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
     );
+  }
+
+  Future<void> _confirmReceived(OrderModel order) async {
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        title: Text(
+          'ยืนยันรับสินค้า',
+          style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'คุณได้รับสินค้าครบถ้วนแล้วใช่หรือไม่ หลังยืนยันจะสามารถเขียนรีวิวสินค้าได้',
+          style: GoogleFonts.krub(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text('ยังไม่ยืนยัน'),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            child: const Text('ยืนยันรับสินค้า'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    final success = await _repository.confirmShipmentReceived(order.orderId);
+    if (!success) {
+      Get.snackbar(
+        'ไม่สามารถยืนยันได้',
+        'กรุณาลองใหม่อีกครั้ง',
+        backgroundColor: const Color(0xFFC62828),
+        colorText: Colors.white,
+      );
+      return;
+    }
+    final updated = await _repository.fetchOrderById(order.orderId);
+    Get.snackbar(
+      'ยืนยันรับสินค้าแล้ว',
+      'ขอบคุณที่สั่งซื้อสินค้า',
+      backgroundColor: const Color(0xFF2E7D32),
+      colorText: Colors.white,
+    );
+    if (updated != null) {
+      Get.offNamed(AppRoutes.orderDetail, arguments: updated);
+    }
   }
 
   Widget _buildStatusBanner(OrderModel order) {
@@ -197,8 +264,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       switch (order.orderStatus.toLowerCase()) {
         case 'pending':
           bannerBg = const Color(0xFFE76F51);
-          bannerIcon = Icons.hourglass_empty_rounded;
-          statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
+          if (order.paymentStatus.toLowerCase() == 'paid') {
+            bannerIcon = Icons.verified_rounded;
+            statusDesc = 'ชำระเงินสำเร็จแล้ว ร้านค้ากำลังรอยืนยันออเดอร์ของคุณ';
+          } else {
+            bannerIcon = Icons.hourglass_empty_rounded;
+            statusDesc = 'กรุณาชำระเงินเพื่อดำเนินการต่อในขั้นตอนถัดไป';
+          }
           break;
         case 'paid':
         case 'processing':
@@ -299,8 +371,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   }
 
   Widget _buildPaymentExpiryNotice(OrderModel order) {
-    final expired = order.isPaymentExpired;
     final remaining = order.remainingPaymentTime ?? Duration.zero;
+    final expired = order.isPaymentExpired || remaining == Duration.zero;
     final hours = remaining.inHours.toString().padLeft(2, '0');
     final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
     final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');
@@ -330,7 +402,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               children: [
                 Text(
                   expired
-                  ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
+                      ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
                       : 'กรุณาชำระภายใน $hours:$minutes:$seconds นาที',
                   style: GoogleFonts.krub(
                     color: color,

@@ -39,6 +39,8 @@ import '../../features/merchant/views/manage_orders_page.dart';
 import '../../features/merchant/views/manage_contents_page.dart';
 import '../../features/merchant/views/content_form_page.dart';
 import '../../features/merchant/views/merchant_export_page.dart';
+import '../../features/merchant/views/product_deals_page.dart';
+import '../../features/merchant/views/product_deal_form_page.dart';
 import '../../features/admin/bindings/admin_binding.dart';
 import '../../features/admin/views/admin_dashboard_page.dart';
 import '../../features/admin/views/admin_orders_page.dart';
@@ -184,6 +186,16 @@ class AppPages {
     GetPage(
       name: AppRoutes.myShopExports,
       page: () => const MerchantExportPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShopProductDeals,
+      page: () => const ProductDealsPage(),
+      binding: MerchantBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.myShopProductDealForm,
+      page: () => const ProductDealFormPage(),
       binding: MerchantBinding(),
     ),
     GetPage(

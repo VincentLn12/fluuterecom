@@ -49,8 +49,7 @@ class PaymentController extends GetxController {
     return order.value?.isPaymentExpired ?? false;
   }
 
-  bool get canMakePayment =>
-      order.value?.isAwaitingPayment == true && !isPaymentExpired;
+  bool get canMakePayment => order.value?.canPay == true;
 
   bool _ensurePaymentStillAvailable() {
     if (canMakePayment) return true;
@@ -110,7 +109,13 @@ class PaymentController extends GetxController {
         snackPosition: SnackPosition.TOP,
       );
 
-      Get.offNamed(AppRoutes.paymentSuccess, arguments: currentOrder);
+      final updatedOrder = await _orderRepository.fetchOrderById(
+        currentOrder.orderId,
+      );
+      Get.offNamed(
+        AppRoutes.paymentSuccess,
+        arguments: updatedOrder ?? currentOrder,
+      );
     } on StripeException catch (e) {
       debugPrint('Stripe exception: ${e.error.localizedMessage}');
       // Handle user cancellation vs error
@@ -133,7 +138,13 @@ class PaymentController extends GetxController {
       debugPrint('Stripe Payment error: $e');
       // Graceful fallback for test environment
       await _orderRepository.syncPaymentStatus(currentOrder.orderId);
-      Get.offNamed(AppRoutes.paymentSuccess, arguments: currentOrder);
+      final updatedOrder = await _orderRepository.fetchOrderById(
+        currentOrder.orderId,
+      );
+      Get.offNamed(
+        AppRoutes.paymentSuccess,
+        arguments: updatedOrder ?? currentOrder,
+      );
     } finally {
       isLoading.value = false;
     }

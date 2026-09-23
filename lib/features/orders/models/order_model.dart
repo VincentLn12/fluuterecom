@@ -138,7 +138,8 @@ class OrderModel {
       slipImageUrl: resolveUrl(json['slipImageUrl']),
       carrierName:
           json['carrierName']?.toString() ??
-          json['shipment']?['carrierName']?.toString(),
+          json['shipment']?['carrierName']?.toString() ??
+          json['shipment']?['shippingProvider']?.toString(),
       trackingNumber:
           json['trackingNumber']?.toString() ??
           json['shipment']?['trackingNumber']?.toString(),
@@ -158,9 +159,12 @@ class OrderModel {
       return true;
     }
     return isAwaitingPayment &&
-        paymentExpiresAt != null &&
-        !paymentExpiresAt!.isAfter(DateTime.now().toUtc());
+        (paymentExpiresAt == null ||
+            !paymentExpiresAt!.isAfter(DateTime.now().toUtc()));
   }
+
+  /// Single source of truth for every payment CTA in the app.
+  bool get canPay => isAwaitingPayment && !isPaymentExpired;
 
   Duration? get remainingPaymentTime {
     if (!isAwaitingPayment || paymentExpiresAt == null) return null;
@@ -177,15 +181,19 @@ class OrderModel {
     }
     switch (orderStatus.toLowerCase()) {
       case 'pending':
-        return 'รอชำระเงิน';
+        return paymentStatus.toLowerCase() == 'paid'
+            ? 'รอยืนยันออเดอร์'
+            : 'รอชำระเงิน';
+      case 'confirmed':
+        return 'ยืนยันออเดอร์แล้ว';
       case 'paid':
-        return 'ชำระเงินแล้ว';
+        return 'ชำระเงินสำเร็จ';
       case 'processing':
         return 'กำลังเตรียมจัดส่ง';
       case 'shipped':
         return 'จัดส่งแล้ว';
       case 'completed':
-        return 'สำเร็จแล้ว';
+        return 'สำเร็จสมบูรณ์';
       case 'cancelled':
         return 'ยกเลิกแล้ว';
       case 'expired':

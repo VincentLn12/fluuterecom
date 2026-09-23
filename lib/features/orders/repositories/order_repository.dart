@@ -18,7 +18,9 @@ class OrderRepository {
         List items = [];
         if (data is List) {
           items = data;
-        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+        } else if (data is Map &&
+            data.containsKey('items') &&
+            data['items'] is List) {
           items = data['items'] as List;
         }
         return items
@@ -35,10 +37,15 @@ class OrderRepository {
   /// API: POST /api/user-addresses
   Future<UserAddressModel?> saveUserAddress(UserAddressModel address) async {
     try {
-      final response = await _apiClient.post('/user-addresses', address.toJson());
+      final response = await _apiClient.post(
+        '/user-addresses',
+        address.toJson(),
+      );
       if (response.isOk && response.body != null) {
         if (response.body is Map<String, dynamic>) {
-          return UserAddressModel.fromJson(response.body as Map<String, dynamic>);
+          return UserAddressModel.fromJson(
+            response.body as Map<String, dynamic>,
+          );
         }
       }
     } catch (e) {
@@ -75,7 +82,9 @@ class OrderRepository {
         List items = [];
         if (data is List) {
           items = data;
-        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+        } else if (data is Map &&
+            data.containsKey('items') &&
+            data['items'] is List) {
           items = data['items'] as List;
         } else if (data is Map<String, dynamic>) {
           items = [data];
@@ -84,7 +93,9 @@ class OrderRepository {
             .map((e) => OrderModel.fromJson(e as Map<String, dynamic>))
             .toList();
       } else {
-        debugPrint('Checkout failed: ${response.statusCode} - ${response.statusText}');
+        debugPrint(
+          'Checkout failed: ${response.statusCode} - ${response.statusText}',
+        );
       }
     } catch (e) {
       debugPrint('Error during checkout: $e');
@@ -102,7 +113,9 @@ class OrderRepository {
         List items = [];
         if (data is List) {
           items = data;
-        } else if (data is Map && data.containsKey('items') && data['items'] is List) {
+        } else if (data is Map &&
+            data.containsKey('items') &&
+            data['items'] is List) {
           items = data['items'] as List;
         }
         return items
@@ -131,11 +144,63 @@ class OrderRepository {
     return null;
   }
 
+  /// Customer confirms a paid, shipped order has been received.
+  Future<bool> confirmShipmentReceived(String orderId) async {
+    try {
+      final response = await _apiClient.patch(
+        '/orders/$orderId/shipment/status',
+        {'status': 'Completed'},
+      );
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error confirming shipment received: $e');
+      return false;
+    }
+  }
+
+  Future<Set<String>> fetchReviewedProductIds(String orderId) async {
+    try {
+      final response = await _apiClient.get(
+        '/product-reviews/my-reviews',
+        query: {'orderId': orderId},
+      );
+      if (response.isOk && response.body is List) {
+        return (response.body as List).map((id) => id.toString()).toSet();
+      }
+    } catch (e) {
+      debugPrint('Error fetching order reviews: $e');
+    }
+    return {};
+  }
+
+  Future<bool> submitProductReview({
+    required String orderId,
+    required String productId,
+    required int rating,
+    required String comment,
+  }) async {
+    try {
+      final response = await _apiClient.post('/product-reviews', {
+        'orderId': orderId,
+        'productId': productId,
+        'rating': rating,
+        'comment': comment.trim(),
+      });
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error submitting product review: $e');
+      return false;
+    }
+  }
+
   /// Create payment intent
   /// API: POST /api/payments/orders/{orderId}/intent
   Future<Map<String, dynamic>?> createPaymentIntent(String orderId) async {
     try {
-      final response = await _apiClient.post('/payments/orders/$orderId/intent', {});
+      final response = await _apiClient.post(
+        '/payments/orders/$orderId/intent',
+        {},
+      );
       if (response.isOk && response.body != null) {
         if (response.body is Map<String, dynamic>) {
           return response.body as Map<String, dynamic>;
@@ -151,7 +216,10 @@ class OrderRepository {
   /// API: POST /api/payments/orders/{orderId}/sync
   Future<bool> syncPaymentStatus(String orderId) async {
     try {
-      final response = await _apiClient.post('/payments/orders/$orderId/sync', {});
+      final response = await _apiClient.post(
+        '/payments/orders/$orderId/sync',
+        {},
+      );
       return response.isOk;
     } catch (e) {
       debugPrint('Error syncing payment status: $e');
@@ -189,10 +257,14 @@ class OrderRepository {
           );
 
           if (response.isOk) {
-            debugPrint('Successfully uploaded slip via POST /orders/$orderId/upload-slip');
+            debugPrint(
+              'Successfully uploaded slip via POST /orders/$orderId/upload-slip',
+            );
             return true;
           } else {
-            debugPrint('POST /orders/$orderId/upload-slip returned ${response.statusCode}');
+            debugPrint(
+              'POST /orders/$orderId/upload-slip returned ${response.statusCode}',
+            );
           }
         } else {
           debugPrint('File does not exist at path: $slipFilePath');
@@ -212,7 +284,9 @@ class OrderRepository {
       };
 
       final response = await _apiClient.patch('/orders/$orderId/status', body);
-      debugPrint('PATCH /orders/$orderId/status response: ${response.statusCode} ${response.isOk}');
+      debugPrint(
+        'PATCH /orders/$orderId/status response: ${response.statusCode} ${response.isOk}',
+      );
       return response.isOk;
     } catch (e) {
       debugPrint('Error updating order slip fallback: $e');
@@ -238,7 +312,11 @@ class OrderRepository {
 
   /// Admin Verify / Reject Slip
   /// API: POST /api/orders/admin/verify-slip
-  Future<bool> verifySlip(List<String> orderIds, String action, {String note = ''}) async {
+  Future<bool> verifySlip(
+    List<String> orderIds,
+    String action, {
+    String note = '',
+  }) async {
     try {
       final body = {
         'orderIds': orderIds,
@@ -253,4 +331,3 @@ class OrderRepository {
     }
   }
 }
-

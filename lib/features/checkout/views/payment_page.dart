@@ -102,8 +102,8 @@ class PaymentPage extends GetView<PaymentController> {
         (!order.isAwaitingPayment && !order.isPaymentExpired)) {
       return const SizedBox.shrink();
     }
-    final expired = controller.isPaymentExpired;
     final remaining = order.remainingPaymentTime ?? Duration.zero;
+    final expired = controller.isPaymentExpired || remaining == Duration.zero;
     final hours = remaining.inHours.toString().padLeft(2, '0');
     final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
     final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');

@@ -531,8 +531,7 @@ class _OrdersPageState extends State<OrdersPage> {
               alignment: WrapAlignment.end,
               crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                if (order.orderStatus.toLowerCase() == 'pending' &&
-                    !order.isPaymentExpired) ...[
+                if (order.canPay) ...[
                   if (order.paymentStatus.toLowerCase() ==
                           'pendingverification' ||
                       (order.slipImageUrl != null &&
@@ -708,8 +707,8 @@ class _OrdersPageState extends State<OrdersPage> {
   }
 
   Widget _buildPaymentExpiryNotice(OrderModel order) {
-    final expired = order.isPaymentExpired;
     final remaining = order.remainingPaymentTime ?? Duration.zero;
+    final expired = order.isPaymentExpired || remaining == Duration.zero;
     final hours = remaining.inHours.toString().padLeft(2, '0');
     final minutes = (remaining.inMinutes % 60).toString().padLeft(2, '0');
     final seconds = (remaining.inSeconds % 60).toString().padLeft(2, '0');
@@ -732,7 +731,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 Text(
                   expired
                       ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
-                      : 'กรุณาชำระภายใน $hours:$minutes:$seconds นาที',
+                      : 'เหลือเวลา $hours ชั่วโมง $minutes นาที $seconds วินาที',
                   style: GoogleFonts.krub(
                     fontSize: 12.5,
                     fontWeight: FontWeight.bold,

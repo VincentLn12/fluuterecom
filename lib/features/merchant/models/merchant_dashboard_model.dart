@@ -10,6 +10,7 @@ class MerchantDashboardModel {
   final int lowStockProductsCount;
   final int totalContents;
   final List<RecentOrderSummary> recentOrders;
+  final PromotionAnalytics promotionAnalytics;
 
   MerchantDashboardModel({
     required this.totalRevenue,
@@ -23,11 +24,13 @@ class MerchantDashboardModel {
     required this.lowStockProductsCount,
     required this.totalContents,
     required this.recentOrders,
+    required this.promotionAnalytics,
   });
 
   factory MerchantDashboardModel.fromJson(Map<String, dynamic> json) {
     final summary = json['summary'] as Map<String, dynamic>? ?? {};
     final recentList = json['recentOrders'] as List? ?? [];
+    final promotion = json['promotionAnalytics'] as Map<String, dynamic>? ?? {};
 
     double parseDouble(dynamic val) {
       if (val == null) return 0.0;
@@ -57,8 +60,82 @@ class MerchantDashboardModel {
       recentOrders: recentList
           .map((e) => RecentOrderSummary.fromJson(e as Map<String, dynamic>))
           .toList(),
+      promotionAnalytics: PromotionAnalytics.fromJson(promotion),
     );
   }
+}
+
+class PromotionAnalytics {
+  final double promotionRevenue;
+  final double totalDiscountAmount;
+  final int usedQuantity;
+  final int activeDealsCount;
+  final List<PromotionDealAnalytics> deals;
+
+  const PromotionAnalytics({
+    this.promotionRevenue = 0,
+    this.totalDiscountAmount = 0,
+    this.usedQuantity = 0,
+    this.activeDealsCount = 0,
+    this.deals = const [],
+  });
+
+  factory PromotionAnalytics.fromJson(Map<String, dynamic> json) {
+    double d(dynamic value) => double.tryParse(value?.toString() ?? '') ?? 0;
+    int i(dynamic value) => int.tryParse(value?.toString() ?? '') ?? 0;
+    final list = json['deals'] is List ? json['deals'] as List : const [];
+    return PromotionAnalytics(
+      promotionRevenue: d(json['promotionRevenue']),
+      totalDiscountAmount: d(json['totalDiscountAmount']),
+      usedQuantity: i(json['usedQuantity']),
+      activeDealsCount: i(json['activeDealsCount']),
+      deals: list
+          .map(
+            (e) => PromotionDealAnalytics.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
+    );
+  }
+}
+
+class PromotionDealAnalytics {
+  final String productDealId;
+  final String productName;
+  final String dealType;
+  final int usedQuantity;
+  final int totalQuantity;
+  final double revenue;
+  final double discountAmount;
+  final String status;
+
+  const PromotionDealAnalytics({
+    required this.productDealId,
+    required this.productName,
+    required this.dealType,
+    required this.usedQuantity,
+    required this.totalQuantity,
+    required this.revenue,
+    required this.discountAmount,
+    required this.status,
+  });
+
+  factory PromotionDealAnalytics.fromJson(Map<String, dynamic> json) {
+    double d(dynamic value) => double.tryParse(value?.toString() ?? '') ?? 0;
+    int i(dynamic value) => int.tryParse(value?.toString() ?? '') ?? 0;
+    return PromotionDealAnalytics(
+      productDealId: json['productDealId']?.toString() ?? '',
+      productName: json['productName']?.toString() ?? 'สินค้า',
+      dealType: json['dealType']?.toString() ?? 'FlashDeal',
+      usedQuantity: i(json['usedQuantity']),
+      totalQuantity: i(json['totalQuantity']),
+      revenue: d(json['revenue']),
+      discountAmount: d(json['discountAmount']),
+      status: json['status']?.toString() ?? 'Active',
+    );
+  }
+
+  String get dealTypeLabel =>
+      dealType.toLowerCase() == 'localdeal' ? 'โปรเด็ดชุมชน' : 'โปรโมชันพิเศษ';
 }
 
 class RecentOrderSummary {

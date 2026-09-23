@@ -78,7 +78,11 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                           color: Color(0xFF047857),
                         ),
                       )
-                    : const Icon(Icons.refresh_rounded, color: Color(0xFF047857), size: 22),
+                    : const Icon(
+                        Icons.refresh_rounded,
+                        color: Color(0xFF047857),
+                        size: 22,
+                      ),
                 onPressed: controller.isLoading.value
                     ? null
                     : () => controller.loadOrders(),
@@ -160,11 +164,15 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                         if (controller.myShop.value == null) ...[
                           const SizedBox(height: 20),
                           ElevatedButton.icon(
-                            onPressed: () => Get.toNamed(AppRoutes.registerShop),
+                            onPressed: () =>
+                                Get.toNamed(AppRoutes.registerShop),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFFD97706),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(14),
                               ),
@@ -173,7 +181,10 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                             icon: const Icon(Icons.edit_document, size: 18),
                             label: Text(
                               'ลงทะเบียนร้านค้าใหม่',
-                              style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 14),
+                              style: GoogleFonts.krub(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
                             ),
                           ),
                         ],
@@ -207,9 +218,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFE2E8F0)),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
       ),
       height: 56,
       child: Obx(() {
@@ -236,7 +245,9 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                 selectedColor: const Color(0xFF047857),
                 backgroundColor: const Color(0xFFF1F5F9),
                 side: BorderSide(
-                  color: isSelected ? const Color(0xFF047857) : const Color(0xFFE2E8F0),
+                  color: isSelected
+                      ? const Color(0xFF047857)
+                      : const Color(0xFFE2E8F0),
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -347,9 +358,13 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (order.receiverPhone != null && order.receiverPhone!.isNotEmpty)
+                          if (order.receiverPhone != null &&
+                              order.receiverPhone!.isNotEmpty)
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFE0F2FE),
                                 borderRadius: BorderRadius.circular(8),
@@ -357,7 +372,11 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(Icons.phone_rounded, size: 10, color: Color(0xFF0284C7)),
+                                  const Icon(
+                                    Icons.phone_rounded,
+                                    size: 10,
+                                    color: Color(0xFF0284C7),
+                                  ),
                                   const SizedBox(width: 3),
                                   Text(
                                     order.receiverPhone!,
@@ -372,7 +391,8 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                             ),
                         ],
                       ),
-                      if (order.shippingAddress != null && order.shippingAddress!.isNotEmpty) ...[
+                      if (order.shippingAddress != null &&
+                          order.shippingAddress!.isNotEmpty) ...[
                         const SizedBox(height: 4),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,7 +512,10 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
               // Shipping Method Badge
               Flexible(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFF0F9FF),
                     borderRadius: BorderRadius.circular(10),
@@ -586,11 +609,56 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
 
           const SizedBox(height: 14),
           // Action Button or Unpaid Warning Banner
-          if (order.paymentStatus == 'Paid' &&
+          if (order.orderStatus.trim().toLowerCase() == 'pending') ...[
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () =>
+                        controller.changeFulfillmentStatus(order, 'Cancelled'),
+                    child: Text(
+                      'ยกเลิกออเดอร์',
+                      style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () =>
+                        controller.changeFulfillmentStatus(order, 'Confirmed'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF047857),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Text(
+                      'ยืนยันออเดอร์',
+                      style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ] else if (order.orderStatus.trim().toLowerCase() == 'confirmed') ...[
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () =>
+                    controller.changeFulfillmentStatus(order, 'Processing'),
+                icon: const Icon(Icons.inventory_2_rounded),
+                label: Text(
+                  'เริ่มเตรียมจัดส่ง',
+                  style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF7C3AED),
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ] else if (order.paymentStatus.trim().toLowerCase() == 'paid' &&
               order.shippingMethod?.toLowerCase() != 'pickup' &&
-              order.orderStatus != 'Shipped' &&
-              order.orderStatus != 'Completed' &&
-              order.orderStatus != 'Cancelled') ...[
+              order.orderStatus.trim().toLowerCase() == 'processing') ...[
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
@@ -606,7 +674,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                 ),
                 icon: const Icon(Icons.edit_road_rounded, size: 18),
                 label: Text(
-                  'กรอกเลขพัสดุ / อัปเดตจัดส่ง',
+                  'บันทึกการจัดส่งและเลขพัสดุ',
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
@@ -614,10 +682,11 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                 ),
               ),
             ),
-          ] else if (order.paymentStatus == 'Paid' &&
+          ] else if (order.paymentStatus.trim().toLowerCase() == 'paid' &&
               order.shippingMethod?.toLowerCase() == 'pickup' &&
-              order.orderStatus != 'Completed' &&
-              order.orderStatus != 'Cancelled') ...[
+              order.orderStatus.trim().toLowerCase() != 'shipped' &&
+              order.orderStatus.trim().toLowerCase() != 'completed' &&
+              order.orderStatus.trim().toLowerCase() != 'cancelled') ...[
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -628,7 +697,11 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.check_circle_rounded, size: 18, color: Color(0xFF047857)),
+                  const Icon(
+                    Icons.check_circle_rounded,
+                    size: 18,
+                    color: Color(0xFF047857),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -653,7 +726,11 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_rounded, size: 18, color: Color(0xFFD97706)),
+                  const Icon(
+                    Icons.info_rounded,
+                    size: 18,
+                    color: Color(0xFFD97706),
+                  ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
@@ -668,26 +745,6 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ] else if (order.orderStatus == 'Shipped' || order.orderStatus == 'Completed') ...[
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => _showShipmentBottomSheet(context, order),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF047857),
-                  side: const BorderSide(color: Color(0xFF047857)),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
-                icon: const Icon(Icons.edit_outlined, size: 16),
-                label: Text(
-                  'แก้ไขเลขพัสดุ / ข้อมูลจัดส่ง',
-                  style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 13),
-                ),
               ),
             ),
           ],
@@ -706,7 +763,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
       case 'pending':
         bg = const Color(0xFFFFFBEB);
         text = const Color(0xFFD97706);
-        label = 'รอชำระ';
+        label = 'รอยืนยันออเดอร์';
         icon = Icons.access_time_filled_rounded;
         break;
       case 'paid':
@@ -851,8 +908,14 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                   decoration: InputDecoration(
                     labelText: 'บริษัทขนส่ง *',
                     hintText: 'เช่น ไปรษณีย์ไทย, KERRY, Flash Express, J&T',
-                    labelStyle: GoogleFonts.krub(color: const Color(0xFF64748B)),
-                    prefixIcon: const Icon(Icons.business_rounded, color: Color(0xFF047857), size: 20),
+                    labelStyle: GoogleFonts.krub(
+                      color: const Color(0xFF64748B),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.business_rounded,
+                      color: Color(0xFF047857),
+                      size: 20,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
                     enabledBorder: OutlineInputBorder(
@@ -861,7 +924,10 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFF047857), width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF047857),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
@@ -872,8 +938,14 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                   decoration: InputDecoration(
                     labelText: 'เลขติดตามพัสดุ (Tracking Number) *',
                     hintText: 'เช่น TH123456789TH',
-                    labelStyle: GoogleFonts.krub(color: const Color(0xFF64748B)),
-                    prefixIcon: const Icon(Icons.pin_rounded, color: Color(0xFF047857), size: 20),
+                    labelStyle: GoogleFonts.krub(
+                      color: const Color(0xFF64748B),
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.pin_rounded,
+                      color: Color(0xFF047857),
+                      size: 20,
+                    ),
                     filled: true,
                     fillColor: const Color(0xFFF8FAFC),
                     enabledBorder: OutlineInputBorder(
@@ -882,7 +954,10 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
-                      borderSide: const BorderSide(color: Color(0xFF047857), width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Color(0xFF047857),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),

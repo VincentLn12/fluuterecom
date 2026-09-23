@@ -40,8 +40,9 @@ class ManageOrdersController extends GetxController {
 
   final statusTabs = [
     {'value': 'All', 'label': 'ทั้งหมด'},
-    {'value': 'PendingVerification', 'label': 'รอตรวจสลิป'},
-    {'value': 'Paid', 'label': 'ชำระแล้ว (พร้อมส่ง)'},
+    {'value': 'Pending', 'label': 'รอยืนยันออเดอร์'},
+    {'value': 'Confirmed', 'label': 'ยืนยันแล้ว'},
+    {'value': 'Processing', 'label': 'เตรียมจัดส่ง'},
     {'value': 'Shipped', 'label': 'จัดส่งแล้ว'},
     {'value': 'Completed', 'label': 'สำเร็จ'},
     {'value': 'Cancelled', 'label': 'ยกเลิก'},
@@ -101,12 +102,11 @@ class ManageOrdersController extends GetxController {
       );
 
       if (success) {
-        await _repository.updateOrderStatus(order.id, 'Shipped');
         Get.back();
         loadOrders();
         Get.snackbar(
           'บันทึกข้อมูลจัดส่งแล้ว',
-          'อัปเดตเลขพัสดุ $trackingNumber (${carrierName.trim()}) เรียบร้อยแล้ว',
+          'บันทึกการจัดส่งและเลขพัสดุ $trackingNumber เรียบร้อยแล้ว',
           backgroundColor: const Color(0xFF047857),
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
@@ -127,6 +127,36 @@ class ManageOrdersController extends GetxController {
         backgroundColor: Colors.red.shade700,
         colorText: Colors.white,
         snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  Future<void> changeFulfillmentStatus(OrderModel order, String status) async {
+    final current = order.orderStatus.toLowerCase();
+    final allowed =
+        (current == 'pending' &&
+            (status == 'Confirmed' || status == 'Cancelled')) ||
+        (current == 'confirmed' && status == 'Processing');
+    if (!allowed) return;
+    final success = await _repository.updateOrderStatus(order.id, status);
+    if (success) {
+      await loadOrders();
+      Get.snackbar(
+        'อัปเดตออเดอร์แล้ว',
+        status == 'Confirmed'
+            ? 'ยืนยันออเดอร์แล้ว'
+            : status == 'Processing'
+            ? 'เริ่มเตรียมจัดส่งแล้ว'
+            : 'ยกเลิกออเดอร์แล้ว',
+        backgroundColor: const Color(0xFF047857),
+        colorText: Colors.white,
+      );
+    } else {
+      Get.snackbar(
+        'อัปเดตไม่สำเร็จ',
+        'กรุณาลองใหม่อีกครั้ง',
+        backgroundColor: Colors.red.shade700,
+        colorText: Colors.white,
       );
     }
   }

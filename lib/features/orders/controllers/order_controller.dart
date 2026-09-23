@@ -37,7 +37,7 @@ class OrderController extends GetxController {
       final status = order.orderStatus.toLowerCase();
       switch (activeTab.value) {
         case 1: // ที่ต้องชำระ
-          return status == 'pending';
+          return order.canPay;
         case 2: // ที่ต้องจัดส่ง
           return status == 'paid' || status == 'processing';
         case 3: // ที่ต้องได้รับ
@@ -58,7 +58,7 @@ class OrderController extends GetxController {
       final status = order.orderStatus.toLowerCase();
       switch (tabIndex) {
         case 1:
-          return status == 'pending';
+          return order.canPay;
         case 2:
           return status == 'paid' || status == 'processing';
         case 3:

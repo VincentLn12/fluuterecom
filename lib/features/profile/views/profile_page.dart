@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../../core/services/auth_service.dart';
+import '../../merchant/repositories/merchant_repository.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -36,6 +37,7 @@ class ProfilePage extends StatelessWidget {
       body: Obx(() {
         final isLoggedIn = authService.isLoggedIn.value;
         final user = authService.currentUser.value;
+        final isAdmin = user?.isAdmin == true;
 
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(14, 14, 14, 28),
@@ -189,15 +191,20 @@ class ProfilePage extends StatelessWidget {
                     iconColor: const Color(0xFF1F5F58),
                     title: 'ศูนย์ผู้ขาย / ร้านค้าของฉัน',
                     subtitle: 'จัดการสินค้า และออเดอร์ของร้านค้า',
-                    onTap: () {
+                    onTap: () async {
                       if (isLoggedIn) {
-                        Get.toNamed(AppRoutes.myShop);
+                        final shop = await MerchantRepository().fetchMyShop();
+                        Get.toNamed(
+                          shop == null
+                              ? AppRoutes.registerShop
+                              : AppRoutes.myShop,
+                        );
                       } else {
                         _showAuthRequiredDialog(context, 'ศูนย์ผู้ขาย');
                       }
                     },
                   ),
-                  if (isLoggedIn) ...[
+                  if (isAdmin) ...[
                     const Divider(
                       height: 1,
                       indent: 52,
@@ -216,7 +223,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
 
-              if (isLoggedIn) ...[
+              if (isAdmin) ...[
                 const SizedBox(height: 14),
                 _buildSectionCard(
                   title: 'ระบบผู้ดูแลระบบ (Admin Management)',
@@ -844,24 +851,25 @@ class ProfilePage extends StatelessWidget {
               ),
               onTap: () => Navigator.pop(context),
             ),
-            ListTile(
-              leading: const Icon(
-                Icons.admin_panel_settings_rounded,
-                color: Color(0xFFC8952F),
+            if (authService.currentUser.value?.isAdmin == true)
+              ListTile(
+                leading: const Icon(
+                  Icons.admin_panel_settings_rounded,
+                  color: Color(0xFFC8952F),
+                ),
+                title: Text(
+                  'จัดการแอดมิน (Admin Dashboard)',
+                  style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  'เข้าสู่แดชบอร์ดผู้ดูแลระบบ (13 ระบบ)',
+                  style: GoogleFonts.krub(fontSize: 12),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  Get.toNamed(AppRoutes.admin);
+                },
               ),
-              title: Text(
-                'จัดการแอดมิน (Admin Dashboard)',
-                style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(
-                'เข้าสู่แดชบอร์ดผู้ดูแลระบบ (13 ระบบ)',
-                style: GoogleFonts.krub(fontSize: 12),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                Get.toNamed(AppRoutes.admin);
-              },
-            ),
             ListTile(
               leading: const Icon(
                 Icons.dark_mode_outlined,

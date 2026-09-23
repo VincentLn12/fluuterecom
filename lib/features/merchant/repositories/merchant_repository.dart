@@ -11,6 +11,7 @@ import '../../shops/models/category_model.dart';
 import '../../shops/models/product_model.dart';
 import '../../shops/models/shop_model.dart';
 import '../models/merchant_dashboard_model.dart';
+import '../../shops/models/product_deal_model.dart';
 
 class MerchantRepository {
   final ApiClient _apiClient = Get.find<ApiClient>();
@@ -316,7 +317,7 @@ class MerchantRepository {
   ) async {
     try {
       final response = await _apiClient.put('/orders/$orderId/shipment', {
-        'carrierName': carrierName,
+        'shippingProvider': carrierName,
         'trackingNumber': trackingNumber,
       });
       return response.isOk;
@@ -344,6 +345,51 @@ class MerchantRepository {
       return response.isOk;
     } catch (e) {
       debugPrint('Error updating order status: $e');
+      return false;
+    }
+  }
+
+  Future<List<ProductDealModel>> fetchProductDeals(String productId) async {
+    try {
+      final response = await _apiClient.get(
+        '/product-deals/products/$productId',
+      );
+      if (response.isOk && response.body is List) {
+        return (response.body as List)
+            .map((e) => ProductDealModel.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+    } catch (e) {
+      debugPrint('Error fetching product deals: $e');
+    }
+    return [];
+  }
+
+  Future<bool> createProductDeal(
+    String productId,
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      final response = await _apiClient.post(
+        '/product-deals/products/$productId',
+        data,
+      );
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error creating product deal: $e');
+      return false;
+    }
+  }
+
+  Future<bool> stopProductDeal(String dealId) async {
+    try {
+      final response = await _apiClient.patch(
+        '/product-deals/$dealId/stop',
+        {},
+      );
+      return response.isOk;
+    } catch (e) {
+      debugPrint('Error stopping product deal: $e');
       return false;
     }
   }
