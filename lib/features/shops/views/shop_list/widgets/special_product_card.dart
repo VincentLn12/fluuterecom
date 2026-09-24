@@ -28,11 +28,11 @@ class SpecialProductCard extends StatelessWidget {
       width: 190,
       child: Material(
         color: Colors.white,
-        elevation: 2,
-        shadowColor: const Color(0x30000000),
+        elevation: 3,
+        shadowColor: const Color(0x260F382C),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-          side: const BorderSide(color: Color(0xFFE5E5E5), width: 1),
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: Color(0xFFDDE8E0), width: 1),
         ),
         clipBehavior: Clip.antiAlias,
         child: InkWell(
@@ -77,6 +77,41 @@ class SpecialProductCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (time != null)
+                      Positioned(
+                        bottom: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 5,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xE617392E),
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.timer_outlined,
+                                size: 13,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 3),
+                              Text(
+                                time,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w800,
+                                  fontFeatures: [FontFeature.tabularFigures()],
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -138,30 +173,18 @@ class SpecialProductCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Row(
                         children: [
-                          if (time != null) ...[
-                            const Icon(
-                              Icons.timer_outlined,
-                              size: 14,
-                              color: Color(0xFFEE4D2D),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              time,
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w700,
-                                fontFeatures: [FontFeature.tabularFigures()],
-                                color: Color(0xFFEE4D2D),
-                              ),
-                            ),
-                            const Spacer(),
-                          ],
+                          const Icon(
+                            Icons.inventory_2_outlined,
+                            size: 13,
+                            color: Color(0xFF658071),
+                          ),
+                          const SizedBox(width: 4),
                           Text(
                             'เหลือ ${deal.availableQuantity} ชิ้น',
                             style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF666666),
+                              color: Color(0xFF658071),
                             ),
                           ),
                         ],
@@ -171,26 +194,26 @@ class SpecialProductCard extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 34,
+                height: 36,
                 width: double.infinity,
                 alignment: Alignment.center,
-                color: const Color(0xFFFFF0EB),
+                color: const Color(0xFFEE4D2D),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'ดูสินค้า',
+                      'ช้อปเลย',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFEE4D2D),
+                        color: Colors.white,
                       ),
                     ),
                     SizedBox(width: 4),
                     Icon(
                       Icons.arrow_forward_rounded,
                       size: 15,
-                      color: Color(0xFFEE4D2D),
+                      color: Colors.white,
                     ),
                   ],
                 ),

@@ -44,10 +44,10 @@ class _ShopCardState extends State<ShopCard> {
           duration: const Duration(milliseconds: 140),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(18),
             border: Border.all(
               color: _isPressed
-                  ? const Color(0xFF2A9D8F)
+                  ? const Color(0xFF26734D)
                   : const Color(0xFFE0EAE6),
               width: _isPressed ? 1.8 : 1.2,
             ),
@@ -56,8 +56,8 @@ class _ShopCardState extends State<ShopCard> {
                 color: const Color(
                   0xFF0F382C,
                 ).withValues(alpha: _isPressed ? 0.16 : 0.08),
-                blurRadius: _isPressed ? 6 : 18,
-                offset: Offset(0, _isPressed ? 2 : 8),
+                blurRadius: _isPressed ? 4 : 12,
+                offset: Offset(0, _isPressed ? 1 : 4),
               ),
             ],
           ),
@@ -108,7 +108,7 @@ class _ShopCardState extends State<ShopCard> {
                 ),
                 decoration: BoxDecoration(
                   color: isOpen
-                      ? const Color(0xFF2A9D8F)
+                      ? const Color(0xFF26734D)
                       : const Color(0xFF0F382C).withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
@@ -156,7 +156,7 @@ class _ShopCardState extends State<ShopCard> {
                   ),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
+                      colors: [Color(0xFF26734D), Color(0xFF65A878)],
                     ),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
@@ -281,7 +281,7 @@ class _ShopCardState extends State<ShopCard> {
                         const Icon(
                           Icons.access_time_filled_rounded,
                           size: 14,
-                          color: Color(0xFF2A9D8F),
+                          color: Color(0xFF26734D),
                         ),
                         const SizedBox(width: 5),
                         Expanded(
@@ -312,7 +312,7 @@ class _ShopCardState extends State<ShopCard> {
                               const Icon(
                                 Icons.phone_rounded,
                                 size: 14,
-                                color: Color(0xFF2A9D8F),
+                                color: Color(0xFF26734D),
                               ),
                               const SizedBox(width: 5),
                               Expanded(
@@ -357,7 +357,7 @@ class _ShopCardState extends State<ShopCard> {
                                       Icon(
                                         Icons.phone_in_talk_rounded,
                                         size: 14,
-                                        color: Color(0xFF2A9D8F),
+                                        color: Color(0xFF26734D),
                                       ),
                                       SizedBox(width: 4),
                                       Text(
@@ -365,7 +365,7 @@ class _ShopCardState extends State<ShopCard> {
                                         style: TextStyle(
                                           fontSize: 13,
                                           fontWeight: FontWeight.bold,
-                                          color: Color(0xFF2A9D8F),
+                                          color: Color(0xFF26734D),
                                         ),
                                       ),
                                     ],
@@ -384,13 +384,13 @@ class _ShopCardState extends State<ShopCard> {
                             ),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
+                                colors: [Color(0xFF26734D), Color(0xFF65A878)],
                               ),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
                                   color: const Color(
-                                    0xFFE76F51,
+                                    0xFF26734D,
                                   ).withValues(alpha: 0.35),
                                   blurRadius: _isPressed ? 2 : 5,
                                   offset: Offset(0, _isPressed ? 1 : 2),
@@ -464,7 +464,7 @@ class _ShopCardState extends State<ShopCard> {
                                 style: const TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF2A9D8F),
+                                  color: Color(0xFF26734D),
                                 ),
                               ),
                             )
@@ -478,7 +478,7 @@ class _ShopCardState extends State<ShopCard> {
                             ),
                             decoration: BoxDecoration(
                               color: isOpen
-                                  ? const Color(0xFF2A9D8F)
+                                  ? const Color(0xFF26734D)
                                   : const Color(0xFF0F382C),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -517,7 +517,7 @@ class _ShopCardState extends State<ShopCard> {
                               const Icon(
                                 Icons.location_on_rounded,
                                 size: 13,
-                                color: Color(0xFF2A9D8F),
+                                color: Color(0xFF26734D),
                               ),
                               const SizedBox(width: 3),
                               Flexible(
@@ -554,7 +554,7 @@ class _ShopCardState extends State<ShopCard> {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF2A9D8F),
+                                color: Color(0xFF26734D),
                               ),
                             ),
                             AnimatedPadding(
@@ -565,7 +565,7 @@ class _ShopCardState extends State<ShopCard> {
                               child: const Icon(
                                 Icons.arrow_forward_rounded,
                                 size: 13.5,
-                                color: Color(0xFF2A9D8F),
+                                color: Color(0xFF26734D),
                               ),
                             ),
                           ],
@@ -598,7 +598,7 @@ class _ShopCardState extends State<ShopCard> {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFD96C2C), Color(0xFF8C3818)],
+          colors: [Color(0xFF26734D), Color(0xFF8C3818)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

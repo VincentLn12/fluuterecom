@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../app/routes/app_routes.dart';
-import '../../shops/models/product_model.dart';
-import '../repositories/merchant_repository.dart';
+import 'package:projecte/app/routes/app_routes.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_product_summary.dart';
+import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_list_card.dart';
+import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_create_button.dart';
+import 'package:projecte/features/merchant/repositories/merchant_repository.dart';
 
 class ProductDealsPage extends StatefulWidget {
   const ProductDealsPage({super.key});
@@ -152,78 +155,21 @@ class _ProductDealsPageState extends State<ProductDealsPage> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text(
-                  item.name,
-                  style: GoogleFonts.krub(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'ราคาปกติ ฿${item.price.toStringAsFixed(2)} • สต็อก ${item.quantity} ชิ้น',
-                  style: GoogleFonts.krub(color: const Color(0xFF64748B)),
-                ),
+                ProductDealsProductSummary(product: item),
                 const SizedBox(height: 18),
-                _buildDealsCard(),
+                ProductDealsListCard(deals: deals, onStopDeal: _stopDeal),
                 const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () async {
-                      final result = await Get.toNamed(
-                        AppRoutes.myShopProductDealForm,
-                        arguments: item,
-                      );
-                      if (result == true) _loadDeals();
-                    },
-                    icon: const Icon(Icons.add_circle_outline_rounded),
-                    label: Text(
-                      'สร้างโปรโมชันใหม่',
-                      style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF047857),
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
+                ProductDealsCreateButton(
+                  onPressed: () async {
+                    final result = await Get.toNamed(
+                      AppRoutes.myShopProductDealForm,
+                      arguments: item,
+                    );
+                    if (result == true) _loadDeals();
+                  },
                 ),
               ],
             ),
-    );
-  }
-
-  Widget _buildDealsCard() {
-    return _card(
-      'ดีลของสินค้านี้',
-      Icons.local_fire_department_rounded,
-      deals.isEmpty
-          ? [
-              Text(
-                'ยังไม่มีโปรโมชัน',
-                style: GoogleFonts.krub(color: const Color(0xFF64748B)),
-              ),
-            ]
-          : deals.map((deal) {
-              final active =
-                  deal.status.toLowerCase() == 'active' && !deal.isExpired;
-              return ListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(
-                  '${deal.label} • ลด ${deal.discountValue}${deal.discountType == 'Percent' ? '%' : ' บาท'}',
-                  style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  '${active ? 'กำลังใช้งาน' : _statusLabel(deal.status)} • ใช้แล้ว ${deal.usedQuantity}/${deal.totalQuantity} • สิ้นสุด ${_thaiDate(deal.endsAt)}',
-                  style: GoogleFonts.krub(fontSize: 11),
-                ),
-                trailing: active
-                    ? TextButton(
-                        onPressed: () => _stopDeal(deal.id ?? ''),
-                        child: const Text('หยุดดีล'),
-                      )
-                    : null,
-              );
-            }).toList(),
     );
   }
 
@@ -318,23 +264,4 @@ class _ProductDealsPageState extends State<ProductDealsPage> {
       ],
     ),
   );
-
-  String _thaiDate(DateTime? value) {
-    if (value == null) return '-';
-    final thai = value.toUtc().add(const Duration(hours: 7));
-    return '${thai.day}/${thai.month}/${thai.year + 543} ${thai.hour.toString().padLeft(2, '0')}:${thai.minute.toString().padLeft(2, '0')} น.';
-  }
-
-  String _statusLabel(String status) {
-    switch (status.toLowerCase()) {
-      case 'active':
-        return 'กำลังใช้งาน';
-      case 'stopped':
-        return 'หยุดแล้ว';
-      case 'expired':
-        return 'หมดเวลาแล้ว';
-      default:
-        return status;
-    }
-  }
 }
