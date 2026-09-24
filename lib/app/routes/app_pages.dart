@@ -42,16 +42,16 @@ import '../../features/merchant/views/merchant_export/merchant_export_page.dart'
 import '../../features/merchant/views/product_deals/product_deals_page.dart';
 import '../../features/merchant/views/product_deal_form/product_deal_form_page.dart';
 import '../../features/admin/bindings/admin_binding.dart';
-import '../../features/admin/views/admin_dashboard_page.dart';
-import '../../features/admin/views/admin_orders_page.dart';
-import '../../features/admin/views/admin_payouts_page.dart';
-import '../../features/admin/views/manage_shops_page.dart';
-import '../../features/admin/views/manage_categories_page.dart';
-import '../../features/admin/views/manage_contents_page.dart';
-import '../../features/admin/views/manage_tags_page.dart';
-import '../../features/admin/views/manage_schedules_page.dart';
-import '../../features/admin/views/reports_page.dart';
-import '../../features/admin/views/admin_export_page.dart';
+import '../../features/admin/views/admin_dashboard/admin_dashboard_page.dart';
+import '../../features/admin/views/admin_orders/admin_orders_page.dart';
+import '../../features/admin/views/admin_payouts/admin_payouts_page.dart';
+import '../../features/admin/views/manage_shops/manage_shops_page.dart';
+import '../../features/admin/views/manage_categories/manage_categories_page.dart';
+import '../../features/admin/views/manage_contents/manage_contents_page.dart';
+import '../../features/admin/views/manage_tags/manage_tags_page.dart';
+import '../../features/admin/views/manage_schedules/manage_schedules_page.dart';
+import '../../features/admin/views/reports/reports_page.dart';
+import '../../features/admin/views/admin_export/admin_export_page.dart';
 
 class AppPages {
   static const initial = AppRoutes.initial;
