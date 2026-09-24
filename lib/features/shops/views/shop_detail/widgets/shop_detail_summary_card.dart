@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/shop_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
 import 'shop_detail_action_bar.dart';
 
 class ShopDetailHeaderCard extends StatelessWidget {
@@ -99,10 +99,7 @@ class ShopDetailHeaderCard extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFFE76F51),
-                                  Color(0xFFF4A261),
-                                ],
+                                colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
                               ),
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -209,11 +206,13 @@ class ShopDetailHeaderCard extends StatelessWidget {
                   icon: isOpen
                       ? Icons.storefront_rounded
                       : Icons.do_not_disturb_on_rounded,
-                  iconColor:
-                      isOpen ? const Color(0xFF2A9D8F) : const Color(0xFFE76F51),
+                  iconColor: isOpen
+                      ? const Color(0xFF2A9D8F)
+                      : const Color(0xFFE76F51),
                   title: isOpen ? 'เปิดบริการ' : 'ปิดให้บริการ',
-                  titleColor:
-                      isOpen ? const Color(0xFF2A9D8F) : const Color(0xFFE76F51),
+                  titleColor: isOpen
+                      ? const Color(0xFF2A9D8F)
+                      : const Color(0xFFE76F51),
                   subtitle: shop.openingTime != null && shop.closingTime != null
                       ? '${shop.openingTime}-${shop.closingTime}'
                       : 'เปิดทุกวัน',
@@ -280,11 +279,7 @@ class ShopDetailHeaderCard extends StatelessWidget {
   }
 
   Widget _buildVerticalDivider() {
-    return Container(
-      width: 1,
-      height: 34,
-      color: const Color(0xFFE0EAE6),
-    );
+    return Container(width: 1, height: 34, color: const Color(0xFFE0EAE6));
   }
 
   Widget _buildLogoPlaceholder() {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../app/routes/app_routes.dart';
-import '../../../contents/models/content_model.dart';
+import 'package:projecte/app/routes/app_routes.dart';
+import 'package:projecte/features/contents/models/content_model.dart';
 
 class ShopDetailContentSection extends StatelessWidget {
   final List<ContentModel> contents;
@@ -196,8 +196,7 @@ class ShopDetailContentSection extends StatelessWidget {
             return Image.network(
               item.youtubeThumbnail,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _buildPlaceholder(),
+              errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
             );
           }
           return _buildPlaceholder();

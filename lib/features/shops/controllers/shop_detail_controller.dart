@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../contents/models/content_model.dart';
-import '../models/product_model.dart';
-import '../models/shop_model.dart';
-import '../models/shop_review_model.dart';
-import '../repositories/shop_repository.dart';
+import 'package:projecte/features/contents/models/content_model.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
+import 'package:projecte/features/shops/models/shop_review_model.dart';
+import 'package:projecte/features/shops/repositories/shop_repository.dart';
 
 class ShopDetailController extends GetxController {
   ShopDetailController({ShopRepository? repository})
@@ -184,5 +184,6 @@ class ShopDetailController extends GetxController {
     final total = reviews.fold<double>(0.0, (acc, r) => acc + r.rating);
     return double.parse((total / reviews.length).toStringAsFixed(1));
   }
+
   int get reviewCount => reviews.length;
 }

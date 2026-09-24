@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/shop_controller.dart';
-import '../widgets/shop_card.dart';
-import '../widgets/shop_interactive_map_view.dart';
-import '../../../shared/widgets/loading_widget.dart';
-import '../../../shared/widgets/empty_widget.dart';
-import '../../../shared/widgets/app_search_field.dart';
-import '../../../shared/widgets/app_category_chip.dart';
-import '../../../shared/widgets/app_view_toggle.dart';
+import 'package:projecte/features/shops/controllers/shop_controller.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/shop_card.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/shop_flash_sale_section.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/shop_interactive_map_view.dart';
+import 'package:projecte/shared/widgets/loading_widget.dart';
+import 'package:projecte/shared/widgets/empty_widget.dart';
+import 'package:projecte/shared/widgets/app_search_field.dart';
+import 'package:projecte/shared/widgets/app_category_chip.dart';
+import 'package:projecte/shared/widgets/app_view_toggle.dart';
 
 class ShopsPage extends GetView<ShopController> {
   const ShopsPage({super.key});
@@ -49,7 +50,7 @@ class ShopsPage extends GetView<ShopController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'KANCHANABURI BAZAAR',
+                    'KANCHANABURI',
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.bold,
@@ -94,7 +95,7 @@ class ShopsPage extends GetView<ShopController> {
         final displayedShops = controller.displayedShops;
 
         return RefreshIndicator(
-          onRefresh: controller.fetchShops,
+          onRefresh: controller.refreshPage,
           color: const Color(0xFF2A9D8F),
           backgroundColor: Colors.white,
           child: CustomScrollView(
@@ -338,6 +339,14 @@ class ShopsPage extends GetView<ShopController> {
                   ],
                 ),
               ),
+
+              if (controller.viewType.value == 'list' &&
+                  controller.specialProducts.isNotEmpty)
+                SliverToBoxAdapter(
+                  child: ShopFlashSaleSection(
+                    products: controller.specialProducts,
+                  ),
+                ),
 
               // 3. MAIN CONTENT BODY (GRID vs LIST vs MAP)
               if (controller.isLoading.value)

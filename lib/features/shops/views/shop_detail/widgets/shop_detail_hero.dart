@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/shop_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
 
 class ShopDetailHero extends StatelessWidget {
   final ShopModel shop;
@@ -18,8 +18,7 @@ class ShopDetailHero extends StatelessWidget {
           Image.network(
             coverImage,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                _buildDefaultBanner(),
+            errorBuilder: (context, error, stackTrace) => _buildDefaultBanner(),
           )
         else
           _buildDefaultBanner(),

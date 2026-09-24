@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import '../controllers/product_detail_controller.dart';
-import '../controllers/shop_controller.dart';
-import '../controllers/shop_detail_controller.dart';
+import 'package:projecte/features/shops/controllers/product_detail_controller.dart';
+import 'package:projecte/features/shops/controllers/shop_controller.dart';
+import 'package:projecte/features/shops/controllers/shop_detail_controller.dart';
 
 class ShopBinding extends Bindings {
   @override

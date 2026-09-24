@@ -6,7 +6,7 @@ import '../../cart/controllers/cart_controller.dart';
 import '../../contents/views/contents_page.dart';
 import '../../home/views/home_page.dart';
 import '../../profile/views/profile_page.dart';
-import '../../shops/views/shops_page.dart';
+import '../../shops/views/shop_list/shops_page.dart';
 import '../../cart/views/cart_page.dart';
 import '../controllers/navigation_controller.dart';
 

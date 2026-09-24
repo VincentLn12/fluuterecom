@@ -33,11 +33,7 @@ class ShopDetailNavTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<ShopTabItem> tabs = [
-      const ShopTabItem(
-        id: 0,
-        label: 'หน้าแรก',
-        icon: Icons.grid_view_rounded,
-      ),
+      const ShopTabItem(id: 0, label: 'หน้าแรก', icon: Icons.grid_view_rounded),
       ShopTabItem(
         id: 1,
         label: 'สินค้า',
@@ -68,9 +64,7 @@ class ShopDetailNavTabs extends StatelessWidget {
       height: 46,
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: Color(0xFFE5ECE8), width: 1),
-        ),
+        border: Border(bottom: BorderSide(color: Color(0xFFE5ECE8), width: 1)),
       ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
@@ -103,8 +97,9 @@ class ShopDetailNavTabs extends StatelessWidget {
                       tab.label,
                       style: TextStyle(
                         fontSize: 15,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.w500,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w500,
                         color: isSelected
                             ? const Color(0xFF0D2B22)
                             : const Color(0xFF7A938B),

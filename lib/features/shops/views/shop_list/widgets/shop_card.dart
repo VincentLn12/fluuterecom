@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../app/routes/app_routes.dart';
-import '../models/shop_model.dart';
+import 'package:projecte/app/routes/app_routes.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
 
 class ShopCard extends StatefulWidget {
   final ShopModel item;

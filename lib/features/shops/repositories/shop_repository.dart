@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import '../../../core/network/api_client.dart';
-import '../../contents/models/content_model.dart';
-import '../models/category_model.dart';
-import '../models/product_model.dart';
-import '../models/shop_model.dart';
-import '../models/shop_review_model.dart';
+import 'package:projecte/core/network/api_client.dart';
+import 'package:projecte/features/contents/models/content_model.dart';
+import 'package:projecte/features/shops/models/category_model.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
+import 'package:projecte/features/shops/models/shop_review_model.dart';
 
 class ShopRepository {
   final ApiClient _apiClient = Get.find<ApiClient>();

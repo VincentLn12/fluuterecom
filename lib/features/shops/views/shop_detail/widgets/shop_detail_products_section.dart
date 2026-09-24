@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/empty_widget.dart';
-import '../../models/product_model.dart';
-import '../product_card.dart';
+import 'package:projecte/shared/widgets/empty_widget.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/shops/widgets/shared/product_card.dart';
 
 class ShopDetailProductsSection extends StatelessWidget {
   final List<ProductModel> products;

@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
-import '../../contents/models/content_model.dart';
-import '../models/category_model.dart';
-import '../models/shop_model.dart';
-import '../repositories/shop_repository.dart';
+import 'package:projecte/features/contents/models/content_model.dart';
+import 'package:projecte/features/shops/models/category_model.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
+import 'package:projecte/features/shops/repositories/shop_repository.dart';
 
 class ShopController extends GetxController {
   ShopController({ShopRepository? repository})
@@ -13,6 +14,7 @@ class ShopController extends GetxController {
   final shops = <ShopModel>[].obs;
   final categories = <ShopCategory>[].obs;
   final districts = <District>[].obs;
+  final specialProducts = <ProductModel>[].obs;
 
   final selectedCategoryId = RxnString();
   final selectedDistrictId = RxnString();
@@ -48,6 +50,7 @@ class ShopController extends GetxController {
       categories.assignAll(fetchedCategories);
       districts.assignAll(fetchedDistricts);
       await fetchShops();
+      await fetchSpecialProducts();
     } finally {
       isLoading.value = false;
     }
@@ -65,6 +68,23 @@ class ShopController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> fetchSpecialProducts() async {
+    final deals = await _repository.fetchActiveDeals(limit: 12);
+    specialProducts.assignAll(
+      deals.where((product) {
+        final deal = product.activeDeal;
+        return product.quantity > 0 &&
+            deal != null &&
+            deal.availableQuantity > 0 &&
+            !deal.isExpired;
+      }),
+    );
+  }
+
+  Future<void> refreshPage() async {
+    await Future.wait([fetchShops(), fetchSpecialProducts()]);
   }
 
   void selectCategory(String? categoryId) {

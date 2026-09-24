@@ -6,6 +6,7 @@ import 'app/config/app_config.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_theme.dart';
+ import 'package:shadcn_ui/shadcn_ui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +21,21 @@ class KanchanaburiApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: AppConfig.appName,
-      debugShowCheckedModeBanner: false,
-      initialBinding: InitialBinding(),
-      theme: AppTheme.lightTheme,
-      initialRoute: AppRoutes.initial,
-      getPages: AppPages.routes,
+    return ShadApp.custom(
+      theme: ShadThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ShadGreenColorScheme.light(),
+      ),
+      appBuilder: (context) {
+        return GetMaterialApp(
+          title: AppConfig.appName,
+          debugShowCheckedModeBanner: false,
+          initialBinding: InitialBinding(),
+          theme: AppTheme.lightTheme,
+          initialRoute: AppRoutes.initial,
+          getPages: AppPages.routes,
+        );
+      },
     );
   }
 }

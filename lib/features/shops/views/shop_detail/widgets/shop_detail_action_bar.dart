@@ -40,10 +40,7 @@ class ShopDetailActionBar extends StatelessWidget {
         ),
         label: Text(
           isFollowing ? 'กำลังติดตาม' : 'ติดตามร้านค้า',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../models/shop_model.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
 
 class ShopDetailAboutSection extends StatelessWidget {
   final ShopModel shop;
@@ -72,7 +72,8 @@ class ShopDetailAboutSection extends StatelessWidget {
           // Category & District Badges
           if ((shop.categoryName != null && shop.categoryName!.isNotEmpty) ||
               (shop.districtName != null && shop.districtName!.isNotEmpty) ||
-              (shop.subDistrictName != null && shop.subDistrictName!.isNotEmpty)) ...[
+              (shop.subDistrictName != null &&
+                  shop.subDistrictName!.isNotEmpty)) ...[
             const Text(
               'ข้อมูลหมวดหมู่ & ที่ตั้ง',
               style: TextStyle(
@@ -90,7 +91,8 @@ class ShopDetailAboutSection extends StatelessWidget {
                   _buildHighlightChip('🏪 หมวดหมู่: ${shop.categoryName!}'),
                 if (shop.districtName != null && shop.districtName!.isNotEmpty)
                   _buildHighlightChip('📍 อำเภอ: ${shop.districtName!}'),
-                if (shop.subDistrictName != null && shop.subDistrictName!.isNotEmpty)
+                if (shop.subDistrictName != null &&
+                    shop.subDistrictName!.isNotEmpty)
                   _buildHighlightChip('🏞️ ตำบล: ${shop.subDistrictName!}'),
               ],
             ),
@@ -116,7 +118,8 @@ class ShopDetailAboutSection extends StatelessWidget {
               icon: Icons.access_time_filled_rounded,
               iconColor: const Color(0xFF2A9D8F),
               label: 'เวลาเปิดให้บริการ',
-              value: '${shop.openingTime ?? "08:00"} - ${shop.closingTime ?? "18:00"} น.',
+              value:
+                  '${shop.openingTime ?? "08:00"} - ${shop.closingTime ?? "18:00"} น.',
             ),
 
           // 2. Phone Call
@@ -160,7 +163,10 @@ class ShopDetailAboutSection extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.call, size: 14),
-                  label: const Text('โทรออก', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                  label: const Text(
+                    'โทรออก',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
@@ -198,7 +204,9 @@ class ShopDetailAboutSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFFEBF6F3),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF2A9D8F).withValues(alpha: 0.2)),
+        border: Border.all(
+          color: const Color(0xFF2A9D8F).withValues(alpha: 0.2),
+        ),
       ),
       child: Text(
         label,

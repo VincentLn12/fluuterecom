@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../controllers/product_detail_controller.dart';
-import '../../models/product_model.dart';
-import '../../models/shop_review_model.dart';
+import 'package:projecte/features/shops/controllers/product_detail_controller.dart';
+import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/shops/models/shop_review_model.dart';
 
 class ProductDetailNavTabs extends GetView<ProductDetailController> {
   const ProductDetailNavTabs({super.key});

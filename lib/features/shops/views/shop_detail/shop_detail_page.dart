@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../../../shared/widgets/error_widget.dart';
-import '../controllers/shop_detail_controller.dart';
-import '../widgets/detail/shop_detail_about_section.dart';
-import '../widgets/detail/shop_detail_bottom_bar.dart';
-import '../widgets/detail/shop_detail_content_section.dart';
-import '../widgets/detail/shop_detail_hero.dart';
-import '../widgets/detail/shop_detail_nav_tabs.dart';
-import '../widgets/detail/shop_detail_products_section.dart';
-import '../widgets/detail/shop_detail_reviews_section.dart';
-import '../widgets/detail/shop_detail_skeleton.dart';
-import '../widgets/detail/shop_detail_summary_card.dart';
+import 'package:projecte/shared/widgets/error_widget.dart';
+import 'package:projecte/features/shops/controllers/shop_detail_controller.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_about_section.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_bottom_bar.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_content_section.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_hero.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_nav_tabs.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_products_section.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_reviews_section.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_skeleton.dart';
+import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_summary_card.dart';
 
 class ShopDetailPage extends GetView<ShopDetailController> {
   const ShopDetailPage({super.key});

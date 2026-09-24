@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/widgets/empty_widget.dart';
-import '../../models/shop_review_model.dart';
+import 'package:projecte/shared/widgets/empty_widget.dart';
+import 'package:projecte/features/shops/models/shop_review_model.dart';
 
 class ShopDetailReviewsSection extends StatelessWidget {
   final List<ShopReviewModel> reviews;
@@ -67,7 +67,9 @@ class ShopDetailReviewsSection extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    reviews.isNotEmpty ? averageRating.toStringAsFixed(1) : '0.0',
+                    reviews.isNotEmpty
+                        ? averageRating.toStringAsFixed(1)
+                        : '0.0',
                     style: const TextStyle(
                       fontSize: 38,
                       fontWeight: FontWeight.w900,
@@ -126,7 +128,8 @@ class ShopDetailReviewsSection extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 20.0),
             child: EmptyWidget(
               title: 'ยังไม่มีรีวิวสำหรับร้านนี้',
-              message: 'ร้านค้านี้ยังไม่มีความคิดเห็นหรือรีวิวจากผู้ซื้อในขณะนี้',
+              message:
+                  'ร้านค้านี้ยังไม่มีความคิดเห็นหรือรีวิวจากผู้ซื้อในขณะนี้',
               icon: Icons.star_outline_rounded,
             ),
           )
@@ -159,7 +162,9 @@ class ShopDetailReviewsSection extends StatelessWidget {
                             0xFF2A9D8F,
                           ).withValues(alpha: 0.15),
                           child: Text(
-                            review.userName.isNotEmpty ? review.userName[0] : 'U',
+                            review.userName.isNotEmpty
+                                ? review.userName[0]
+                                : 'U',
                             style: const TextStyle(
                               color: Color(0xFF2A9D8F),
                               fontWeight: FontWeight.bold,
@@ -260,7 +265,9 @@ class ShopDetailReviewsSection extends StatelessWidget {
                           color: const Color(0xFFF3F7F5),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: const Color(0xFF2A9D8F).withValues(alpha: 0.2),
+                            color: const Color(
+                              0xFF2A9D8F,
+                            ).withValues(alpha: 0.2),
                           ),
                         ),
                         child: Column(

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
 import '../../shops/models/product_model.dart';
-import '../../shops/widgets/product_card.dart';
+import '../../shops/widgets/shared/product_card.dart';
 import '../controllers/home_controller.dart';
 
 class HomeDealsSection extends GetView<HomeController> {

@@ -4,8 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../app/routes/app_routes.dart';
-import '../models/shop_model.dart';
+import 'package:projecte/app/routes/app_routes.dart';
+import 'package:projecte/features/shops/models/shop_model.dart';
 
 class ShopInteractiveMapView extends StatefulWidget {
   final List<ShopModel> shops;
@@ -20,11 +20,13 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
   final MapController _mapController = MapController();
 
   List<ShopModel> get _validItems => widget.shops
-      .where((item) =>
-          item.latitude != null &&
-          item.longitude != null &&
-          item.latitude != 0 &&
-          item.longitude != 0)
+      .where(
+        (item) =>
+            item.latitude != null &&
+            item.longitude != null &&
+            item.latitude != 0 &&
+            item.longitude != 0,
+      )
       .toList();
 
   LatLng get _initialCenter {
@@ -135,7 +137,11 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.storefront_rounded, size: 17, color: Color(0xFFE9C46A)),
+                const Icon(
+                  Icons.storefront_rounded,
+                  size: 17,
+                  color: Color(0xFFE9C46A),
+                ),
                 const SizedBox(width: 6),
                 Text(
                   'พบ ${validItems.length} ร้านค้าบนแผนที่',
@@ -223,7 +229,11 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
     return Container(
       color: const Color(0xFF332820),
       child: const Center(
-        child: Icon(Icons.storefront_rounded, color: Color(0xFFE9C46A), size: 24),
+        child: Icon(
+          Icons.storefront_rounded,
+          color: Color(0xFFE9C46A),
+          size: 24,
+        ),
       ),
     );
   }
@@ -253,7 +263,9 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
             children: [
               if (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty)
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
+                  ),
                   child: AspectRatio(
                     aspectRatio: 21 / 9,
                     child: Image.network(
@@ -271,7 +283,10 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                       children: [
                         if (item.categoryName != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
                             decoration: BoxDecoration(
                               color: const Color(0xFFD96C2C),
                               borderRadius: BorderRadius.circular(12),
@@ -287,9 +302,14 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                           ),
                         const SizedBox(width: 6),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
-                            color: isOpen ? const Color(0xFF2E7D32) : Colors.grey[700],
+                            color: isOpen
+                                ? const Color(0xFF2E7D32)
+                                : Colors.grey[700],
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -314,7 +334,8 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (item.description != null && item.description!.isNotEmpty) ...[
+                    if (item.description != null &&
+                        item.description!.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
                         item.description!,
@@ -333,7 +354,10 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                                   'https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}';
                               final uri = Uri.parse(url);
                               if (await canLaunchUrl(uri)) {
-                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                await launchUrl(
+                                  uri,
+                                  mode: LaunchMode.externalApplication,
+                                );
                               }
                             },
                             style: OutlinedButton.styleFrom(
@@ -352,7 +376,10 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                           child: ElevatedButton.icon(
                             onPressed: () {
                               Navigator.pop(context);
-                              Get.toNamed(AppRoutes.shopDetail, arguments: item);
+                              Get.toNamed(
+                                AppRoutes.shopDetail,
+                                arguments: item,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF332820),
@@ -361,7 +388,10 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                             ),
-                            icon: const Icon(Icons.storefront_rounded, size: 16),
+                            icon: const Icon(
+                              Icons.storefront_rounded,
+                              size: 16,
+                            ),
                             label: const Text('ดูร้านค้า'),
                           ),
                         ),
@@ -402,4 +432,3 @@ class _ShopPinTrianglePainter extends CustomPainter {
   bool shouldRepaint(covariant _ShopPinTrianglePainter oldDelegate) =>
       oldDelegate.color != color;
 }
-
