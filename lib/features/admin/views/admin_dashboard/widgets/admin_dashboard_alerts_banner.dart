@@ -12,76 +12,196 @@ class AdminDashboardAlertsBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (alerts.pendingSlips == 0 &&
-        alerts.pendingPayoutOrders == 0 &&
-        alerts.pendingShipmentOrders == 0) {
-      return const SizedBox.shrink();
+    final totalUrgent = alerts.pendingSlips + alerts.pendingPayoutOrders;
+
+    if (totalUrgent == 0) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F8F5),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFCCE4DA)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: const BoxDecoration(
+                color: Color(0xFF1B4D3E),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'ทุกรายการได้รับการตรวจสอบเรียบร้อยแล้ว ไม่มีงานค้าง',
+                style: GoogleFonts.krub(
+                  fontSize: 12.5,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF1B4D3E),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFF3CD),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFFFEEBA)),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFFE76F51).withValues(alpha: 0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE76F51).withValues(alpha: 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header Row
           Row(
             children: [
-              const Icon(Icons.warning_amber_rounded, color: Color(0xFF856404)),
-              const SizedBox(width: 8),
-              Text(
-                'รายการที่ต้องการการดำเนินการเร่งด่วน',
-                style: GoogleFonts.krub(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: const Color(0xFF856404),
+              Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE76F51).withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.notifications_active_rounded,
+                  color: Color(0xFFE76F51),
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'รายการที่ต้องการการดำเนินการเร่งด่วน',
+                  style: GoogleFonts.krub(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14.5,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE76F51),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  '$totalUrgent รายการ',
+                  style: GoogleFonts.krub(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+
+          const SizedBox(height: 12),
+
+          // Actionable cards
           Wrap(
             spacing: 8,
             runSpacing: 8,
             children: [
               if (alerts.pendingSlips > 0)
-                ActionChip(
-                  avatar: const Icon(
-                    Icons.receipt_long_outlined,
-                    size: 16,
-                    color: Colors.white,
-                  ),
-                  label: Text('สลิปรอยืนยัน ${alerts.pendingSlips} รายการ'),
-                  backgroundColor: AppColors.accent,
-                  labelStyle: GoogleFonts.krub(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                  onPressed: () => Get.toNamed(AppRoutes.adminOrders),
+                _buildActionTile(
+                  title: 'สลิปรอการตรวจสอบ',
+                  count: alerts.pendingSlips,
+                  icon: Icons.receipt_long_rounded,
+                  color: const Color(0xFFE76F51),
+                  bgTint: const Color(0xFFFDF2EE),
+                  onTap: () => Get.toNamed(AppRoutes.adminOrders),
                 ),
               if (alerts.pendingPayoutOrders > 0)
-                ActionChip(
-                  avatar: const Icon(
-                    Icons.account_balance_wallet_outlined,
-                    size: 16,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    'ร้านค้ารอโอนเงิน ${alerts.pendingPayoutOrders} รายการ',
-                  ),
-                  backgroundColor: AppColors.primary,
-                  labelStyle: GoogleFonts.krub(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                  onPressed: () => Get.toNamed(AppRoutes.adminPayouts),
+                _buildActionTile(
+                  title: 'ร้านค้ารอโอนยอดเงิน',
+                  count: alerts.pendingPayoutOrders,
+                  icon: Icons.account_balance_wallet_rounded,
+                  color: const Color(0xFF1B4D3E),
+                  bgTint: const Color(0xFFF0F5F2),
+                  onTap: () => Get.toNamed(AppRoutes.adminPayouts),
                 ),
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionTile({
+    required String title,
+    required int count,
+    required IconData icon,
+    required Color color,
+    required Color bgTint,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: bgTint,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 16, color: color),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: GoogleFonts.krub(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '$count',
+                  style: GoogleFonts.krub(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(
+                Icons.arrow_forward_ios_rounded,
+                size: 10,
+                color: color.withValues(alpha: 0.7),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

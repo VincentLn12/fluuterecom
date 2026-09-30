@@ -45,7 +45,7 @@ class AdminExportFilters extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             DropdownButtonFormField<String>(
-                              value: controller.selectedPaymentStatus.value,
+                              initialValue: controller.selectedPaymentStatus.value,
                               isExpanded: true,
                               decoration: AdminExportInputDecoration.build(),
                               style: GoogleFonts.krub(
@@ -94,7 +94,7 @@ class AdminExportFilters extends StatelessWidget {
                             ),
                             const SizedBox(height: 6),
                             DropdownButtonFormField<String>(
-                              value: controller.selectedOrderStatus.value,
+                              initialValue: controller.selectedOrderStatus.value,
                               isExpanded: true,
                               decoration: AdminExportInputDecoration.build(),
                               style: GoogleFonts.krub(
@@ -152,7 +152,7 @@ class AdminExportFilters extends StatelessWidget {
                       ),
                       const SizedBox(height: 6),
                       DropdownButtonFormField<String>(
-                        value: controller.selectedPayoutStatus.value,
+                        initialValue: controller.selectedPayoutStatus.value,
                         isExpanded: true,
                         decoration: AdminExportInputDecoration.build(),
                         style: GoogleFonts.krub(

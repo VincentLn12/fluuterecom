@@ -129,7 +129,7 @@ class AdminConfirmPayoutDialog {
                   note: noteController.text.trim(),
                   slipFile: selectedFile.value,
                 );
-                if (ok) {
+                if (ok && context.mounted) {
                   Navigator.pop(context);
                 }
               },

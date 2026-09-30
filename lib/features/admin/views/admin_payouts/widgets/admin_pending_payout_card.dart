@@ -32,7 +32,7 @@ class AdminPendingPayoutCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                   child: const Icon(Icons.storefront, color: AppColors.primary),
                 ),
                 const SizedBox(width: 12),

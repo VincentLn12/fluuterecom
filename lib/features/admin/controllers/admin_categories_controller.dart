@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import '../models/admin_category_model.dart';
-import '../models/admin_shop_product_model.dart';
 import '../repositories/admin_repository.dart';
 
 class AdminCategoriesController extends GetxController {

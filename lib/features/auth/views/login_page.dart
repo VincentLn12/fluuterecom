@@ -19,9 +19,10 @@ class LoginPage extends GetView<AuthController> {
           children: [
             // Scenic Hero Banner
             const AuthHeroHeader(
-              title: 'ยินดีต้อนรับสู่เมืองกาญจน์',
-              subtitle: 'เข้าสู่ระบบเพื่อค้นหาที่เที่ยว ร้านค้าชุมชน และสินค้าท้องถิ่น',
-              badgeText: 'KANCHANABURI EXPLORER',
+              title: 'เข้าสู่ระบบ',
+              subtitle:
+                  'เข้าสู่ระบบเพื่อค้นหาที่เที่ยว ร้านค้าชุมชน และสินค้าท้องถิ่น',
+              badgeText: 'กาญจนบุรี แพลตฟอร์ม',
               icon: Icons.explore_rounded,
               showBackButton: true,
             ),
@@ -109,7 +110,9 @@ class LoginPage extends GetView<AuthController> {
                                 margin: const EdgeInsets.all(10),
                                 padding: const EdgeInsets.all(6),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                  color: AppColors.primary.withValues(
+                                    alpha: 0.1,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: const Icon(
@@ -142,7 +145,9 @@ class LoginPage extends GetView<AuthController> {
                                   onTap: controller.toggleRememberMe,
                                   borderRadius: BorderRadius.circular(6),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4,
+                                    ),
                                     child: Row(
                                       children: [
                                         SizedBox(
@@ -150,10 +155,12 @@ class LoginPage extends GetView<AuthController> {
                                           height: 20,
                                           child: Checkbox(
                                             value: controller.rememberMe.value,
-                                            onChanged: (_) => controller.toggleRememberMe(),
+                                            onChanged: (_) =>
+                                                controller.toggleRememberMe(),
                                             activeColor: AppColors.primary,
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(5),
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
                                             ),
                                             side: const BorderSide(
                                               color: Color(0xFFBACBC5),
@@ -175,7 +182,8 @@ class LoginPage extends GetView<AuthController> {
                                 ),
                               ),
                               GestureDetector(
-                                onTap: () => showForgotPasswordBottomSheet(context),
+                                onTap: () =>
+                                    showForgotPasswordBottomSheet(context),
                                 child: Text(
                                   'ลืมรหัสผ่าน?',
                                   style: GoogleFonts.krub(
@@ -207,14 +215,18 @@ class LoginPage extends GetView<AuthController> {
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.35),
+                                    color: AppColors.primary.withValues(
+                                      alpha: 0.35,
+                                    ),
                                     blurRadius: 14,
                                     offset: const Offset(0, 5),
                                   ),
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: controller.isLoading.value ? null : controller.login,
+                                onPressed: controller.isLoading.value
+                                    ? null
+                                    : controller.login,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
@@ -232,7 +244,8 @@ class LoginPage extends GetView<AuthController> {
                                         ),
                                       )
                                     : Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           const Icon(
                                             Icons.login_rounded,
@@ -316,7 +329,10 @@ class LoginPage extends GetView<AuthController> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 18,
+                          vertical: 11,
+                        ),
                       ),
                     ),
 

@@ -16,20 +16,52 @@ class AdminDashboardController extends GetxController {
   final selectedFromDate = ''.obs;
   final selectedToDate = ''.obs;
 
+  // Real live counts directly from Payouts and Slips endpoints
+  final livePendingPayoutsCount = 0.obs;
+  final livePendingSlipsCount = 0.obs;
+  final livePendingPayoutAmount = 0.0.obs;
+
   @override
   void onInit() {
     super.onInit();
+    final now = DateTime.now();
+    final from = now.subtract(const Duration(days: 7));
+    selectedFromDate.value = from.toIso8601String().split('T').first;
+    selectedToDate.value = now.toIso8601String().split('T').first;
     loadDashboard();
   }
 
   Future<void> loadDashboard() async {
     isLoading.value = true;
     try {
-      final res = await _repository.fetchDashboardReport(
+      final reportFuture = _repository.fetchDashboardReport(
         from: selectedFromDate.value.isEmpty ? null : selectedFromDate.value,
         to: selectedToDate.value.isEmpty ? null : selectedToDate.value,
       );
-      report.value = res;
+      final payoutsFuture = _repository.fetchPayouts();
+      final slipsFuture = _repository.fetchPendingSlips();
+
+      final reportRes = await reportFuture;
+      report.value = reportRes;
+
+      try {
+        final payouts = await payoutsFuture;
+        livePendingPayoutsCount.value = payouts.length;
+        final payoutAmt = payouts.fold(0.0, (sum, p) => sum + p.totalSalesAmount);
+        livePendingPayoutAmount.value = payoutAmt > 0
+            ? payoutAmt
+            : (reportRes?.summary.pendingPayoutAmount ?? 0.0);
+      } catch (e) {
+        livePendingPayoutsCount.value = reportRes?.alerts.pendingPayoutOrders ?? 0;
+        livePendingPayoutAmount.value = reportRes?.summary.pendingPayoutAmount ?? 0.0;
+      }
+
+      try {
+        final slips = await slipsFuture;
+        livePendingSlipsCount.value = slips.length;
+      } catch (e) {
+        livePendingSlipsCount.value = reportRes?.alerts.pendingSlips ?? 0;
+      }
     } finally {
       isLoading.value = false;
     }
