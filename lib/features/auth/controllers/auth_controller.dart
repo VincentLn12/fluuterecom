@@ -17,6 +17,61 @@ class AuthController extends GetxController {
   final isLoading = false.obs;
   final obscurePassword = true.obs;
   final obscureConfirmPassword = true.obs;
+  final rememberMe = true.obs;
+  final agreeTerms = false.obs;
+
+  final passwordText = ''.obs;
+  final confirmPasswordText = ''.obs;
+
+  bool get isPasswordLongEnough => passwordText.value.length >= 6;
+  bool get doPasswordsMatch =>
+      passwordText.value.isNotEmpty &&
+      passwordText.value == confirmPasswordText.value;
+
+  @override
+  void onInit() {
+    super.onInit();
+    passwordController.addListener(() {
+      passwordText.value = passwordController.text;
+    });
+    confirmPasswordController.addListener(() {
+      confirmPasswordText.value = confirmPasswordController.text;
+    });
+  }
+
+  void toggleRememberMe() {
+    rememberMe.value = !rememberMe.value;
+  }
+
+  void toggleAgreeTerms() {
+    agreeTerms.value = !agreeTerms.value;
+  }
+
+  void fillDemoUser() {
+    emailController.text = 'test4@gmail.com';
+    passwordController.text = '123';
+    Get.snackbar(
+      '⚡ กรอกข้อมูลทดสอบ',
+      'กรอกอีเมลและรหัสผ่านบัญชีผู้ใช้ทั่วไปเรียบร้อยแล้ว',
+      backgroundColor: const Color(0xFF1B4D3E),
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 2),
+    );
+  }
+
+  void fillDemoAdmin() {
+    emailController.text = 'admin@gmail.com';
+    passwordController.text = '123';
+    Get.snackbar(
+      '⚡ กรอกข้อมูลทดสอบ',
+      'กรอกอีเมลและรหัสผ่านบัญชีผู้ดูแลระบบ (Admin) เรียบร้อยแล้ว',
+      backgroundColor: const Color(0xFF0F382C),
+      colorText: Colors.white,
+      snackPosition: SnackPosition.TOP,
+      duration: const Duration(seconds: 2),
+    );
+  }
 
   void toggleObscurePassword() {
     obscurePassword.value = !obscurePassword.value;
@@ -58,13 +113,19 @@ class AuthController extends GetxController {
       if (tokenData != null && tokenData.containsKey('accessToken')) {
         final accessToken = tokenData['accessToken'].toString();
 
-        final jwtUser = UserModel.fromJwtToken(accessToken, fallbackEmail: email);
-        final fetchedProfile = await _repository.fetchProfile() ?? await _repository.fetchCurrentUser();
+        final jwtUser = UserModel.fromJwtToken(
+          accessToken,
+          fallbackEmail: email,
+        );
+        final fetchedProfile =
+            await _repository.fetchProfile() ??
+            await _repository.fetchCurrentUser();
 
         String resolvedRole = 'User';
         if (jwtUser.isAdmin || jwtUser.role?.toLowerCase() == 'admin') {
           resolvedRole = 'Admin';
-        } else if (fetchedProfile?.isAdmin == true || fetchedProfile?.role?.toLowerCase() == 'admin') {
+        } else if (fetchedProfile?.isAdmin == true ||
+            fetchedProfile?.role?.toLowerCase() == 'admin') {
           resolvedRole = 'Admin';
         } else if (email.toLowerCase().contains('admin')) {
           resolvedRole = 'Admin';
@@ -73,15 +134,23 @@ class AuthController extends GetxController {
         }
 
         final userProfile = UserModel(
-          id: (fetchedProfile?.id != null && fetchedProfile!.id.isNotEmpty) ? fetchedProfile.id : jwtUser.id,
-          email: (fetchedProfile?.email != null && fetchedProfile!.email.isNotEmpty) ? fetchedProfile.email : email,
+          id: (fetchedProfile?.id != null && fetchedProfile!.id.isNotEmpty)
+              ? fetchedProfile.id
+              : jwtUser.id,
+          email:
+              (fetchedProfile?.email != null &&
+                  fetchedProfile!.email.isNotEmpty)
+              ? fetchedProfile.email
+              : email,
           name: fetchedProfile?.name ?? jwtUser.name ?? email.split('@').first,
           role: resolvedRole,
           firstName: fetchedProfile?.firstName,
           lastName: fetchedProfile?.lastName,
         );
 
-        debugPrint('🔑 Auth Logged In User -> Email: ${userProfile.email}, Role: ${userProfile.role}, IsAdmin: ${userProfile.isAdmin}');
+        debugPrint(
+          '🔑 Auth Logged In User -> Email: ${userProfile.email}, Role: ${userProfile.role}, IsAdmin: ${userProfile.isAdmin}',
+        );
         _authService.setSession(accessToken, userProfile);
 
         Get.snackbar(

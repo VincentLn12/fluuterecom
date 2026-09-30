@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../app/routes/app_routes.dart';
-import '../../../shared/widgets/app_button.dart';
+import '../../../app/theme/app_colors.dart';
 import '../../../shared/widgets/app_text_field.dart';
 import '../controllers/auth_controller.dart';
+import 'widgets/auth_components.dart';
 
 class LoginPage extends GetView<AuthController> {
   const LoginPage({super.key});
@@ -12,185 +13,319 @@ class LoginPage extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F0E6),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        foregroundColor: const Color(0xFF2B1F17),
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              // App Logo / Header Banner
-              Center(
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2B1F17),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF332820).withValues(alpha: 0.15),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.storefront_rounded,
-                      size: 48,
-                      color: Color(0xFFD96C2C),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Center(
-                child: Text(
-                  'เข้าสู่ระบบ',
-                  style: GoogleFonts.krub(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2B1F17),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 6),
-              Center(
-                child: Text(
-                  'เข้าสู่ระบบ แพลตฟอร์มท่องเที่ยวและสินค้าเมืองกาญจน์',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.krub(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 36),
+      backgroundColor: AppColors.background,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Scenic Hero Banner
+            const AuthHeroHeader(
+              title: 'ยินดีต้อนรับสู่เมืองกาญจน์',
+              subtitle: 'เข้าสู่ระบบเพื่อค้นหาที่เที่ยว ร้านค้าชุมชน และสินค้าท้องถิ่น',
+              badgeText: 'KANCHANABURI EXPLORER',
+              icon: Icons.explore_rounded,
+              showBackButton: true,
+            ),
 
-              // Form Container Card
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: const Color(0xFFEADCCF),
-                    width: 1.2,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFF332820).withValues(alpha: 0.06),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
+            // Overlapping Form Card
+            Transform.translate(
+              offset: const Offset(0, -22),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'อีเมลของคุณ',
-                      style: GoogleFonts.krub(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2B1F17),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    AppTextField(
-                      controller: controller.emailController,
-                      hintText: 'test@email.com',
-                      prefixIcon: const Icon(
-                        Icons.email_outlined,
-                        color: Color(0xFFD96C2C),
-                      ),
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-                    const SizedBox(height: 18),
-
-                    Text(
-                      'รหัสผ่าน',
-                      style: GoogleFonts.krub(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF2B1F17),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Obx(
-                      () => AppTextField(
-                        controller: controller.passwordController,
-                        hintText: 'กรอกรหัสผ่าน',
-                        obscureText: controller.obscurePassword.value,
-                        prefixIcon: const Icon(
-                          Icons.lock_outline_rounded,
-                          color: Color(0xFFD96C2C),
-                        ),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            controller.obscurePassword.value
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: Colors.grey[600],
+                    AuthCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Tab switcher between Login and Register
+                          AuthTabSwitch(
+                            isLogin: true,
+                            onLoginTap: () {},
+                            onRegisterTap: () {
+                              Get.toNamed(AppRoutes.register);
+                            },
                           ),
-                          onPressed: controller.toggleObscurePassword,
+
+                          const SizedBox(height: 20),
+
+                          // Quick Demo Credentials bar for instant evaluation
+                          DemoCredentialsBar(
+                            onSelectUser: controller.fillDemoUser,
+                            onSelectAdmin: controller.fillDemoAdmin,
+                          ),
+
+                          const SizedBox(height: 22),
+
+                          // Email Field
+                          const AuthFieldLabel(
+                            label: 'อีเมลของคุณ',
+                            icon: Icons.alternate_email_rounded,
+                          ),
+                          const SizedBox(height: 8),
+                          AppTextField(
+                            controller: controller.emailController,
+                            hintText: 'example@email.com',
+                            fillColor: const Color(0xFFF4F8F6),
+                            borderColor: const Color(0xFFE0EAE6),
+                            focusedBorderColor: AppColors.primary,
+                            borderRadius: 16,
+                            textInputAction: TextInputAction.next,
+                            prefixIcon: Container(
+                              margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: 0.1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.mail_outline_rounded,
+                                size: 18,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+
+                          const SizedBox(height: 18),
+
+                          // Password Field
+                          const AuthFieldLabel(
+                            label: 'รหัสผ่าน',
+                            icon: Icons.lock_outline_rounded,
+                          ),
+                          const SizedBox(height: 8),
+                          Obx(
+                            () => AppTextField(
+                              controller: controller.passwordController,
+                              hintText: 'กรอกรหัสผ่านของคุณ',
+                              obscureText: controller.obscurePassword.value,
+                              fillColor: const Color(0xFFF4F8F6),
+                              borderColor: const Color(0xFFE0EAE6),
+                              focusedBorderColor: AppColors.primary,
+                              borderRadius: 16,
+                              textInputAction: TextInputAction.done,
+                              onFieldSubmitted: (_) => controller.login(),
+                              prefixIcon: Container(
+                                margin: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: const Icon(
+                                  Icons.key_rounded,
+                                  size: 18,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.obscurePassword.value
+                                      ? Icons.visibility_off_outlined
+                                      : Icons.visibility_outlined,
+                                  color: const Color(0xFF7A978E),
+                                  size: 20,
+                                ),
+                                onPressed: controller.toggleObscurePassword,
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          // Remember Me & Forgot Password Row
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Obx(
+                                () => InkWell(
+                                  onTap: controller.toggleRememberMe,
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 4),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: Checkbox(
+                                            value: controller.rememberMe.value,
+                                            onChanged: (_) => controller.toggleRememberMe(),
+                                            activeColor: AppColors.primary,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                            side: const BorderSide(
+                                              color: Color(0xFFBACBC5),
+                                              width: 1.5,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'จดจำฉันไว้',
+                                          style: GoogleFonts.krub(
+                                            fontSize: 13,
+                                            color: AppColors.textSecondary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () => showForgotPasswordBottomSheet(context),
+                                child: Text(
+                                  'ลืมรหัสผ่าน?',
+                                  style: GoogleFonts.krub(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFFE76F51),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Primary Login Button
+                          Obx(
+                            () => Container(
+                              width: double.infinity,
+                              height: 52,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF1B4D3E),
+                                    Color(0xFF266754),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.primary.withValues(alpha: 0.35),
+                                    blurRadius: 14,
+                                    offset: const Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: controller.isLoading.value ? null : controller.login,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                child: controller.isLoading.value
+                                    ? const SizedBox(
+                                        width: 22,
+                                        height: 22,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2.5,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    : Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(
+                                            Icons.login_rounded,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            'เข้าสู่ระบบ',
+                                            style: GoogleFonts.krub(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
+
+                          // Social Logins Section
+                          const SocialAuthSection(),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Register Navigation Link
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'ยังไม่มีบัญชีสมาชิก? ',
+                          style: GoogleFonts.krub(
+                            fontSize: 14,
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Get.toNamed(AppRoutes.register);
+                          },
+                          child: Text(
+                            'สมัครสมาชิกใหม่',
+                            style: GoogleFonts.krub(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFFE76F51),
+                              decoration: TextDecoration.underline,
+                              decorationColor: const Color(0xFFE76F51),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // Guest explore link
+                    OutlinedButton.icon(
+                      onPressed: () => Get.offAllNamed(AppRoutes.initial),
+                      icon: const Icon(
+                        Icons.travel_explore_rounded,
+                        size: 18,
+                        color: AppColors.primary,
+                      ),
+                      label: Text(
+                        'เข้าชมแอปแบบผู้ใช้ทั่วไป (Guest)',
+                        style: GoogleFonts.krub(
+                          fontSize: 13.5,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primary,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 28),
-
-                    // Submit Button
-                    Obx(
-                      () => AppButton(
-                        text: 'เข้าสู่ระบบ',
-                        isLoading: controller.isLoading.value,
-                        onPressed: controller.login,
-                        color: const Color(0xFFD96C2C),
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: Color(0xFFCCE0D8)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 11),
                       ),
                     ),
+
+                    const SizedBox(height: 36),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 28),
-
-              // Register CTA Navigation
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'ยังไม่มีบัญชีสมาชิก? ',
-                    style: GoogleFonts.krub(
-                      fontSize: 15,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Get.toNamed(AppRoutes.register);
-                    },
-                    child: Text(
-                      'สมัครสมาชิก',
-                      style: GoogleFonts.krub(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFFD96C2C),
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
