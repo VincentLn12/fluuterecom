@@ -17,9 +17,11 @@ class AdminExportDateRangeSelector extends StatelessWidget {
       children: [
         AdminExportSectionCard(
           stepNumber: '2',
-          title: 'เลือกช่วงวันที่รายงาน',
-          icon: Icons.date_range_rounded,
+          title: 'ช่วงวันที่ของรายงาน',
+          subtitle: 'เลือกช่วงเวลาที่ต้องการสรุปข้อมูล',
+          icon: Icons.calendar_month_rounded,
           children: [
+            // Quick Preset Chips
             Obx(() {
               return Wrap(
                 spacing: 8,
@@ -33,92 +35,123 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                       preset['label']!,
                       style: GoogleFonts.krub(
                         fontSize: 12,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                        color: isSelected
-                            ? Colors.white
-                            : const Color(0xFF334155),
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected ? Colors.white : AppColors.textPrimary,
                       ),
                     ),
                     selected: isSelected,
                     selectedColor: AppColors.primary,
                     backgroundColor: const Color(0xFFF1F5F9),
-                    side: BorderSide.none,
+                    side: BorderSide(
+                      color: isSelected ? AppColors.primary : const Color(0xFFE2E8F0),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    showCheckmark: false,
+                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                     onSelected: (_) => controller.applyDatePreset(val),
                   );
                 }).toList(),
               );
             }),
-            const SizedBox(height: 16),
-            InkWell(
-              onTap: () => controller.selectDateRange(context),
-              borderRadius: BorderRadius.circular(16),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: const Color(0xFFCBD5E1)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(
-                              Icons.calendar_month_rounded,
-                              color: AppColors.primary,
-                              size: 20,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Obx(() {
-                              final from = controller.formatDateString(
-                                controller.fromDate.value,
-                              );
-                              final to = controller.formatDateString(
-                                controller.toDate.value,
-                              );
-                              return Text(
-                                'ช่วงวันที่: $from ถึง $to',
+
+            const SizedBox(height: 14),
+
+            // Active Date Range Display Card
+            Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () => controller.selectDateRange(context),
+                borderRadius: BorderRadius.circular(16),
+                child: Container(
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Icon(
+                          Icons.date_range_rounded,
+                          color: AppColors.primary,
+                          size: 22,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Obx(() {
+                          final rangeLabel = controller.thaiDateRangeLabel;
+                          final days = controller.dateRangeDays;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                rangeLabel,
                                 style: GoogleFonts.krub(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: const Color(0xFF0F172A),
+                                  color: AppColors.textPrimary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                              );
-                            }),
-                          ),
-                        ],
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                'รวมระยะเวลา $days วัน',
+                                style: GoogleFonts.krub(
+                                  fontSize: 11.5,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          );
+                        }),
                       ),
-                    ),
-                    const Icon(
-                      Icons.edit_calendar_rounded,
-                      color: AppColors.primary,
-                      size: 20,
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.edit_calendar_rounded,
+                              size: 15,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'เปลี่ยนวัน',
+                              style: GoogleFonts.krub(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ],
         ),
-
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
       ],
     );
   }

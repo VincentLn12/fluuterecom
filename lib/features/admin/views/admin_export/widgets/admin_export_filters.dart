@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_export_controller.dart';
 import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_section_card.dart';
 import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_input_decoration.dart';
@@ -22,10 +23,11 @@ class AdminExportFilters extends StatelessWidget {
           }
 
           return Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
+            padding: const EdgeInsets.only(bottom: 16),
             child: AdminExportSectionCard(
               stepNumber: '4',
-              title: 'ตัวกรองเพิ่มเติมสำหรับรายงาน',
+              title: 'ตัวกรองข้อมูลเพิ่มเติม',
+              subtitle: 'จำกัดขอบเขตข้อมูลในรายงานตามต้องการ',
               icon: Icons.filter_alt_rounded,
               children: [
                 if (type == 'orders')
@@ -40,7 +42,7 @@ class AdminExportFilters extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF475569),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -59,7 +61,7 @@ class AdminExportFilters extends StatelessWidget {
                                 ),
                                 DropdownMenuItem(
                                   value: 'Paid',
-                                  child: Text('ชำระแล้ว'),
+                                  child: Text('ชำระเงินแล้ว'),
                                 ),
                                 DropdownMenuItem(
                                   value: 'PendingVerification',
@@ -85,11 +87,11 @@ class AdminExportFilters extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'สถานะออเดอร์',
+                              'สถานะคำสั่งซื้อ',
                               style: GoogleFonts.krub(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: const Color(0xFF475569),
+                                color: AppColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -112,7 +114,7 @@ class AdminExportFilters extends StatelessWidget {
                                 ),
                                 DropdownMenuItem(
                                   value: 'PendingVerification',
-                                  child: Text('รอยืนยันสลิป'),
+                                  child: Text('รอตรวจสลิป'),
                                 ),
                                 DropdownMenuItem(
                                   value: 'Shipped',
@@ -143,11 +145,11 @@ class AdminExportFilters extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'สถานะการโอนเงินร้านค้า',
+                        'สถานะการโอนเงินให้ร้านค้า',
                         style: GoogleFonts.krub(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: const Color(0xFF475569),
+                          color: AppColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 6),
@@ -162,11 +164,11 @@ class AdminExportFilters extends StatelessWidget {
                         items: const [
                           DropdownMenuItem(
                             value: 'All',
-                            child: Text('ทั้งหมด'),
+                            child: Text('ทั้งหมดทุกสถานะ'),
                           ),
                           DropdownMenuItem(
                             value: 'Pending',
-                            child: Text('รอนุมัติโอน'),
+                            child: Text('รอนุมัติโอนเงิน'),
                           ),
                           DropdownMenuItem(
                             value: 'Processing',

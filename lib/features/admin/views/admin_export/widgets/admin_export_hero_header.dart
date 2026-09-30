@@ -8,27 +8,33 @@ class AdminExportHeroHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF0F2D25), Color(0xFF1B4D3E), Color(0xFF2A9D8F)],
+          colors: [
+            Color(0xFF0F382C),
+            Color(0xFF1B4D3E),
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.18),
-              shape: BoxShape.circle,
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.2),
+              ),
             ),
             child: const Icon(
-              Icons.analytics_rounded,
-              color: Colors.amberAccent,
-              size: 32,
+              Icons.summarize_rounded,
+              color: Color(0xFFD1FAE5),
+              size: 26,
             ),
           ),
           const SizedBox(width: 14),
@@ -37,20 +43,20 @@ class AdminExportHeroHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'ศูนย์ดาวน์โหลดรายงานสำหรับแอดมิน',
+                  'ศูนย์ส่งออกรายงานระบบแอดมิน',
                   style: GoogleFonts.krub(
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 3),
                 Text(
-                  'ส่งออกรายงานยอดขาย รายการออเดอร์ ประวัติโอนเงิน และผลตรวจสลิป เป็นไฟล์ PDF หรือ CSV ได้ทันที',
+                  'เลือกประเภทรายงานและช่วงเวลาที่ต้องการ แล้วดาวน์โหลดเป็น PDF หรือ CSV ได้ทันที',
                   style: GoogleFonts.krub(
                     fontSize: 12,
-                    color: Colors.white.withValues(alpha: 0.88),
-                    height: 1.35,
+                    color: const Color(0xFFD1FAE5).withValues(alpha: 0.9),
+                    height: 1.3,
                   ),
                 ),
               ],

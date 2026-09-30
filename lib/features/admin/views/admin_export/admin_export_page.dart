@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/admin_export_controller.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_hero_header.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_type_selector.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_date_range_selector.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_format_selector.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_filters.dart';
-import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_submit_button.dart';
+import 'widgets/admin_export_hero_header.dart';
+import 'widgets/admin_export_type_selector.dart';
+import 'widgets/admin_export_date_range_selector.dart';
+import 'widgets/admin_export_format_selector.dart';
+import 'widgets/admin_export_filters.dart';
+import 'widgets/admin_export_summary_preview.dart';
+import 'widgets/admin_export_submit_button.dart';
 
 class AdminExportPage extends GetView<AdminExportController> {
   const AdminExportPage({super.key});
@@ -19,54 +20,74 @@ class AdminExportPage extends GetView<AdminExportController> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text(
-          'รายงานและดาวน์โหลด (Admin Exports)',
-          style: GoogleFonts.krub(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-        ),
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF0F2D25), Color(0xFF1B4D3E), Color(0xFF2A9D8F)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
+        backgroundColor: const Color(0xFF0F382C),
         foregroundColor: Colors.white,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
+        elevation: 0,
+        centerTitle: false,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16, color: Colors.white),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Top Hero Banner
-            const AdminExportHeroHeader(),
-
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AdminExportTypeSelector(controller: controller),
-
-                  AdminExportDateRangeSelector(controller: controller),
-
-                  AdminExportFormatSelector(controller: controller),
-
-                  AdminExportFilters(controller: controller),
-
-                  AdminExportSubmitButton(controller: controller),
-
-                  const SizedBox(height: 40),
-                ],
+            Text(
+              'รายงานและส่งออกข้อมูล',
+              style: GoogleFonts.krub(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              'Admin Export Center',
+              style: GoogleFonts.krub(
+                fontSize: 11,
+                color: const Color(0xFFD1FAE5),
               ),
             ),
           ],
+        ),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              // Top Executive Hero Header
+              const AdminExportHeroHeader(),
+
+              // Body Content Form
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AdminExportTypeSelector(controller: controller),
+
+                    AdminExportDateRangeSelector(controller: controller),
+
+                    AdminExportFormatSelector(controller: controller),
+
+                    AdminExportFilters(controller: controller),
+
+                    AdminExportSummaryPreview(controller: controller),
+
+                    AdminExportSubmitButton(controller: controller),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

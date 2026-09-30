@@ -126,6 +126,31 @@ class AdminExportController extends GetxController {
     return '$y-$m-$d';
   }
 
+  String formatThaiDate(DateTime dt) {
+    const months = [
+      'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+      'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+    ];
+    final year = dt.year + 543;
+    final month = months[dt.month - 1];
+    return '${dt.day} $month $year';
+  }
+
+  String get thaiDateRangeLabel {
+    return '${formatThaiDate(fromDate.value)} - ${formatThaiDate(toDate.value)}';
+  }
+
+  int get dateRangeDays {
+    return toDate.value.difference(fromDate.value).inDays + 1;
+  }
+
+  Map<String, dynamic> get selectedExportTypeInfo {
+    return exportTypes.firstWhere(
+      (t) => t['value'] == selectedExportType.value,
+      orElse: () => exportTypes.first,
+    );
+  }
+
   Future<void> exportReport() async {
     isExporting.value = true;
     try {
