@@ -3,16 +3,100 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projecte/app/theme/app_colors.dart';
 
 class AdminPayoutsEmptyState extends StatelessWidget {
-  const AdminPayoutsEmptyState({super.key, required this.message});
+  const AdminPayoutsEmptyState({
+    super.key,
+    required this.message,
+    this.subMessage,
+    this.icon = Icons.account_balance_wallet_outlined,
+    this.onRefresh,
+  });
 
   final String message;
+  final String? subMessage;
+  final IconData icon;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        message,
-        style: GoogleFonts.krub(color: AppColors.textSecondary),
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 88,
+              height: 88,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.primary.withValues(alpha: 0.1),
+                    AppColors.secondary.withValues(alpha: 0.15),
+                  ],
+                ),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.primary.withValues(alpha: 0.15),
+                  width: 1.5,
+                ),
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: 40,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              message,
+              style: GoogleFonts.krub(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textPrimary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (subMessage != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                subMessage!,
+                style: GoogleFonts.krub(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+            if (onRefresh != null) ...[
+              const SizedBox(height: 20),
+              OutlinedButton.icon(
+                onPressed: onRefresh,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                ),
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: Text(
+                  'โหลดข้อมูลใหม่',
+                  style: GoogleFonts.krub(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

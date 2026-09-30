@@ -12,40 +12,103 @@ class AdminPayoutsTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primary,
-      child: Obx(
-        () => Row(
-          children: [
-            _buildTab('รายการรอโอนเงิน', 0),
-            _buildTab('ประวัติการโอนสำเร็จ', 1),
-          ],
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: const Color(0xFFF1F5F3),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Obx(
+          () {
+            final activeTab = controller.activeTab.value;
+            final pendingCount = controller.pendingPayouts.length;
+            final historyCount = controller.payoutHistory.length;
+
+            return Row(
+              children: [
+                _buildTab(
+                  label: 'รายการรอโอนเงิน',
+                  count: pendingCount,
+                  index: 0,
+                  isSelected: activeTab == 0,
+                  hasAlert: pendingCount > 0,
+                ),
+                _buildTab(
+                  label: 'ประวัติการโอน',
+                  count: historyCount,
+                  index: 1,
+                  isSelected: activeTab == 1,
+                  hasAlert: false,
+                ),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
-  Widget _buildTab(String label, int index) {
-    final isSelected = controller.activeTab.value == index;
+  Widget _buildTab({
+    required String label,
+    required int count,
+    required int index,
+    required bool isSelected,
+    required bool hasAlert,
+  }) {
     return Expanded(
-      child: InkWell(
+      child: GestureDetector(
         onTap: () => controller.switchTab(index),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: isSelected ? AppColors.accent : Colors.transparent,
-                width: 3,
-              ),
-            ),
+            color: isSelected ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: AppColors.primaryDark.withValues(alpha: 0.08),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: GoogleFonts.krub(
-              fontWeight: FontWeight.bold,
-              color: isSelected ? Colors.white : Colors.white70,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.krub(
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                ),
+              ),
+              if (count > 0) ...[
+                const SizedBox(width: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? (hasAlert ? const Color(0xFFE76F51) : AppColors.primary)
+                        : const Color(0xFFE2E8F0),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    '$count',
+                    style: GoogleFonts.krub(
+                      fontSize: 10.5,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                    ),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ),

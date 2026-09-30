@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/admin_merchant_payout_model.dart';
 import '../repositories/admin_repository.dart';
+import 'admin_dashboard_controller.dart';
 
 class AdminPayoutsController extends GetxController {
   final AdminRepository _repository = Get.find<AdminRepository>();
@@ -10,6 +12,7 @@ class AdminPayoutsController extends GetxController {
   final activeTab = 0.obs; // 0: Pending, 1: History
   final pendingPayouts = <AdminMerchantPayoutGroup>[].obs;
   final payoutHistory = <MerchantPayoutRecord>[].obs;
+  final searchQuery = ''.obs;
 
   final isSubmitting = false.obs;
 
@@ -36,7 +39,48 @@ class AdminPayoutsController extends GetxController {
 
   void switchTab(int index) {
     activeTab.value = index;
+    searchQuery.value = '';
     loadData();
+  }
+
+  void updateSearchQuery(String query) {
+    searchQuery.value = query;
+  }
+
+  List<AdminMerchantPayoutGroup> get filteredPendingPayouts {
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isEmpty) return pendingPayouts;
+    return pendingPayouts.where((p) {
+      final name = p.shopName.toLowerCase();
+      final bank = (p.bankName ?? '').toLowerCase();
+      final acc = p.bankAccountNumber ?? '';
+      final prompt = p.promptPay ?? '';
+      final accName = (p.bankAccountName ?? '').toLowerCase();
+      return name.contains(query) ||
+          bank.contains(query) ||
+          acc.contains(query) ||
+          prompt.contains(query) ||
+          accName.contains(query);
+    }).toList();
+  }
+
+  List<MerchantPayoutRecord> get filteredHistory {
+    final query = searchQuery.value.trim().toLowerCase();
+    if (query.isEmpty) return payoutHistory;
+    return payoutHistory.where((r) {
+      final name = (r.shopName ?? '').toLowerCase();
+      final ref = (r.transactionRef ?? '').toLowerCase();
+      final note = (r.note ?? '').toLowerCase();
+      return name.contains(query) || ref.contains(query) || note.contains(query);
+    }).toList();
+  }
+
+  double get totalPendingAmount {
+    return pendingPayouts.fold(0.0, (sum, p) => sum + p.totalSalesAmount);
+  }
+
+  int get totalPendingOrders {
+    return pendingPayouts.fold(0, (sum, p) => sum + p.paidOrdersCount);
   }
 
   Future<bool> confirmPayout({
@@ -56,10 +100,29 @@ class AdminPayoutsController extends GetxController {
         slipFile: slipFile,
       );
       if (ok) {
-        Get.snackbar('สำเร็จ', 'ยืนยันการโอนเงินให้ร้านค้าเรียบร้อยแล้ว', snackPosition: SnackPosition.TOP);
-        loadData();
+        Get.snackbar(
+          'สำเร็จ',
+          'ยืนยันการโอนเงินให้ร้านค้าเรียบร้อยแล้ว',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: const Color(0xFF1B4D3E),
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
+        await loadData();
+        if (Get.isRegistered<AdminDashboardController>()) {
+          Get.find<AdminDashboardController>().loadDashboard();
+        }
       } else {
-        Get.snackbar('ข้อผิดพลาด', 'ไม่สามารถบันทึกการโอนเงินได้', snackPosition: SnackPosition.TOP);
+        Get.snackbar(
+          'ข้อผิดพลาด',
+          'ไม่สามารถบันทึกการโอนเงินได้ กรุณาลองใหม่อีกครั้ง',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: const Color(0xFFDC2626),
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
       }
       return ok;
     } finally {
