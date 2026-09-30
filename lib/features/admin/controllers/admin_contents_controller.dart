@@ -113,7 +113,7 @@ class AdminContentsController extends GetxController {
     if (ok) {
       Get.snackbar(
         'สำเร็จ',
-        'เก็บกรุบทความเรียบร้อยแล้ว',
+        'ปิดการแสดงผลคอนเทนต์เรียบร้อยแล้ว',
         snackPosition: SnackPosition.TOP,
       );
       loadContents(page: currentPage.value);
@@ -121,7 +121,56 @@ class AdminContentsController extends GetxController {
     }
     Get.snackbar(
       'ข้อผิดพลาด',
-      'ไม่สามารถลบ/เก็บกรุบทความได้',
+      'ไม่สามารถปิดการแสดงผลคอนเทนต์ได้',
+      snackPosition: SnackPosition.TOP,
+    );
+    return false;
+  }
+
+  Future<bool> toggleContentVisibility(AdminContentItem item) async {
+    final isArchived = item.status.toLowerCase() == 'archived';
+    if (isArchived) {
+      // Re-open / Publish
+      final ok = await _repository.updateContent(
+        item.contentId,
+        ContentFormData(
+          title: item.title,
+          summary: item.summary ?? '',
+          contentCategoryId: item.contentCategoryId,
+          shopId: item.shopId,
+          districtId: item.districtId,
+          subDistrictId: item.subDistrictId,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          youtubeUrl: item.youtubeUrl ?? '',
+          status: 'Published',
+        ),
+      );
+      if (ok) {
+        Get.snackbar(
+          'สำเร็จ',
+          'เปิดการแสดงผลคอนเทนต์เรียบร้อยแล้ว',
+          snackPosition: SnackPosition.TOP,
+        );
+        loadContents(page: currentPage.value);
+        return true;
+      }
+    } else {
+      // Close / Archive
+      final ok = await _repository.archiveContent(item.contentId);
+      if (ok) {
+        Get.snackbar(
+          'สำเร็จ',
+          'ปิดการแสดงผลคอนเทนต์เรียบร้อยแล้ว',
+          snackPosition: SnackPosition.TOP,
+        );
+        loadContents(page: currentPage.value);
+        return true;
+      }
+    }
+    Get.snackbar(
+      'ข้อผิดพลาด',
+      'ไม่สามารถเปลี่ยนสถานะคอนเทนต์ได้',
       snackPosition: SnackPosition.TOP,
     );
     return false;
