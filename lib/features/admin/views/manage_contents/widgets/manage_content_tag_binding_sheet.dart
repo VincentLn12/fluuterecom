@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 
 class ManageContentTagBindingSheet {
@@ -68,7 +68,7 @@ class ManageContentTagBindingSheet {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AdminColors.primary,
                 ),
                 onPressed: () async {
                   final saved = await controller.saveContentTags(contentId);

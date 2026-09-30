@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_export_controller.dart';
 import 'widgets/admin_export_hero_header.dart';
 import 'widgets/admin_export_type_selector.dart';
@@ -20,9 +21,9 @@ class AdminExportPage extends GetView<AdminExportController> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AdminColors.background,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0F382C),
+        backgroundColor: AdminColors.primaryDark,
         foregroundColor: Colors.white,
         elevation: 0,
         centerTitle: false,
@@ -52,7 +53,7 @@ class AdminExportPage extends GetView<AdminExportController> {
               'Admin Export Center',
               style: GoogleFonts.krub(
                 fontSize: 11,
-                color: const Color(0xFFD1FAE5),
+                color: const Color(0xFFBAE6FD),
               ),
             ),
           ],

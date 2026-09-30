@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:projecte/app/routes/app_routes.dart';
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/models/admin_dashboard_model.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardTopShops extends StatelessWidget {
   const AdminDashboardTopShops({super.key, required this.topShops});
@@ -38,7 +38,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
               ],
@@ -49,13 +49,13 @@ class AdminDashboardTopShops extends StatelessWidget {
               label: Text(
                 'จัดการร้าน',
                 style: GoogleFonts.krub(
-                  color: AppColors.primary,
+                  color: AdminColors.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                 ),
               ),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.primary,
+                foregroundColor: AdminColors.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               ),
             ),
@@ -83,7 +83,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                   'ยังไม่มีข้อมูลร้านค้ายอดขายสูงสุดในรอบนี้',
                   style: GoogleFonts.krub(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
               ],
@@ -133,7 +133,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                   medalBg = const Color(0xFFFBECE4);
                   rankSymbol = '3';
                 } else {
-                  medalColor = AppColors.textSecondary;
+                  medalColor = AdminColors.textSecondary;
                   medalBg = const Color(0xFFF0F5F2);
                   rankSymbol = '${index + 1}';
                 }
@@ -181,7 +181,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                                   style: GoogleFonts.krub(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 13.5,
-                                    color: AppColors.textPrimary,
+                                    color: AdminColors.textPrimary,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -200,7 +200,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                                         '${shop.paidOrders} ออเดอร์ที่ชำระแล้ว',
                                         style: GoogleFonts.krub(
                                           fontSize: 11.5,
-                                          color: AppColors.textSecondary,
+                                          color: AdminColors.textSecondary,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -225,7 +225,7 @@ class AdminDashboardTopShops extends StatelessWidget {
                                   style: GoogleFonts.krub(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14,
-                                    color: AppColors.primary,
+                                    color: AdminColors.primary,
                                   ),
                                 ),
                               ),

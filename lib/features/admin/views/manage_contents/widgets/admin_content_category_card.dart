@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 import '../../../models/admin_category_model.dart';
 
@@ -25,13 +25,13 @@ class AdminContentCategoryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AdminColors.border),
       ),
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-            child: const Icon(Icons.article_outlined, color: AppColors.primary),
+            backgroundColor: AdminColors.primary.withValues(alpha: 0.1),
+            child: const Icon(Icons.article_outlined, color: AdminColors.primary),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -51,7 +51,7 @@ class AdminContentCategoryCard extends StatelessWidget {
                     category.description!,
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AdminColors.textSecondary,
                     ),
                   ),
               ],
@@ -62,7 +62,7 @@ class AdminContentCategoryCard extends StatelessWidget {
             onPressed: onEdit,
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.error),
+            icon: const Icon(Icons.delete_outline, color: AdminColors.error),
             onPressed: () =>
                 controller.deleteContentCategory(category.contentCategoryId),
           ),

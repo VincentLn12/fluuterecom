@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_categories_controller.dart';
 import 'package:projecte/features/admin/views/manage_categories/widgets/admin_category_card.dart';
 import 'package:projecte/features/admin/views/manage_categories/widgets/admin_category_form_dialog.dart';
@@ -17,7 +17,7 @@ class AdminCategoriesBody extends StatelessWidget {
       if (controller.activeTab.value == 0) {
         if (controller.isShopLoading.value) {
           return const Center(
-            child: CircularProgressIndicator(color: AppColors.primary),
+            child: CircularProgressIndicator(color: AdminColors.primary),
           );
         }
         final items = controller.shopCategories;
@@ -35,7 +35,7 @@ class AdminCategoriesBody extends StatelessWidget {
               name: category.categoryName,
               description: category.description,
               icon: Icons.category_outlined,
-              color: AppColors.primary,
+              color: AdminColors.primary,
               onEdit: () => AdminCategoryFormDialog.showShop(
                 context,
                 controller,
@@ -50,7 +50,7 @@ class AdminCategoriesBody extends StatelessWidget {
 
       if (controller.isProductLoading.value) {
         return const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: AdminColors.primary),
         );
       }
       final items = controller.productCategories;
@@ -68,7 +68,7 @@ class AdminCategoriesBody extends StatelessWidget {
             name: category.categoryName,
             description: category.description,
             icon: Icons.shopping_bag_outlined,
-            color: AppColors.accent,
+            color: AdminColors.accent,
             onEdit: () => AdminCategoryFormDialog.showProduct(
               context,
               controller,

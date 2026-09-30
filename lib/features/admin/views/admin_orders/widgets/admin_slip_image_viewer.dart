@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminSlipImageViewer {
   const AdminSlipImageViewer._();
@@ -101,7 +101,7 @@ class _SlipViewerDialogState extends State<_SlipViewerDialog> {
                         children: [
                           const Icon(
                             Icons.receipt_long_rounded,
-                            color: AppColors.secondary,
+                            color: AdminColors.secondary,
                             size: 18,
                           ),
                           const SizedBox(width: 8),
@@ -222,7 +222,7 @@ class _SlipViewerDialogState extends State<_SlipViewerDialog> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       const CircularProgressIndicator(
-                                        color: AppColors.secondary,
+                                        color: AdminColors.secondary,
                                         strokeWidth: 2.5,
                                       ),
                                       const SizedBox(height: 12),

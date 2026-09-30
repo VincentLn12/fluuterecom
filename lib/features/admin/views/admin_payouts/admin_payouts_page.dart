@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_payouts_controller.dart';
 import 'widgets/admin_pending_payout_card.dart';
 import 'widgets/admin_payout_history_card.dart';
@@ -34,11 +34,11 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AdminColors.background,
       appBar: _buildAppBar(context),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AdminColors.primaryLight,
           onRefresh: () => controller.loadData(),
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -74,7 +74,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
                     controller.payoutHistory.isEmpty) {
                   return const SliverFillRemaining(
                     child: Center(
-                      child: CircularProgressIndicator(color: AppColors.primary),
+                      child: CircularProgressIndicator(color: AdminColors.primaryLight),
                     ),
                   );
                 }
@@ -143,7 +143,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF0F382C),
+      backgroundColor: AdminColors.primaryDark,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
@@ -173,7 +173,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
             'Merchant Payouts Management',
             style: GoogleFonts.krub(
               fontSize: 11,
-              color: const Color(0xFFD1FAE5),
+              color: const Color(0xFFBAE6FD),
             ),
           ),
         ],
@@ -205,19 +205,19 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF0F382C), // Deep Forest Teal
-            Color(0xFF1B4D3E), // Emerald River Teal
-            Color(0xFF266755), // River Teal
+            AdminColors.primaryDark,
+            AdminColors.primary,
+            Color(0xFF1E40AF),
           ],
         ),
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: AppColors.secondary.withValues(alpha: 0.35),
+          color: AdminColors.secondary.withValues(alpha: 0.35),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.25),
+            color: AdminColors.primaryDark.withValues(alpha: 0.25),
             blurRadius: 18,
             offset: const Offset(0, 6),
           ),
@@ -240,7 +240,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
                     style: GoogleFonts.krub(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFFD1FAE5),
+                      color: const Color(0xFFBAE6FD),
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -317,7 +317,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(icon, size: 16, color: const Color(0xFFD1FAE5)),
+        Icon(icon, size: 16, color: const Color(0xFFBAE6FD)),
         const SizedBox(width: 6),
         Flexible(
           child: Column(
@@ -328,7 +328,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
                 label,
                 style: GoogleFonts.krub(
                   fontSize: 10.5,
-                  color: const Color(0xFFD1FAE5),
+                  color: const Color(0xFFBAE6FD),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -358,7 +358,7 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.03),
+            color: AdminColors.primaryDark.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -370,12 +370,12 @@ class _AdminPayoutsPageState extends State<AdminPayoutsPage> {
         style: GoogleFonts.krub(fontSize: 13.5),
         decoration: InputDecoration(
           hintText: 'ค้นหาชื่อร้านค้า, ธนาคาร, เลขบัญชี, พร้อมเพย์...',
-          hintStyle: GoogleFonts.krub(fontSize: 12.5, color: AppColors.textSecondary),
-          prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AppColors.primary),
+          hintStyle: GoogleFonts.krub(fontSize: 12.5, color: AdminColors.textSecondary),
+          prefixIcon: const Icon(Icons.search_rounded, size: 20, color: AdminColors.primary),
           suffixIcon: Obx(() {
             if (controller.searchQuery.value.isEmpty) return const SizedBox.shrink();
             return IconButton(
-              icon: const Icon(Icons.clear_rounded, size: 18, color: AppColors.textSecondary),
+              icon: const Icon(Icons.clear_rounded, size: 18, color: AdminColors.textSecondary),
               onPressed: () {
                 _searchController.clear();
                 controller.updateSearchQuery('');

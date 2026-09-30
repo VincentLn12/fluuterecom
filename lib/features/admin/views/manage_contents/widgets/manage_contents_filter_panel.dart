@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 
 class ManageContentsFilterPanel extends StatelessWidget {
@@ -37,7 +37,7 @@ class ManageContentsFilterPanel extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                 ),
               ),
               Row(
@@ -46,7 +46,7 @@ class ManageContentsFilterPanel extends StatelessWidget {
                     'แสดง: ',
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AdminColors.textSecondary,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -55,7 +55,7 @@ class ManageContentsFilterPanel extends StatelessWidget {
                     isDense: true,
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textPrimary,
+                      color: AdminColors.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                     items: const [
@@ -88,11 +88,11 @@ class ManageContentsFilterPanel extends StatelessWidget {
           label,
           style: GoogleFonts.krub(
             fontSize: 11,
-            color: selected ? Colors.white : AppColors.textPrimary,
+            color: selected ? Colors.white : AdminColors.textPrimary,
           ),
         ),
         selected: selected,
-        selectedColor: AppColors.primary,
+        selectedColor: AdminColors.primary,
         backgroundColor: Colors.grey[200],
         onSelected: (isSelected) {
           if (isSelected) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_reports_controller.dart';
 
 class ManageReportsFilter extends StatelessWidget {
@@ -41,11 +41,11 @@ class ManageReportsFilter extends StatelessWidget {
           label,
           style: GoogleFonts.krub(
             fontSize: 11,
-            color: selected ? Colors.white : AppColors.textPrimary,
+            color: selected ? Colors.white : AdminColors.textPrimary,
           ),
         ),
         selected: selected,
-        selectedColor: AppColors.primary,
+        selectedColor: AdminColors.primary,
         onSelected: (isSelected) {
           if (isSelected) {
             controller.selectedStatusFilter.value = value;

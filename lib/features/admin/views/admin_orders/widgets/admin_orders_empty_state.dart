@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminOrdersEmptyState extends StatelessWidget {
   final VoidCallback? onRefresh;
@@ -22,7 +22,7 @@ class AdminOrdersEmptyState extends StatelessWidget {
             border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryDark.withValues(alpha: 0.04),
+                color: AdminColors.primaryDark.withValues(alpha: 0.04),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -54,7 +54,7 @@ class AdminOrdersEmptyState extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: AdminColors.textPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -65,7 +65,7 @@ class AdminOrdersEmptyState extends StatelessWidget {
                 'รายการสลิปโอนเงินทั้งหมดได้รับการตรวจสอบและอนุมัติเรียบร้อยแล้ว',
                 style: GoogleFonts.krub(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
@@ -75,7 +75,7 @@ class AdminOrdersEmptyState extends StatelessWidget {
                 const SizedBox(height: 24),
                 OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.primary,
+                    foregroundColor: AdminColors.primary,
                     side: const BorderSide(color: Color(0xFFCBD5E1)),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,

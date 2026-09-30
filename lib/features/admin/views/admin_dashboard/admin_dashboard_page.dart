@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../app/routes/app_routes.dart';
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_dashboard_controller.dart';
 import '../../models/admin_dashboard_model.dart';
 import 'widgets/admin_sales_trend_chart.dart';
@@ -15,7 +15,8 @@ class AdminDashboardPage extends StatefulWidget {
 }
 
 class _AdminDashboardPageState extends State<AdminDashboardPage> {
-  int _selectedTab = 0; // 0: ภาพรวม (Overview), 1: งานรอจัดการ (Action Radar), 2: ระบบบริการ (All Services)
+  int _selectedTab =
+      0; // 0: ภาพรวม (Overview), 1: งานรอจัดการ (Action Radar), 2: ระบบบริการ (All Services)
   int _slideDirection = 1; // 1: เลื่อนไปข้างหน้า (ขวา), -1: ย้อนกลับ (ซ้าย)
   double _dragDistance = 0.0;
   int _selectedFeed = 0; // 0: ออเดอร์ล่าสุด, 1: ร้านค้ายอดนิยม
@@ -86,7 +87,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 style: GoogleFonts.krub(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: AdminColors.textPrimary,
                 ),
               ),
               const SizedBox(height: 14),
@@ -97,8 +98,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 onTap: () {
                   final now = DateTime.now();
                   final from = now.subtract(const Duration(days: 7));
-                  controller.selectedFromDate.value = from.toIso8601String().split('T').first;
-                  controller.selectedToDate.value = now.toIso8601String().split('T').first;
+                  controller.selectedFromDate.value = from
+                      .toIso8601String()
+                      .split('T')
+                      .first;
+                  controller.selectedToDate.value = now
+                      .toIso8601String()
+                      .split('T')
+                      .first;
                   controller.loadDashboard();
                   Navigator.pop(ctx);
                 },
@@ -110,8 +117,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 onTap: () {
                   final now = DateTime.now();
                   final from = now.subtract(const Duration(days: 30));
-                  controller.selectedFromDate.value = from.toIso8601String().split('T').first;
-                  controller.selectedToDate.value = now.toIso8601String().split('T').first;
+                  controller.selectedFromDate.value = from
+                      .toIso8601String()
+                      .split('T')
+                      .first;
+                  controller.selectedToDate.value = now
+                      .toIso8601String()
+                      .split('T')
+                      .first;
                   controller.loadDashboard();
                   Navigator.pop(ctx);
                 },
@@ -157,18 +170,18 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           style: GoogleFonts.krub(
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
             fontSize: 14,
-            color: isSelected ? const Color(0xFF1D4ED8) : AppColors.textPrimary,
+            color: isSelected ? const Color(0xFF1D4ED8) : AdminColors.textPrimary,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: GoogleFonts.krub(fontSize: 12, color: AppColors.textSecondary),
+          style: GoogleFonts.krub(fontSize: 12, color: AdminColors.textSecondary),
         ),
         trailing: isSelected
             ? Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
+                  color: AdminColors.primary,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -188,21 +201,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AdminColors.background,
       bottomNavigationBar: Obx(() {
-        final totalAlerts = controller.livePendingSlipsCount.value +
+        final totalAlerts =
+            controller.livePendingSlipsCount.value +
             controller.livePendingPayoutsCount.value;
         return _buildBottomNavBar(totalAlerts);
       }),
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => controller.loadDashboard(),
-          color: AppColors.primary,
+          color: AdminColors.primary,
           child: Obx(() {
-            final isLoading = controller.isLoading.value && controller.report.value == null;
+            final isLoading =
+                controller.isLoading.value && controller.report.value == null;
             if (isLoading) {
               return const Center(
-                child: CircularProgressIndicator(color: AppColors.primary),
+                child: CircularProgressIndicator(color: AdminColors.primary),
               );
             }
 
@@ -228,11 +243,20 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               Row(
                                 children: [
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 3,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AdminColors.primary.withValues(
+                                        alpha: 0.1,
+                                      ),
                                       borderRadius: BorderRadius.circular(20),
-                                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                                      border: Border.all(
+                                        color: AdminColors.primary.withValues(
+                                          alpha: 0.2,
+                                        ),
+                                      ),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -241,7 +265,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                           width: 6,
                                           height: 6,
                                           decoration: const BoxDecoration(
-                                            color: AppColors.secondary,
+                                            color: AdminColors.secondary,
                                             shape: BoxShape.circle,
                                           ),
                                         ),
@@ -251,7 +275,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                           style: GoogleFonts.krub(
                                             fontSize: 10.5,
                                             fontWeight: FontWeight.bold,
-                                            color: AppColors.primaryDark,
+                                            color: AdminColors.primaryDark,
                                           ),
                                         ),
                                       ],
@@ -264,7 +288,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                       style: GoogleFonts.krub(
                                         fontSize: 11,
                                         fontWeight: FontWeight.w600,
-                                        color: AppColors.textSecondary,
+                                        color: AdminColors.textSecondary,
                                       ),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -276,11 +300,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  'แผงควบคุมผู้บริหาร',
+                                  'แผงควบคุมผู้ดูแลระบบ',
                                   style: GoogleFonts.krub(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
-                                    color: AppColors.textPrimary,
+                                    color: AdminColors.textPrimary,
                                     letterSpacing: -0.4,
                                   ),
                                 ),
@@ -326,9 +350,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   ),
                 ),
 
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 36),
-                ),
+                const SliverToBoxAdapter(child: SizedBox(height: 36)),
               ],
             );
           }),
@@ -351,10 +373,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: AdminColors.border),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryDark.withValues(alpha: 0.04),
+                color: AdminColors.primaryDark.withValues(alpha: 0.04),
                 blurRadius: 4,
                 offset: const Offset(0, 1),
               ),
@@ -365,7 +387,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             style: GoogleFonts.krub(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: AppColors.primary,
+              color: AdminColors.primary,
             ),
           ),
         ),
@@ -382,18 +404,15 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: const Color(0xFFE2E8F0),
-            width: 1.2,
-          ),
+          border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primaryDark.withValues(alpha: 0.12),
+              color: AdminColors.primaryDark.withValues(alpha: 0.12),
               blurRadius: 24,
               offset: const Offset(0, 8),
             ),
             BoxShadow(
-              color: AppColors.primaryDark.withValues(alpha: 0.04),
+              color: AdminColors.primaryDark.withValues(alpha: 0.04),
               blurRadius: 6,
               offset: const Offset(0, 2),
             ),
@@ -401,10 +420,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         child: Row(
           children: [
-            _bottomNavItem(
-              index: 0,
-              title: 'ภาพรวม',
-            ),
+            _bottomNavItem(index: 0, title: 'ภาพรวม'),
             const SizedBox(width: 4),
             _bottomNavItem(
               index: 1,
@@ -412,10 +428,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               badgeCount: totalAlerts > 0 ? totalAlerts : null,
             ),
             const SizedBox(width: 4),
-            _bottomNavItem(
-              index: 2,
-              title: 'ระบบบริการ',
-            ),
+            _bottomNavItem(index: 2, title: 'ระบบบริการ'),
           ],
         ),
       ),
@@ -444,8 +457,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        AppColors.primaryDark, // Deep Forest Teal
-                        AppColors.primary,     // Emerald River Teal
+                        AdminColors.primaryDark, // Deep Forest Teal
+                        AdminColors.primary, // Emerald River Teal
                       ],
                     )
                   : null,
@@ -454,7 +467,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               boxShadow: isSelected
                   ? [
                       BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.35),
+                        color: AdminColors.primary.withValues(alpha: 0.35),
                         blurRadius: 10,
                         offset: const Offset(0, 3),
                       ),
@@ -471,8 +484,12 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       title,
                       style: GoogleFonts.krub(
                         fontSize: 13,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                        color: isSelected ? Colors.white : const Color(0xFF64748B),
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w600,
+                        color: isSelected
+                            ? Colors.white
+                            : const Color(0xFF64748B),
                         letterSpacing: isSelected ? -0.2 : 0,
                       ),
                     ),
@@ -481,13 +498,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 if (badgeCount != null) ...[
                   const SizedBox(width: 5),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 1.5,
+                    ),
                     decoration: BoxDecoration(
-                      color: AppColors.accent,
+                      color: AdminColors.accent,
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.accent.withValues(alpha: 0.4),
+                          color: AdminColors.accent.withValues(alpha: 0.4),
                           blurRadius: 4,
                           offset: const Offset(0, 1),
                         ),
@@ -522,7 +542,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     final paidOrders = summary?.paidOrders ?? 0;
     final activeShops = summary?.activeShops ?? 0;
 
-    final payRatio = totalOrders > 0 ? (paidOrders / totalOrders).clamp(0.0, 1.0) : 0.0;
+    final payRatio = totalOrders > 0
+        ? (paidOrders / totalOrders).clamp(0.0, 1.0)
+        : 0.0;
 
     return Container(
       width: double.infinity,
@@ -532,19 +554,19 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppColors.primaryDark, // 0xFF0F382C - Deep Forest Teal
-            AppColors.primary,     // 0xFF1B4D3E - Emerald River Teal
-            Color(0xFF266755),     // Vibrant River Teal
+            AdminColors.primaryDark,
+            AdminColors.primary,
+            Color(0xFF1E40AF),
           ],
         ),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: AppColors.secondary.withValues(alpha: 0.35),
+          color: AdminColors.secondary.withValues(alpha: 0.35),
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.28),
+            color: AdminColors.primaryDark.withValues(alpha: 0.28),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
@@ -563,7 +585,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.krub(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFFD1FAE5), // Mint Tint, high contrast on dark teal
+                    color: const Color(
+                      0xFFD1FAE5,
+                    ), // Mint Tint, high contrast on dark teal
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -573,11 +597,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 onTap: () => Get.toNamed(AppRoutes.adminExports),
                 borderRadius: BorderRadius.circular(10),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.25),
+                    ),
                   ),
                   child: Text(
                     'รายงาน',
@@ -627,18 +656,23 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2.5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 2.5,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.gold.withValues(alpha: 0.4)),
+                  border: Border.all(
+                    color: AdminColors.gold.withValues(alpha: 0.4),
+                  ),
                 ),
                 child: Text(
                   '${(payRatio * 100).toStringAsFixed(0)}% สำเร็จ',
                   style: GoogleFonts.krub(
                     fontSize: 11.5,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.gold,
+                    color: AdminColors.gold,
                   ),
                 ),
               ),
@@ -651,7 +685,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               value: payRatio,
               minHeight: 6,
               backgroundColor: Colors.white.withValues(alpha: 0.18),
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondary),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AdminColors.secondary,
+              ),
             ),
           ),
 
@@ -803,7 +839,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         switchInCurve: Curves.easeOutCubic,
         switchOutCurve: Curves.easeInCubic,
         transitionBuilder: (child, animation) {
-          final isIncoming = (child.key as ValueKey<int>?)?.value == _selectedTab;
+          final isIncoming =
+              (child.key as ValueKey<int>?)?.value == _selectedTab;
           final beginOffset = isIncoming
               ? Offset(_slideDirection * 0.12, 0.0)
               : Offset(-_slideDirection * 0.12, 0.0);
@@ -813,10 +850,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               begin: beginOffset,
               end: Offset.zero,
             ).animate(animation),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            child: FadeTransition(opacity: animation, child: child),
           );
         },
         child: content,
@@ -825,7 +859,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   // === TAB 0: ภาพรวม & ยอดขาย (Overview) ===
-  Widget _buildOverviewTab(AdminDashboardReport? report, AdminDashboardSummary? summary) {
+  Widget _buildOverviewTab(
+    AdminDashboardReport? report,
+    AdminDashboardSummary? summary,
+  ) {
     final fromDate = controller.selectedFromDate.value;
     int currentDays = 7;
     if (fromDate.isNotEmpty) {
@@ -846,8 +883,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           onRangeChanged: (days) {
             final now = DateTime.now();
             final from = now.subtract(Duration(days: days));
-            controller.selectedFromDate.value = from.toIso8601String().split('T').first;
-            controller.selectedToDate.value = now.toIso8601String().split('T').first;
+            controller.selectedFromDate.value = from
+                .toIso8601String()
+                .split('T')
+                .first;
+            controller.selectedToDate.value = now
+                .toIso8601String()
+                .split('T')
+                .first;
             controller.loadDashboard();
           },
         ),
@@ -860,9 +903,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             Container(
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AdminColors.background,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(color: AdminColors.border),
               ),
               child: Row(
                 children: [
@@ -880,7 +923,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                 }
               },
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.primary,
+                foregroundColor: AdminColors.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
               child: Text(
@@ -901,10 +944,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: AppColors.border),
+            border: Border.all(color: AdminColors.border),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primaryDark.withValues(alpha: 0.04),
+                color: AdminColors.primaryDark.withValues(alpha: 0.04),
                 blurRadius: 16,
                 offset: const Offset(0, 4),
               ),
@@ -935,7 +978,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primaryDark.withValues(alpha: 0.08),
+                    color: AdminColors.primaryDark.withValues(alpha: 0.08),
                     blurRadius: 6,
                     offset: const Offset(0, 1),
                   ),
@@ -947,16 +990,19 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           style: GoogleFonts.krub(
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? AdminColors.primary : AdminColors.textSecondary,
           ),
         ),
       ),
     );
   }
 
-
   String _translateOrderStatus(String status) {
-    final s = status.trim().toLowerCase().replaceAll('_', '').replaceAll(' ', '');
+    final s = status
+        .trim()
+        .toLowerCase()
+        .replaceAll('_', '')
+        .replaceAll(' ', '');
     switch (s) {
       case 'pending':
         return 'รอดำเนินการ';
@@ -989,7 +1035,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   }
 
   String _translatePaymentStatus(String status) {
-    final s = status.trim().toLowerCase().replaceAll('_', '').replaceAll(' ', '');
+    final s = status
+        .trim()
+        .toLowerCase()
+        .replaceAll('_', '')
+        .replaceAll(' ', '');
     switch (s) {
       case 'paid':
         return 'ชำระแล้ว';
@@ -1018,7 +1068,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         child: Center(
           child: Text(
             'ไม่มีคำสั่งซื้อล่าสุดในระบบ',
-            style: GoogleFonts.krub(fontSize: 13, color: AppColors.textSecondary),
+            style: GoogleFonts.krub(
+              fontSize: 13,
+              color: AdminColors.textSecondary,
+            ),
           ),
         ),
       );
@@ -1028,24 +1081,32 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: orders.length > 5 ? 5 : orders.length,
-      separatorBuilder: (context, index) => const Divider(height: 1, indent: 16, endIndent: 16),
+      separatorBuilder: (context, index) =>
+          const Divider(height: 1, indent: 16, endIndent: 16),
       itemBuilder: (context, index) {
         final order = orders[index];
-        final payNormalized = order.paymentStatus.trim().toLowerCase().replaceAll('_', '').replaceAll(' ', '');
-        final isPaid = payNormalized == 'paid' || order.paymentStatus.contains('ชำระ');
-        final isPendingSlip = payNormalized == 'pendingverification' || order.paymentStatus.contains('ตรวจสลิป');
+        final payNormalized = order.paymentStatus
+            .trim()
+            .toLowerCase()
+            .replaceAll('_', '')
+            .replaceAll(' ', '');
+        final isPaid =
+            payNormalized == 'paid' || order.paymentStatus.contains('ชำระ');
+        final isPendingSlip =
+            payNormalized == 'pendingverification' ||
+            order.paymentStatus.contains('ตรวจสลิป');
 
         Color statusColor;
         Color badgeBg;
         if (isPaid) {
-          statusColor = AppColors.secondary;
-          badgeBg = AppColors.secondary.withValues(alpha: 0.1);
+          statusColor = AdminColors.secondary;
+          badgeBg = AdminColors.secondary.withValues(alpha: 0.1);
         } else if (isPendingSlip) {
           statusColor = const Color(0xFFD97706);
           badgeBg = const Color(0xFFFEF3C7);
         } else {
-          statusColor = AppColors.accent;
-          badgeBg = AppColors.accent.withValues(alpha: 0.1);
+          statusColor = AdminColors.accent;
+          badgeBg = AdminColors.accent.withValues(alpha: 0.1);
         }
 
         return Material(
@@ -1077,7 +1138,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                               style: GoogleFonts.krub(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13.5,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -1086,7 +1147,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                                 '• ${order.shopName}',
                                 style: GoogleFonts.krub(
                                   fontSize: 12,
-                                  color: AppColors.textSecondary,
+                                  color: AdminColors.textSecondary,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -1098,7 +1159,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           'สถานะ: ${_translateOrderStatus(order.orderStatus)}',
                           style: GoogleFonts.krub(
                             fontSize: 11,
-                            color: AppColors.textSecondary,
+                            color: AdminColors.textSecondary,
                           ),
                         ),
                       ],
@@ -1115,13 +1176,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           style: GoogleFonts.krub(
                             fontSize: 13.5,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: AdminColors.primary,
                           ),
                         ),
                       ),
                       const SizedBox(height: 2),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 7,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: badgeBg,
                           borderRadius: BorderRadius.circular(6),
@@ -1153,7 +1217,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         child: Center(
           child: Text(
             'ไม่มีข้อมูลร้านค้ายอดนิยมในรอบนี้',
-            style: GoogleFonts.krub(fontSize: 13, color: AppColors.textSecondary),
+            style: GoogleFonts.krub(
+              fontSize: 13,
+              color: AdminColors.textSecondary,
+            ),
           ),
         ),
       );
@@ -1163,7 +1230,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: shops.length > 5 ? 5 : shops.length,
-      separatorBuilder: (context, index) => const Divider(height: 1, indent: 16, endIndent: 16),
+      separatorBuilder: (context, index) =>
+          const Divider(height: 1, indent: 16, endIndent: 16),
       itemBuilder: (context, index) {
         final shop = shops[index];
         final rank = index + 1;
@@ -1218,7 +1286,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           style: GoogleFonts.krub(
                             fontWeight: FontWeight.bold,
                             fontSize: 13.5,
-                            color: AppColors.textPrimary,
+                            color: AdminColors.textPrimary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1228,7 +1296,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                           '${shop.paidOrders} ออเดอร์ที่ชำระแล้ว',
                           style: GoogleFonts.krub(
                             fontSize: 11.5,
-                            color: AppColors.textSecondary,
+                            color: AdminColors.textSecondary,
                           ),
                         ),
                       ],
@@ -1242,7 +1310,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       style: GoogleFonts.krub(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                       ),
                     ),
                   ),
@@ -1280,7 +1348,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             child: Column(
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: const Color(0xFFE0F2FE),
                     borderRadius: BorderRadius.circular(12),
@@ -1300,13 +1371,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.krub(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'ไม่มีสลิปตกค้าง และไม่มียอดโอนค้างจ่าย',
-                  style: GoogleFonts.krub(fontSize: 12.5, color: AppColors.textSecondary),
+                  style: GoogleFonts.krub(
+                    fontSize: 12.5,
+                    color: AdminColors.textSecondary,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -1317,8 +1391,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             title: 'สลิปรอการตรวจสอบและยืนยัน',
             subtitle: 'ลูกค้าอัปโหลดสลิป รอการอนุมัติเพื่อดำเนินคำสั่งซื้อ',
             count: pendingSlips,
-            color: AppColors.accent,
-            bgTint: AppColors.accent.withValues(alpha: 0.1),
+            color: AdminColors.accent,
+            bgTint: AdminColors.accent.withValues(alpha: 0.1),
             onTap: () => Get.toNamed(AppRoutes.adminOrders),
           ),
           const SizedBox(height: 12),
@@ -1326,8 +1400,8 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             title: 'ร้านค้ารอโอนยอดเงิน (Payouts)',
             subtitle: 'คำสั่งซื้อสำเร็จ รอแอดมินดำเนินการโอนเงินให้ร้านค้า',
             count: pendingPayouts,
-            color: AppColors.primary,
-            bgTint: AppColors.primary.withValues(alpha: 0.1),
+            color: AdminColors.primary,
+            bgTint: AdminColors.primary.withValues(alpha: 0.1),
             onTap: () => Get.toNamed(AppRoutes.adminPayouts),
           ),
         ],
@@ -1354,12 +1428,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: count > 0 ? color.withValues(alpha: 0.3) : const Color(0xFFE0EAE6),
+              color: count > 0
+                  ? color.withValues(alpha: 0.3)
+                  : const Color(0xFFE0EAE6),
               width: 1.2,
             ),
             boxShadow: [
               BoxShadow(
-                color: count > 0 ? color.withValues(alpha: 0.06) : const Color(0x060D2B22),
+                color: count > 0
+                    ? color.withValues(alpha: 0.06)
+                    : const Color(0x060D2B22),
                 blurRadius: 12,
                 offset: const Offset(0, 3),
               ),
@@ -1385,7 +1463,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       style: GoogleFonts.krub(
                         fontWeight: FontWeight.bold,
                         fontSize: 13.5,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 3),
@@ -1393,7 +1471,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       subtitle,
                       style: GoogleFonts.krub(
                         fontSize: 11.5,
-                        color: AppColors.textSecondary,
+                        color: AdminColors.textSecondary,
                         height: 1.3,
                       ),
                     ),
@@ -1402,7 +1480,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ),
               const SizedBox(width: 10),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
+                ),
                 decoration: BoxDecoration(
                   color: count > 0 ? color : const Color(0xFFEBF2EE),
                   borderRadius: BorderRadius.circular(12),
@@ -1412,7 +1493,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.krub(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: count > 0 ? Colors.white : AppColors.textSecondary,
+                    color: count > 0 ? Colors.white : AdminColors.textSecondary,
                   ),
                 ),
               ),
@@ -1434,13 +1515,13 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             _ServiceItem(
               title: 'ตรวจสอบสลิปการโอน',
               desc: 'อนุมัติการชำระเงินของลูกค้า',
-              color: AppColors.accent,
+              color: AdminColors.accent,
               route: AppRoutes.adminOrders,
             ),
             _ServiceItem(
               title: 'สั่งจ่ายเงินร้านค้า (Payouts)',
               desc: 'โอนเงินรอบรายได้ให้พาร์ทเนอร์ร้านค้า',
-              color: AppColors.primary,
+              color: AdminColors.primary,
               route: AppRoutes.adminPayouts,
             ),
             _ServiceItem(
@@ -1521,7 +1602,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             style: GoogleFonts.krub(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: AppColors.textSecondary,
+              color: AdminColors.textSecondary,
             ),
           ),
         ),
@@ -1542,12 +1623,16 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
-            separatorBuilder: (context, index) => const Divider(height: 1, indent: 24, endIndent: 16),
+            separatorBuilder: (context, index) =>
+                const Divider(height: 1, indent: 24, endIndent: 16),
             itemBuilder: (context, index) {
               final item = items[index];
               return ListTile(
                 onTap: () => Get.toNamed(item.route),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 4,
+                ),
                 leading: Container(
                   width: 4,
                   height: 32,
@@ -1561,14 +1646,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 13.5,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
                 subtitle: Text(
                   item.desc,
                   style: GoogleFonts.krub(
                     fontSize: 11.5,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
                 trailing: Text(
@@ -1576,7 +1661,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   style: GoogleFonts.krub(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                   ),
                 ),
               );
@@ -1587,7 +1672,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     );
   }
 }
-
 
 class _ServiceItem {
   final String title;
@@ -1602,4 +1686,3 @@ class _ServiceItem {
     required this.route,
   });
 }
-

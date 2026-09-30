@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminCategoryCard extends StatelessWidget {
   const AdminCategoryCard({
@@ -28,7 +28,7 @@ class AdminCategoryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AdminColors.border),
       ),
       child: Row(
         children: [
@@ -53,7 +53,7 @@ class AdminCategoryCard extends StatelessWidget {
                     description!,
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AdminColors.textSecondary,
                     ),
                   ),
               ],
@@ -64,7 +64,7 @@ class AdminCategoryCard extends StatelessWidget {
             onPressed: onEdit,
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.error),
+            icon: const Icon(Icons.delete_outline, color: AdminColors.error),
             onPressed: onDelete,
           ),
         ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_export_controller.dart';
 
 class AdminExportSubmitButton extends StatelessWidget {
@@ -19,16 +19,11 @@ class AdminExportSubmitButton extends StatelessWidget {
         width: double.infinity,
         height: 52,
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [
-              Color(0xFF0F382C),
-              Color(0xFF1B4D3E),
-            ],
-          ),
+          gradient: AdminColors.headerGradient,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primaryDark.withValues(alpha: 0.25),
+              color: AdminColors.primaryDark.withValues(alpha: 0.25),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),

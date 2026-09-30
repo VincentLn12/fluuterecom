@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/models/admin_dashboard_model.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
   const AdminDashboardOrderStatusBreakdown({super.key, required this.counts});
@@ -49,8 +49,8 @@ class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
       _StageItem(
         label: 'จัดส่งสำเร็จ',
         count: counts.completed,
-        color: const Color(0xFF1B4D3E),
-        bgTint: const Color(0xFFF0F5F2),
+        color: AdminColors.success,
+        bgTint: AdminColors.successBg,
         icon: Icons.check_circle_rounded,
       ),
       _StageItem(
@@ -91,13 +91,13 @@ class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AdminColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
                       Icons.schema_rounded,
                       size: 16,
-                      color: AppColors.primary,
+                      color: AdminColors.primary,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -106,7 +106,7 @@ class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
                     style: GoogleFonts.krub(
                       fontWeight: FontWeight.bold,
                       fontSize: 14.5,
-                      color: AppColors.textPrimary,
+                      color: AdminColors.textPrimary,
                     ),
                   ),
                 ],
@@ -114,16 +114,16 @@ class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F5F2),
+                  color: AdminColors.infoBg,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFFD8E7E0)),
+                  border: Border.all(color: const Color(0xFFBFDBFE)),
                 ),
                 child: Text(
                   'รวม $total ออเดอร์',
                   style: GoogleFonts.krub(
                     fontSize: 11.5,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                   ),
                 ),
               ),
@@ -205,7 +205,7 @@ class AdminDashboardOrderStatusBreakdown extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: AdminColors.textPrimary,
                         ),
                         maxLines: 1,
                       ),

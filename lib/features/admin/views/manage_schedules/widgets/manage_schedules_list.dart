@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_schedules_controller.dart';
 import '../../../models/admin_schedule_model.dart';
 import 'admin_schedule_card.dart';
@@ -22,14 +22,14 @@ class ManageSchedulesList extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: AdminColors.primary),
         );
       }
       if (controller.schedules.isEmpty) {
         return Center(
           child: Text(
             'ไม่มีตารางกิจกรรมในระบบ',
-            style: GoogleFonts.krub(color: AppColors.textSecondary),
+            style: GoogleFonts.krub(color: AdminColors.textSecondary),
           ),
         );
       }

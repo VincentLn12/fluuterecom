@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/models/admin_merchant_payout_model.dart';
 import 'package:projecte/features/admin/models/admin_order_slip_model.dart';
 
@@ -35,7 +35,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                       style: GoogleFonts.krub(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                     ),
                     IconButton(
@@ -57,7 +57,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                       return const SizedBox(
                         height: 250,
                         child: Center(
-                          child: CircularProgressIndicator(color: AppColors.primary),
+                          child: CircularProgressIndicator(color: AdminColors.primary),
                         ),
                       );
                     },
@@ -115,7 +115,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.04),
+            color: AdminColors.primaryDark.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 3),
           ),
@@ -131,7 +131,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.08),
+                  color: AdminColors.primary.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ClipRRect(
@@ -145,7 +145,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                               (record.shopName?.isNotEmpty ?? false) ? record.shopName![0] : 'S',
                               style: GoogleFonts.krub(
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                color: AdminColors.primary,
                               ),
                             ),
                           ),
@@ -155,7 +155,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                             (record.shopName?.isNotEmpty ?? false) ? record.shopName![0] : 'S',
                             style: GoogleFonts.krub(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                              color: AdminColors.primary,
                             ),
                           ),
                         ),
@@ -171,7 +171,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                       style: GoogleFonts.krub(
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -181,7 +181,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                       _formatDateTime(record.createdAt),
                       style: GoogleFonts.krub(
                         fontSize: 11.5,
-                        color: AppColors.textSecondary,
+                        color: AdminColors.textSecondary,
                       ),
                     ),
                   ],
@@ -195,7 +195,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                     style: GoogleFonts.krub(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.5,
-                      color: AppColors.primary,
+                      color: AdminColors.primary,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -230,11 +230,11 @@ class AdminPayoutHistoryCard extends StatelessWidget {
               Expanded(
                 child: Row(
                   children: [
-                    const Icon(Icons.tag_rounded, size: 14, color: AppColors.textSecondary),
+                    const Icon(Icons.tag_rounded, size: 14, color: AdminColors.textSecondary),
                     const SizedBox(width: 4),
                     Text(
                       'อ้างอิง: ',
-                      style: GoogleFonts.krub(fontSize: 11.5, color: AppColors.textSecondary),
+                      style: GoogleFonts.krub(fontSize: 11.5, color: AdminColors.textSecondary),
                     ),
                     Flexible(
                       child: Text(
@@ -242,7 +242,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: AppColors.textPrimary,
+                          color: AdminColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -260,7 +260,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                             duration: const Duration(seconds: 2),
                           );
                         },
-                        child: const Icon(Icons.copy_rounded, size: 12, color: AppColors.primary),
+                        child: const Icon(Icons.copy_rounded, size: 12, color: AdminColors.primary),
                       ),
                     ],
                   ],
@@ -274,19 +274,19 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AdminColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.receipt_rounded, size: 14, color: AppColors.primary),
+                        const Icon(Icons.receipt_rounded, size: 14, color: AdminColors.primary),
                         const SizedBox(width: 4),
                         Text(
                           'ดูสลิปโอน',
                           style: GoogleFonts.krub(
                             fontSize: 11.5,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: AdminColors.primary,
                           ),
                         ),
                       ],
@@ -309,7 +309,7 @@ class AdminPayoutHistoryCard extends StatelessWidget {
                 'บันทึก: ${record.note}',
                 style: GoogleFonts.krub(
                   fontSize: 11.5,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                   fontStyle: FontStyle.italic,
                 ),
               ),

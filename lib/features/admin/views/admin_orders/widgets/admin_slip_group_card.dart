@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/orders/views/order_date_format.dart';
 import 'package:projecte/features/admin/controllers/admin_orders_controller.dart';
 import 'package:projecte/features/admin/models/admin_order_slip_model.dart';
@@ -32,7 +32,7 @@ class AdminSlipGroupCard extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.04),
+            color: AdminColors.primaryDark.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -98,14 +98,14 @@ class AdminSlipGroupCard extends StatelessWidget {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFF1B4D3E),
-                  Color(0xFF2E7D5E),
+                  AdminColors.primaryDark,
+                  AdminColors.primary,
                 ],
               ),
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.2),
+                  color: AdminColors.primary.withValues(alpha: 0.2),
                   blurRadius: 8,
                   offset: const Offset(0, 3),
                 ),
@@ -134,7 +134,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
-                          color: AppColors.textPrimary,
+                          color: AdminColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -180,14 +180,14 @@ class AdminSlipGroupCard extends StatelessWidget {
                       const Icon(
                         Icons.phone_outlined,
                         size: 12,
-                        color: AppColors.textSecondary,
+                        color: AdminColors.textSecondary,
                       ),
                       const SizedBox(width: 3),
                       Text(
                         group.buyerPhone!,
                         style: GoogleFonts.krub(
                           fontSize: 11.5,
-                          color: AppColors.textSecondary,
+                          color: AdminColors.textSecondary,
                         ),
                       ),
                       const Text(
@@ -200,7 +200,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                         'โอนเมื่อ: $formattedTime',
                         style: GoogleFonts.krub(
                           fontSize: 11,
-                          color: AppColors.textSecondary,
+                          color: AdminColors.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -220,10 +220,10 @@ class AdminSlipGroupCard extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+              border: Border.all(color: AdminColors.primary.withValues(alpha: 0.2)),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.05),
+                  color: AdminColors.primary.withValues(alpha: 0.05),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -238,7 +238,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
                 Text(
@@ -246,7 +246,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.primaryDark,
+                    color: AdminColors.primaryDark,
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -306,7 +306,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                           vertical: 4,
                         ),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.08),
+                          color: AdminColors.primary.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
@@ -314,7 +314,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                           style: GoogleFonts.krub(
                             fontSize: 11.5,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.primary,
+                            color: AdminColors.primary,
                           ),
                         ),
                       ),
@@ -323,14 +323,14 @@ class AdminSlipGroupCard extends StatelessWidget {
                         'กรุณาตรวจสอบยอดเงินและเลขบัญชีในสลิปให้ตรงกับยอดชำระรวมก่อนกดอนุมัติ',
                         style: GoogleFonts.krub(
                           fontSize: 11.5,
-                          color: AppColors.textSecondary,
+                          color: AdminColors.textSecondary,
                           height: 1.35,
                         ),
                       ),
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.primaryDark,
+                          foregroundColor: AdminColors.primaryDark,
                           side: const BorderSide(color: Color(0xFFCBD5E1)),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -401,7 +401,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                             ? loadingProgress.cumulativeBytesLoaded /
                                 (loadingProgress.expectedTotalBytes ?? 1)
                             : null,
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                         strokeWidth: 2,
                       ),
                     );
@@ -528,7 +528,7 @@ class AdminSlipGroupCard extends StatelessWidget {
           children: [
             const Icon(
               Icons.store_mall_directory_rounded,
-              color: AppColors.primary,
+              color: AdminColors.primary,
               size: 16,
             ),
             const SizedBox(width: 6),
@@ -537,7 +537,7 @@ class AdminSlipGroupCard extends StatelessWidget {
               style: GoogleFonts.krub(
                 fontWeight: FontWeight.bold,
                 fontSize: 12.5,
-                color: AppColors.textPrimary,
+                color: AdminColors.textPrimary,
               ),
             ),
           ],
@@ -577,7 +577,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 13,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                             Container(
@@ -586,10 +586,10 @@ class AdminSlipGroupCard extends StatelessWidget {
                                 vertical: 2,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withValues(alpha: 0.1),
+                                color: AdminColors.primary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: AppColors.primary.withValues(alpha: 0.2),
+                                  color: AdminColors.primary.withValues(alpha: 0.2),
                                 ),
                               ),
                               child: Text(
@@ -599,7 +599,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                                 style: GoogleFonts.krub(
                                   fontSize: 10.5,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.primaryDark,
+                                  color: AdminColors.primaryDark,
                                 ),
                               ),
                             ),
@@ -611,7 +611,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontWeight: FontWeight.bold,
                           fontSize: 13.5,
-                          color: AppColors.primary,
+                          color: AdminColors.primary,
                         ),
                       ),
                     ],
@@ -632,7 +632,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                                 '• ${item.productName} ×${item.quantity}',
                                 style: GoogleFonts.krub(
                                   fontSize: 11.5,
-                                  color: AppColors.textSecondary,
+                                  color: AdminColors.textSecondary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -643,7 +643,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                           ],
@@ -702,7 +702,7 @@ class AdminSlipGroupCard extends StatelessWidget {
             flex: 2,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: AdminColors.primary,
                 foregroundColor: Colors.white,
                 elevation: 1,
                 padding: const EdgeInsets.symmetric(vertical: 13),
@@ -784,7 +784,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                 height: 56,
                 decoration: BoxDecoration(
                   color: isApprove
-                      ? AppColors.primary.withValues(alpha: 0.12)
+                      ? AdminColors.primary.withValues(alpha: 0.12)
                       : const Color(0xFFFFF1F2),
                   shape: BoxShape.circle,
                 ),
@@ -792,7 +792,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                   isApprove
                       ? Icons.check_circle_rounded
                       : Icons.warning_amber_rounded,
-                  color: isApprove ? AppColors.primary : const Color(0xFFE11D48),
+                  color: isApprove ? AdminColors.primary : const Color(0xFFE11D48),
                   size: 30,
                 ),
               ),
@@ -806,7 +806,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  color: AdminColors.textPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -819,7 +819,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                     : 'ระบบจะเปลี่ยนสถานะการชำระเงินเป็น "ไม่ผ่านการอนุมัติ (Failed)" ลูกค้าจะต้องชำระเงินหรืออัปโหลดสลิปใหม่',
                 style: GoogleFonts.krub(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
@@ -843,7 +843,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                       style: GoogleFonts.krub(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.textSecondary,
+                        color: AdminColors.textSecondary,
                       ),
                     ),
                     Text(
@@ -852,7 +852,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: isApprove
-                            ? AppColors.primaryDark
+                            ? AdminColors.primaryDark
                             : const Color(0xFFE11D48),
                       ),
                     ),
@@ -879,7 +879,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                         'ยกเลิก',
                         style: GoogleFonts.krub(
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textSecondary,
+                          color: AdminColors.textSecondary,
                         ),
                       ),
                     ),
@@ -889,7 +889,7 @@ class AdminSlipGroupCard extends StatelessWidget {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isApprove
-                            ? AppColors.primary
+                            ? AdminColors.primary
                             : const Color(0xFFE11D48),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_categories_controller.dart';
 
 class AdminCategoriesTabBar extends StatelessWidget {
@@ -12,7 +12,7 @@ class AdminCategoriesTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primary,
+      color: AdminColors.primary,
       child: Obx(
         () => Row(
           children: [
@@ -34,7 +34,7 @@ class AdminCategoriesTabBar extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: isSelected ? AppColors.accent : Colors.transparent,
+                color: isSelected ? AdminColors.accent : Colors.transparent,
                 width: 3,
               ),
             ),

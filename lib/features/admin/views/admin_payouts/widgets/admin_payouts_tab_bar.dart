@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_payouts_controller.dart';
 
 class AdminPayoutsTabBar extends StatelessWidget {
@@ -16,7 +16,7 @@ class AdminPayoutsTabBar extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F5F3),
+          color: const Color(0xFFF1F5F9),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
@@ -70,7 +70,7 @@ class AdminPayoutsTabBar extends StatelessWidget {
             boxShadow: isSelected
                 ? [
                     BoxShadow(
-                      color: AppColors.primaryDark.withValues(alpha: 0.08),
+                      color: AdminColors.primaryDark.withValues(alpha: 0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -85,7 +85,7 @@ class AdminPayoutsTabBar extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 13,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                  color: isSelected ? AppColors.primary : AppColors.textSecondary,
+                  color: isSelected ? AdminColors.primary : AdminColors.textSecondary,
                 ),
               ),
               if (count > 0) ...[
@@ -94,7 +94,7 @@ class AdminPayoutsTabBar extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? (hasAlert ? const Color(0xFFE76F51) : AppColors.primary)
+                        ? (hasAlert ? const Color(0xFFE76F51) : AdminColors.primary)
                         : const Color(0xFFE2E8F0),
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -103,7 +103,7 @@ class AdminPayoutsTabBar extends StatelessWidget {
                     style: GoogleFonts.krub(
                       fontSize: 10.5,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? Colors.white : AppColors.textSecondary,
+                      color: isSelected ? Colors.white : AdminColors.textSecondary,
                     ),
                   ),
                 ),

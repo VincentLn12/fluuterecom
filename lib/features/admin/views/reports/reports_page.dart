@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/routes/app_routes.dart';
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_reports_controller.dart';
 import 'widgets/manage_reports_filter.dart';
 import 'widgets/manage_reports_list.dart';
@@ -18,9 +18,9 @@ class ReportsPage extends GetView<AdminReportsController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AdminColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
+        backgroundColor: AdminColors.primaryDark,
         foregroundColor: Colors.white,
         title: Text(
           'รายงานการร้องเรียน (Reports & Violations)',

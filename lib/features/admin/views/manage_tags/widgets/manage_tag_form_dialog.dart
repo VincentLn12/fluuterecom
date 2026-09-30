@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_tags_controller.dart';
 import '../../../models/admin_tag_model.dart';
 
@@ -36,7 +36,7 @@ class ManageTagFormDialog {
               },
               child: Text(
                 'ลบ',
-                style: GoogleFonts.krub(color: AppColors.error),
+                style: GoogleFonts.krub(color: AdminColors.error),
               ),
             ),
           TextButton(
@@ -44,7 +44,7 @@ class ManageTagFormDialog {
             child: Text('ยกเลิก', style: GoogleFonts.krub(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AdminColors.primary),
             onPressed: () async {
               if (tag == null) {
                 await controller.createTag(nameCtrl.text.trim());

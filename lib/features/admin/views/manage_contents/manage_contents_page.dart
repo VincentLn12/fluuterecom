@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_contents_controller.dart';
 import '../../models/admin_content_model.dart';
 import 'widgets/manage_content_category_form_dialog.dart';
@@ -21,9 +21,9 @@ class ManageAdminContentsPage extends GetView<AdminContentsController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AdminColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
+        backgroundColor: AdminColors.primaryDark,
         foregroundColor: Colors.white,
         title: Text(
           'จัดการบทความ & ท่องเที่ยว (Contents)',
@@ -35,7 +35,7 @@ class ManageAdminContentsPage extends GetView<AdminContentsController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AdminColors.primary,
         foregroundColor: Colors.white,
         onPressed: () {
           if (controller.activeTab.value == 0) {

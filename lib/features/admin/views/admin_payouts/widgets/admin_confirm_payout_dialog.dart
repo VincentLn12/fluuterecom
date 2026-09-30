@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_payouts_controller.dart';
 import 'package:projecte/features/admin/models/admin_merchant_payout_model.dart';
 
@@ -58,12 +58,12 @@ class AdminConfirmPayoutDialog {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: AdminColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.account_balance_wallet_rounded,
-                      color: AppColors.primary,
+                      color: AdminColors.primary,
                       size: 22,
                     ),
                   ),
@@ -77,14 +77,14 @@ class AdminConfirmPayoutDialog {
                           style: GoogleFonts.krub(
                             fontSize: 16.5,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                            color: AdminColors.textPrimary,
                           ),
                         ),
                         Text(
                           shopName,
                           style: GoogleFonts.krub(
                             fontSize: 13,
-                            color: AppColors.textSecondary,
+                            color: AdminColors.textSecondary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -94,7 +94,7 @@ class AdminConfirmPayoutDialog {
                   ),
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close_rounded, color: AppColors.textSecondary),
+                    icon: const Icon(Icons.close_rounded, color: AdminColors.textSecondary),
                   ),
                 ],
               ),
@@ -113,16 +113,11 @@ class AdminConfirmPayoutDialog {
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [
-                            Color(0xFF0F382C),
-                            Color(0xFF1B4D3E),
-                          ],
-                        ),
+                        gradient: AdminColors.headerGradient,
                         borderRadius: BorderRadius.circular(18),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primaryDark.withValues(alpha: 0.15),
+                            color: AdminColors.primaryDark.withValues(alpha: 0.15),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -138,7 +133,7 @@ class AdminConfirmPayoutDialog {
                                 'ยอดเงินที่ต้องโอนสุทธิ',
                                 style: GoogleFonts.krub(
                                   fontSize: 12.5,
-                                  color: const Color(0xFFD1FAE5),
+                                  color: const Color(0xFFBAE6FD),
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
@@ -188,14 +183,14 @@ class AdminConfirmPayoutDialog {
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.account_balance_rounded, size: 16, color: AppColors.primary),
+                              const Icon(Icons.account_balance_rounded, size: 16, color: AdminColors.primary),
                               const SizedBox(width: 6),
                               Text(
                                 'บัญชีธนาคารปลายทางของร้านค้า',
                                 style: GoogleFonts.krub(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                  color: AdminColors.textPrimary,
                                 ),
                               ),
                             ],
@@ -216,7 +211,7 @@ class AdminConfirmPayoutDialog {
                                   'เลขที่บัญชี: ',
                                   style: GoogleFonts.krub(
                                     fontSize: 12,
-                                    color: AppColors.textSecondary,
+                                    color: AdminColors.textSecondary,
                                   ),
                                 ),
                                 Expanded(
@@ -225,7 +220,7 @@ class AdminConfirmPayoutDialog {
                                     style: GoogleFonts.krub(
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
+                                      color: AdminColors.textPrimary,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -239,7 +234,7 @@ class AdminConfirmPayoutDialog {
                                       'คัดลอกเลขบัญชี ${payout.bankAccountNumber} เรียบร้อย',
                                       snackPosition: SnackPosition.TOP,
                                       duration: const Duration(seconds: 2),
-                                      backgroundColor: AppColors.primaryDark,
+                                      backgroundColor: AdminColors.primaryDark,
                                       colorText: Colors.white,
                                     );
                                   },
@@ -247,20 +242,20 @@ class AdminConfirmPayoutDialog {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AdminColors.primary.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(Icons.copy_rounded, size: 12, color: AppColors.primary),
+                                        const Icon(Icons.copy_rounded, size: 12, color: AdminColors.primary),
                                         const SizedBox(width: 4),
                                         Text(
                                           'คัดลอก',
                                           style: GoogleFonts.krub(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
-                                            color: AppColors.primary,
+                                            color: AdminColors.primary,
                                           ),
                                         ),
                                       ],
@@ -278,7 +273,7 @@ class AdminConfirmPayoutDialog {
                                   'พร้อมเพย์ (PromptPay): ',
                                   style: GoogleFonts.krub(
                                     fontSize: 12,
-                                    color: AppColors.textSecondary,
+                                    color: AdminColors.textSecondary,
                                   ),
                                 ),
                                 Expanded(
@@ -287,7 +282,7 @@ class AdminConfirmPayoutDialog {
                                     style: GoogleFonts.krub(
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textPrimary,
+                                      color: AdminColors.textPrimary,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -301,7 +296,7 @@ class AdminConfirmPayoutDialog {
                                       'คัดลอกพร้อมเพย์ ${payout.promptPay} เรียบร้อย',
                                       snackPosition: SnackPosition.TOP,
                                       duration: const Duration(seconds: 2),
-                                      backgroundColor: AppColors.primaryDark,
+                                      backgroundColor: AdminColors.primaryDark,
                                       colorText: Colors.white,
                                     );
                                   },
@@ -309,20 +304,20 @@ class AdminConfirmPayoutDialog {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                                     decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.1),
+                                      color: AdminColors.primary.withValues(alpha: 0.1),
                                       borderRadius: BorderRadius.circular(6),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        const Icon(Icons.copy_rounded, size: 12, color: AppColors.primary),
+                                        const Icon(Icons.copy_rounded, size: 12, color: AdminColors.primary),
                                         const SizedBox(width: 4),
                                         Text(
                                           'คัดลอก',
                                           style: GoogleFonts.krub(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold,
-                                            color: AppColors.primary,
+                                            color: AdminColors.primary,
                                           ),
                                         ),
                                       ],
@@ -343,7 +338,7 @@ class AdminConfirmPayoutDialog {
                       style: GoogleFonts.krub(
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -378,14 +373,14 @@ class AdminConfirmPayoutDialog {
                                       style: GoogleFonts.krub(
                                         fontSize: 13,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.secondary,
+                                        color: AdminColors.secondary,
                                       ),
                                     ),
                                     Text(
                                       file.path.split('/').last,
                                       style: GoogleFonts.krub(
                                         fontSize: 11,
-                                        color: AppColors.textSecondary,
+                                        color: AdminColors.textSecondary,
                                       ),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
@@ -419,7 +414,7 @@ class AdminConfirmPayoutDialog {
                             color: const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(16),
                             border: Border.all(
-                              color: AppColors.primary.withValues(alpha: 0.25),
+                              color: AdminColors.primary.withValues(alpha: 0.25),
                               style: BorderStyle.solid,
                               width: 1.2,
                             ),
@@ -430,12 +425,12 @@ class AdminConfirmPayoutDialog {
                               Container(
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
-                                  color: AppColors.primary.withValues(alpha: 0.1),
+                                  color: AdminColors.primary.withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
                                   Icons.add_photo_alternate_rounded,
-                                  color: AppColors.primary,
+                                  color: AdminColors.primary,
                                   size: 24,
                                 ),
                               ),
@@ -445,7 +440,7 @@ class AdminConfirmPayoutDialog {
                                 style: GoogleFonts.krub(
                                   fontSize: 13,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.primary,
+                                  color: AdminColors.primary,
                                 ),
                               ),
                               const SizedBox(height: 2),
@@ -453,7 +448,7 @@ class AdminConfirmPayoutDialog {
                                 'รองรับรูปภาพ JPG, PNG (สามารถเลือกจากแกลเลอรี)',
                                 style: GoogleFonts.krub(
                                   fontSize: 11,
-                                  color: AppColors.textSecondary,
+                                  color: AdminColors.textSecondary,
                                 ),
                               ),
                             ],
@@ -470,7 +465,7 @@ class AdminConfirmPayoutDialog {
                       style: GoogleFonts.krub(
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -479,10 +474,10 @@ class AdminConfirmPayoutDialog {
                       style: GoogleFonts.krub(fontSize: 13.5),
                       decoration: InputDecoration(
                         labelText: 'หมายเลขอ้างอิงธุรกรรม (Transaction Ref / เลขที่สลิป)',
-                        labelStyle: GoogleFonts.krub(fontSize: 12.5, color: AppColors.textSecondary),
+                        labelStyle: GoogleFonts.krub(fontSize: 12.5, color: AdminColors.textSecondary),
                         hintText: 'เช่น KPLUS-12345678',
                         hintStyle: GoogleFonts.krub(fontSize: 12, color: Colors.grey[400]),
-                        prefixIcon: const Icon(Icons.tag_rounded, size: 20, color: AppColors.textSecondary),
+                        prefixIcon: const Icon(Icons.tag_rounded, size: 20, color: AdminColors.textSecondary),
                         filled: true,
                         fillColor: const Color(0xFFF8FAFC),
                         border: OutlineInputBorder(
@@ -495,7 +490,7 @@ class AdminConfirmPayoutDialog {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                          borderSide: const BorderSide(color: AdminColors.primary, width: 1.5),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       ),
@@ -506,10 +501,10 @@ class AdminConfirmPayoutDialog {
                       style: GoogleFonts.krub(fontSize: 13.5),
                       decoration: InputDecoration(
                         labelText: 'บันทึกช่วยจำ (Note)',
-                        labelStyle: GoogleFonts.krub(fontSize: 12.5, color: AppColors.textSecondary),
+                        labelStyle: GoogleFonts.krub(fontSize: 12.5, color: AdminColors.textSecondary),
                         hintText: 'เช่น โอนยอดรอบประจำสัปดาห์',
                         hintStyle: GoogleFonts.krub(fontSize: 12, color: Colors.grey[400]),
-                        prefixIcon: const Icon(Icons.edit_note_rounded, size: 20, color: AppColors.textSecondary),
+                        prefixIcon: const Icon(Icons.edit_note_rounded, size: 20, color: AdminColors.textSecondary),
                         filled: true,
                         fillColor: const Color(0xFFF8FAFC),
                         border: OutlineInputBorder(
@@ -522,7 +517,7 @@ class AdminConfirmPayoutDialog {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                          borderSide: const BorderSide(color: AdminColors.primary, width: 1.5),
                         ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                       ),
@@ -537,7 +532,7 @@ class AdminConfirmPayoutDialog {
                         height: 50,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
+                            backgroundColor: AdminColors.primary,
                             foregroundColor: Colors.white,
                             elevation: 0,
                             shape: RoundedRectangleBorder(
@@ -605,7 +600,7 @@ class AdminConfirmPayoutDialog {
           '$label: ',
           style: GoogleFonts.krub(
             fontSize: 12,
-            color: AppColors.textSecondary,
+            color: AdminColors.textSecondary,
           ),
         ),
         const SizedBox(width: 8),
@@ -616,7 +611,7 @@ class AdminConfirmPayoutDialog {
             style: GoogleFonts.krub(
               fontSize: 12.5,
               fontWeight: FontWeight.w600,
-              color: AppColors.textPrimary,
+              color: AdminColors.textPrimary,
             ),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_orders_controller.dart';
 import 'widgets/admin_orders_empty_state.dart';
 import 'widgets/admin_slip_group_card.dart';
@@ -22,7 +22,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
       appBar: _buildAppBar(context),
       body: SafeArea(
         child: RefreshIndicator(
-          color: AppColors.primary,
+          color: AdminColors.primary,
           onRefresh: () => controller.loadPendingSlips(),
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
@@ -39,18 +39,11 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color(0xFF0F382C),
-                              Color(0xFF1B4D3E),
-                            ],
-                          ),
+                          gradient: AdminColors.headerGradient,
                           borderRadius: BorderRadius.circular(18),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryDark.withValues(alpha: 0.15),
+                              color: AdminColors.primaryDark.withValues(alpha: 0.15),
                               blurRadius: 14,
                               offset: const Offset(0, 4),
                             ),
@@ -67,7 +60,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                               ),
                               child: const Icon(
                                 Icons.verified_user_rounded,
-                                color: AppColors.secondary,
+                                color: AdminColors.secondary,
                                 size: 22,
                               ),
                             ),
@@ -79,7 +72,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                                   Text(
                                     'Admin Slip Verification',
                                     style: GoogleFonts.krub(
-                                      color: AppColors.secondary,
+                                      color: AdminColors.secondary,
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                       letterSpacing: 0.5,
@@ -130,13 +123,13 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const CircularProgressIndicator(color: AppColors.primary),
+                          const CircularProgressIndicator(color: AdminColors.primary),
                           const SizedBox(height: 14),
                           Text(
                             'กำลังดึงข้อมูลสลิปที่รอตรวจสอบ...',
                             style: GoogleFonts.krub(
                               fontSize: 13,
-                              color: AppColors.textSecondary,
+                              color: AdminColors.textSecondary,
                             ),
                           ),
                         ],
@@ -176,7 +169,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                               style: GoogleFonts.krub(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 4),
@@ -184,7 +177,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                               'คำค้น "${controller.searchQuery.value}" ไม่ตรงกับชื่อผู้ซื้อ เบอร์โทร หรือเลขออเดอร์ใดๆ',
                               style: GoogleFonts.krub(
                                 fontSize: 12.5,
-                                color: AppColors.textSecondary,
+                                color: AdminColors.textSecondary,
                               ),
                               textAlign: TextAlign.center,
                             ),
@@ -232,7 +225,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Colors.white,
-      foregroundColor: AppColors.textPrimary,
+      foregroundColor: AdminColors.textPrimary,
       elevation: 0,
       scrolledUnderElevation: 1,
       centerTitle: false,
@@ -241,7 +234,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
         style: GoogleFonts.krub(
           fontWeight: FontWeight.bold,
           fontSize: 18,
-          color: AppColors.textPrimary,
+          color: AdminColors.textPrimary,
         ),
       ),
       actions: [
@@ -253,10 +246,10 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                       height: 18,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                       ),
                     )
-                  : const Icon(Icons.refresh_rounded, color: AppColors.primary),
+                  : const Icon(Icons.refresh_rounded, color: AdminColors.primary),
               onPressed: controller.isLoading.value
                   ? null
                   : () => controller.loadPendingSlips(),
@@ -304,7 +297,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
               label: 'ยอดเงินรวม',
               value: '฿${totalAmount.toStringAsFixed(2)}',
               icon: Icons.account_balance_wallet_rounded,
-              color: AppColors.primaryDark,
+              color: AdminColors.primaryDark,
             ),
           ),
           Container(height: 30, width: 1, color: const Color(0xFFE2E8F0)),
@@ -314,7 +307,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
               label: 'ออเดอร์รวม',
               value: '$ordersCount คำสั่งซื้อ',
               icon: Icons.shopping_bag_outlined,
-              color: AppColors.primary,
+              color: AdminColors.primary,
             ),
           ),
         ],
@@ -343,7 +336,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
                 style: GoogleFonts.krub(
                   fontSize: 10.5,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                 ),
               ),
             ],
@@ -376,7 +369,7 @@ class AdminOrdersPage extends GetView<AdminOrdersController> {
       ),
       child: TextField(
         controller: searchController,
-        style: GoogleFonts.krub(fontSize: 13, color: AppColors.textPrimary),
+        style: GoogleFonts.krub(fontSize: 13, color: AdminColors.textPrimary),
         onChanged: (val) => controller.searchQuery.value = val,
         decoration: InputDecoration(
           hintText: 'ค้นหาชื่อผู้ซื้อ, เบอร์โทร, เลขออเดอร์...',

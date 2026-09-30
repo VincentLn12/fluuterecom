@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:projecte/features/admin/controllers/admin_products_controller.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'admin_shop_product_card.dart';
 
 class ManageProductsList extends StatelessWidget {
@@ -24,7 +25,7 @@ class ManageProductsList extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(
-                    color: Color(0xFF1B4D3E),
+                    color: AdminColors.primaryLight,
                     strokeWidth: 3,
                   ),
                   SizedBox(height: 12),
@@ -60,7 +61,7 @@ class ManageProductsList extends StatelessWidget {
                     width: 72,
                     height: 72,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F382C).withValues(alpha: 0.06),
+                      color: AdminColors.primaryDark.withValues(alpha: 0.06),
                       shape: BoxShape.circle,
                     ),
                     child: Icon(
@@ -68,7 +69,7 @@ class ManageProductsList extends StatelessWidget {
                           ? Icons.search_off_rounded
                           : Icons.inventory_2_outlined,
                       size: 36,
-                      color: const Color(0xFF1B4D3E),
+                      color: AdminColors.primary,
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -108,7 +109,7 @@ class ManageProductsList extends StatelessWidget {
                         controller.selectStatus('');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1B4D3E),
+                        backgroundColor: AdminColors.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
@@ -121,17 +122,17 @@ class ManageProductsList extends StatelessWidget {
                       label: Text(
                         'ล้างการค้นหาและตัวกรอง',
                         style: GoogleFonts.krub(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.w600,
-                        ),
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                          ),
                       ),
                     )
                   else
                     OutlinedButton.icon(
                       onPressed: () => controller.loadData(),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF1B4D3E),
-                        side: const BorderSide(color: Color(0xFF1B4D3E)),
+                        foregroundColor: AdminColors.primary,
+                        side: const BorderSide(color: AdminColors.primary),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         shape: RoundedRectangleBorder(
@@ -269,7 +270,7 @@ class ManageProductsList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               decoration: BoxDecoration(
                 color: currentPage < totalPages
-                    ? const Color(0xFF1B4D3E)
+                    ? AdminColors.primary
                     : const Color(0xFFF8FAFC),
                 borderRadius: BorderRadius.circular(8),
               ),

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projecte/app/routes/app_routes.dart';
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/models/admin_dashboard_model.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardKpiGrid extends StatelessWidget {
   const AdminDashboardKpiGrid({super.key, this.summary});
@@ -33,9 +33,9 @@ class AdminDashboardKpiGrid extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFF09231B), // Darkest Forest
-                Color(0xFF143B30),
-                Color(0xFF1B4D3E), // Emerald River
+                AdminColors.primaryDark,
+                Color(0xFF132238),
+                AdminColors.primary,
               ],
             ),
             borderRadius: BorderRadius.circular(24),
@@ -45,7 +45,7 @@ class AdminDashboardKpiGrid extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF09231B).withValues(alpha: 0.35),
+                color: AdminColors.primaryDark.withValues(alpha: 0.35),
                 blurRadius: 20,
                 offset: const Offset(0, 8),
               ),
@@ -62,7 +62,7 @@ class AdminDashboardKpiGrid extends StatelessWidget {
                   height: 120,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.secondary.withValues(alpha: 0.2),
+                    color: AdminColors.secondary.withValues(alpha: 0.2),
                   ),
                 ),
               ),
@@ -74,7 +74,7 @@ class AdminDashboardKpiGrid extends StatelessWidget {
                   height: 100,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.gold.withValues(alpha: 0.1),
+                    color: AdminColors.gold.withValues(alpha: 0.1),
                   ),
                 ),
               ),
@@ -268,8 +268,8 @@ class AdminDashboardKpiGrid extends StatelessWidget {
                 value: '$totalOrders รายการ',
                 tagText: 'สำเร็จ $paidOrders รายการ',
                 icon: Icons.shopping_bag_rounded,
-                accentColor: const Color(0xFF1B4D3E),
-                bgTint: const Color(0xFFF2F7F4),
+                accentColor: AdminColors.primaryLight,
+                bgTint: AdminColors.infoBg,
                 onTap: () => Get.toNamed(AppRoutes.adminOrders),
               ),
             ),
@@ -342,7 +342,7 @@ class AdminDashboardKpiGrid extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -356,7 +356,7 @@ class AdminDashboardKpiGrid extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                     letterSpacing: -0.2,
                   ),
                 ),

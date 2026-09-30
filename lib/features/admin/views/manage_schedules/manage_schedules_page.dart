@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_schedules_controller.dart';
 import '../../models/admin_schedule_model.dart';
 import 'widgets/manage_schedule_form_dialog.dart';
@@ -18,9 +18,9 @@ class ManageSchedulesPage extends GetView<AdminSchedulesController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AdminColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
+        backgroundColor: AdminColors.primaryDark,
         foregroundColor: Colors.white,
         title: Text(
           'ตารางกิจกรรม/ปฏิทิน (Schedule Management)',
@@ -28,7 +28,7 @@ class ManageSchedulesPage extends GetView<AdminSchedulesController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AdminColors.primary,
         foregroundColor: Colors.white,
         onPressed: () =>
             ManageScheduleFormDialog.show(context, controller: controller),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 
 class ManageContentsTabs extends StatelessWidget {
@@ -13,7 +13,7 @@ class ManageContentsTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: AppColors.primary,
+      color: AdminColors.primary,
       child: Obx(
         () => Row(
           children: [
@@ -55,7 +55,7 @@ class _Tab extends StatelessWidget {
           decoration: BoxDecoration(
             border: Border(
               bottom: BorderSide(
-                color: selected ? AppColors.accent : Colors.transparent,
+                color: selected ? AdminColors.accent : Colors.transparent,
                 width: 3,
               ),
             ),

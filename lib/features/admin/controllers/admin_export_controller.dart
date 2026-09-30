@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/network/api_client.dart';
 import '../repositories/admin_repository.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminExportController extends GetxController {
   final AdminRepository _repository = Get.find<AdminRepository>();
@@ -102,7 +103,7 @@ class AdminExportController extends GetxController {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF1B4D3E),
+              primary: AdminColors.primary,
               onPrimary: Colors.white,
               onSurface: Color(0xFF1E293B),
             ),
@@ -203,7 +204,7 @@ class AdminExportController extends GetxController {
         Get.snackbar(
           'เปิดการส่งออกรายงานแล้ว',
           'กำลังเตรียมและดาวน์โหลดไฟล์รายงาน admin (${selectedFormat.value.toUpperCase()})',
-          backgroundColor: const Color(0xFF1B4D3E),
+          backgroundColor: AdminColors.primary,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
         );

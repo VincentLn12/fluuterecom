@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_schedules_controller.dart';
 import '../../../models/admin_schedule_model.dart';
 
@@ -72,7 +72,7 @@ class ManageScheduleFormDialog {
             child: Text('ยกเลิก', style: GoogleFonts.krub(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AdminColors.primary),
             onPressed: () async {
               await controller.saveSchedule(
                 id: schedule?.scheduleId,

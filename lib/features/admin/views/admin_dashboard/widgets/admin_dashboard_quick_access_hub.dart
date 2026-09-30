@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:projecte/app/routes/app_routes.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardQuickAccessHub extends StatefulWidget {
   const AdminDashboardQuickAccessHub({super.key});
@@ -45,8 +45,8 @@ class _AdminDashboardQuickAccessHubState extends State<AdminDashboardQuickAccess
       title: 'ส่งออกรายงาน',
       subtitle: 'ดาวน์โหลดไฟล์ CSV / Excel',
       icon: Icons.analytics_rounded,
-      color: const Color(0xFF1B4D3E),
-      bgTint: const Color(0xFFF0F5F2),
+      color: AdminColors.primary,
+      bgTint: AdminColors.infoBg,
       category: 1,
       route: AppRoutes.adminExports,
     ),
@@ -137,16 +137,16 @@ class _AdminDashboardQuickAccessHubState extends State<AdminDashboardQuickAccess
                     });
                   },
                   backgroundColor: Colors.white,
-                  selectedColor: AppColors.primary,
+                  selectedColor: AdminColors.primary,
                   labelStyle: GoogleFonts.krub(
                     fontSize: 12.5,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                    color: isSelected ? Colors.white : AppColors.textSecondary,
+                    color: isSelected ? Colors.white : AdminColors.textSecondary,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: isSelected ? AppColors.primary : const Color(0xFFE0EAE6),
+                      color: isSelected ? AdminColors.primary : AdminColors.border,
                     ),
                   ),
                   showCheckmark: false,
@@ -233,7 +233,7 @@ class _AdminDashboardQuickAccessHubState extends State<AdminDashboardQuickAccess
                   style: GoogleFonts.krub(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
               ),
@@ -246,7 +246,7 @@ class _AdminDashboardQuickAccessHubState extends State<AdminDashboardQuickAccess
                   maxLines: 1,
                   style: GoogleFonts.krub(
                     fontSize: 9.5,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
               ),

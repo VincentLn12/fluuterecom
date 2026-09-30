@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminPayoutsEmptyState extends StatelessWidget {
   const AdminPayoutsEmptyState({
@@ -33,13 +33,13 @@ class AdminPayoutsEmptyState extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.primary.withValues(alpha: 0.1),
-                    AppColors.secondary.withValues(alpha: 0.15),
+                    AdminColors.primary.withValues(alpha: 0.1),
+                    AdminColors.secondary.withValues(alpha: 0.15),
                   ],
                 ),
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.15),
+                  color: AdminColors.primary.withValues(alpha: 0.15),
                   width: 1.5,
                 ),
               ),
@@ -47,7 +47,7 @@ class AdminPayoutsEmptyState extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: 40,
-                  color: AppColors.primary,
+                  color: AdminColors.primary,
                 ),
               ),
             ),
@@ -57,7 +57,7 @@ class AdminPayoutsEmptyState extends StatelessWidget {
               style: GoogleFonts.krub(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: AdminColors.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
@@ -67,7 +67,7 @@ class AdminPayoutsEmptyState extends StatelessWidget {
                 subMessage!,
                 style: GoogleFonts.krub(
                   fontSize: 13,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                   height: 1.4,
                 ),
                 textAlign: TextAlign.center,
@@ -78,8 +78,8 @@ class AdminPayoutsEmptyState extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: onRefresh,
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColors.primary,
-                  side: BorderSide(color: AppColors.primary.withValues(alpha: 0.3)),
+                  foregroundColor: AdminColors.primary,
+                  side: BorderSide(color: AdminColors.primary.withValues(alpha: 0.3)),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),

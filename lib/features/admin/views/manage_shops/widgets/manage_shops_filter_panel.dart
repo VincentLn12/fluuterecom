@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_shops_controller.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class ManageShopsFilterPanel extends StatefulWidget {
   const ManageShopsFilterPanel({super.key, required this.controller});
@@ -55,7 +55,7 @@ class _ManageShopsFilterPanelState extends State<ManageShopsFilterPanel> {
                 const SizedBox(width: 12),
                 const Icon(
                   Icons.search_rounded,
-                  color: Color(0xFF1B4D3E),
+                  color: AdminColors.primary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -68,7 +68,7 @@ class _ManageShopsFilterPanelState extends State<ManageShopsFilterPanel> {
                     },
                     style: GoogleFonts.krub(
                       fontSize: 14,
-                      color: AppColors.textPrimary,
+                      color: AdminColors.textPrimary,
                     ),
                     decoration: InputDecoration(
                       hintText: 'ค้นหาชื่อร้านค้า เบอร์โทร ที่อยู่...',
@@ -122,8 +122,9 @@ class _ManageShopsFilterPanelState extends State<ManageShopsFilterPanel> {
                     label: 'ทั้งหมด',
                     count: totalCount > 0 ? totalCount : null,
                     isSelected: currentStatus == '',
-                    accentColor: const Color(0xFF1B4D3E),
+                    accentColor: AdminColors.primary,
                   ),
+
                   _buildTabChip(
                     statusKey: 'Pending',
                     label: 'รออนุมัติ',

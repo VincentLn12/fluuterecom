@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../models/admin_merchant_payout_model.dart';
 import '../repositories/admin_repository.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'admin_dashboard_controller.dart';
 
 class AdminPayoutsController extends GetxController {
@@ -104,7 +105,7 @@ class AdminPayoutsController extends GetxController {
           'สำเร็จ',
           'ยืนยันการโอนเงินให้ร้านค้าเรียบร้อยแล้ว',
           snackPosition: SnackPosition.TOP,
-          backgroundColor: const Color(0xFF1B4D3E),
+          backgroundColor: AdminColors.primary,
           colorText: Colors.white,
           margin: const EdgeInsets.all(16),
           borderRadius: 12,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_export_controller.dart';
 
 class AdminExportSummaryPreview extends StatelessWidget {
@@ -23,30 +23,39 @@ class AdminExportSummaryPreview extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 18),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F8F5),
+          color: AdminColors.infoBg,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFCCE4DA), width: 1.2),
+          border: Border.all(color: const Color(0xFFBFDBFE), width: 1.2),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(Icons.verified_outlined, size: 18, color: AppColors.primary),
+                Icon(
+                  Icons.verified_outlined,
+                  size: 18,
+                  color: AdminColors.primary,
+                ),
                 const SizedBox(width: 8),
                 Text(
                   'สรุปรายงานที่จะส่งออก',
                   style: GoogleFonts.krub(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primaryDark,
+                    color: AdminColors.primaryDark,
                   ),
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
-                    color: isPdf ? const Color(0xFFE11D48) : const Color(0xFF059669),
+                    color: isPdf
+                        ? const Color(0xFFE11D48)
+                        : const Color(0xFF059669),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -72,7 +81,7 @@ class AdminExportSummaryPreview extends StatelessWidget {
                     style: GoogleFonts.krub(
                       fontSize: 13,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: AdminColors.textPrimary,
                     ),
                   ),
                 ),
@@ -81,14 +90,18 @@ class AdminExportSummaryPreview extends StatelessWidget {
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.date_range_outlined, size: 16, color: AppColors.textSecondary),
+                const Icon(
+                  Icons.date_range_outlined,
+                  size: 16,
+                  color: AdminColors.textSecondary,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
                     '$rangeText ($days วัน)',
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AdminColors.textSecondary,
                     ),
                   ),
                 ),

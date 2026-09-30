@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_categories_controller.dart';
 import 'widgets/admin_categories_body.dart';
 import 'widgets/admin_categories_tab_bar.dart';
@@ -17,9 +17,9 @@ class ManageCategoriesPage extends GetView<AdminCategoriesController> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AdminColors.background,
       appBar: AppBar(
-        backgroundColor: AppColors.primaryDark,
+        backgroundColor: AdminColors.primaryDark,
         foregroundColor: Colors.white,
         title: Text(
           'จัดการหมวดหมู่ (Categories)',
@@ -31,7 +31,7 @@ class ManageCategoriesPage extends GetView<AdminCategoriesController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.primary,
+        backgroundColor: AdminColors.primary,
         foregroundColor: Colors.white,
         onPressed: () {
           if (controller.activeTab.value == 0) {

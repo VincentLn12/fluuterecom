@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 import '../../../models/admin_category_model.dart';
 import '../../../models/admin_content_model.dart';
@@ -44,7 +44,7 @@ class ManageContentsBody extends StatelessWidget {
   Widget _contentList() {
     if (controller.isLoading.value) {
       return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+        child: CircularProgressIndicator(color: AdminColors.primary),
       );
     }
     if (controller.contents.isEmpty) {
@@ -70,7 +70,7 @@ class ManageContentsBody extends StatelessWidget {
   Widget _categoryList() {
     if (controller.isCatLoading.value) {
       return const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
+        child: CircularProgressIndicator(color: AdminColors.primary),
       );
     }
     if (controller.contentCategories.isEmpty) {

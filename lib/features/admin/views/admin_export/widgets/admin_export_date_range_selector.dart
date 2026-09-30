@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_export_controller.dart';
 import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_section_card.dart';
 
@@ -36,14 +36,14 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                       style: GoogleFonts.krub(
                         fontSize: 12,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-                        color: isSelected ? Colors.white : AppColors.textPrimary,
+                        color: isSelected ? Colors.white : AdminColors.textPrimary,
                       ),
                     ),
                     selected: isSelected,
-                    selectedColor: AppColors.primary,
+                    selectedColor: AdminColors.primary,
                     backgroundColor: const Color(0xFFF1F5F9),
                     side: BorderSide(
-                      color: isSelected ? AppColors.primary : const Color(0xFFE2E8F0),
+                      color: isSelected ? AdminColors.primary : const Color(0xFFE2E8F0),
                     ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -76,12 +76,12 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: AdminColors.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: const Icon(
                           Icons.date_range_rounded,
-                          color: AppColors.primary,
+                          color: AdminColors.primary,
                           size: 22,
                         ),
                       ),
@@ -99,7 +99,7 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                                 style: GoogleFonts.krub(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                  color: AdminColors.textPrimary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -109,7 +109,7 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                                 'รวมระยะเวลา $days วัน',
                                 style: GoogleFonts.krub(
                                   fontSize: 11.5,
-                                  color: AppColors.textSecondary,
+                                  color: AdminColors.textSecondary,
                                 ),
                               ),
                             ],
@@ -130,7 +130,7 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                             const Icon(
                               Icons.edit_calendar_rounded,
                               size: 15,
-                              color: AppColors.primary,
+                              color: AdminColors.primary,
                             ),
                             const SizedBox(width: 4),
                             Text(
@@ -138,7 +138,7 @@ class AdminExportDateRangeSelector extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.primary,
+                                color: AdminColors.primary,
                               ),
                             ),
                           ],

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_payouts_controller.dart';
 import 'package:projecte/features/admin/models/admin_merchant_payout_model.dart';
 import 'package:projecte/features/admin/models/admin_order_slip_model.dart';
@@ -32,7 +32,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
       'คัดลอก$label: $text เรียบร้อยแล้ว',
       snackPosition: SnackPosition.TOP,
       duration: const Duration(seconds: 2),
-      backgroundColor: AppColors.primaryDark,
+      backgroundColor: AdminColors.primaryDark,
       colorText: Colors.white,
       margin: const EdgeInsets.all(16),
       borderRadius: 12,
@@ -54,7 +54,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
         border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.05),
+            color: AdminColors.primaryDark.withValues(alpha: 0.05),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -74,10 +74,10 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.08),
+                    color: AdminColors.primary.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.15),
+                      color: AdminColors.primary.withValues(alpha: 0.15),
                     ),
                   ),
                   child: ClipRRect(
@@ -103,7 +103,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                         style: GoogleFonts.krub(
                           fontWeight: FontWeight.bold,
                           fontSize: 15.5,
-                          color: AppColors.textPrimary,
+                          color: AdminColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -115,7 +115,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColors.secondary.withValues(alpha: 0.1),
+                                color: AdminColors.secondary.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
@@ -123,7 +123,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                                 style: GoogleFonts.krub(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.secondary,
+                                  color: AdminColors.secondary,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -146,7 +146,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                       'ยอดรอโอน',
                       style: GoogleFonts.krub(
                         fontSize: 11,
-                        color: AppColors.textSecondary,
+                        color: AdminColors.textSecondary,
                       ),
                     ),
                     Text(
@@ -154,7 +154,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                       style: GoogleFonts.krub(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                         letterSpacing: -0.3,
                       ),
                     ),
@@ -182,13 +182,13 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                       Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: AdminColors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.account_balance_rounded,
                           size: 14,
-                          color: AppColors.primary,
+                          color: AdminColors.primary,
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -201,7 +201,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                                 style: GoogleFonts.krub(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: AppColors.textPrimary,
+                                  color: AdminColors.textPrimary,
                                 ),
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -213,7 +213,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                                   '(${payout.bankAccountName})',
                                   style: GoogleFonts.krub(
                                     fontSize: 11.5,
-                                    color: AppColors.textSecondary,
+                                    color: AdminColors.textSecondary,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -266,7 +266,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                           ? Icons.keyboard_arrow_up_rounded
                           : Icons.keyboard_arrow_down_rounded,
                       size: 18,
-                      color: AppColors.primary,
+                      color: AdminColors.primary,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -276,7 +276,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                       style: GoogleFonts.krub(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                       ),
                     ),
                   ],
@@ -303,7 +303,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                             style: GoogleFonts.krub(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: AdminColors.textPrimary,
                             ),
                           ),
                           Text(
@@ -311,7 +311,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                             style: GoogleFonts.krub(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.primary,
+                              color: AdminColors.primary,
                             ),
                           ),
                         ],
@@ -332,7 +332,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
               height: 44,
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: AdminColors.primary,
                   foregroundColor: Colors.white,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
@@ -368,7 +368,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
         style: GoogleFonts.krub(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: AppColors.primary,
+          color: AdminColors.primary,
         ),
       ),
     );
@@ -389,7 +389,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                 '$label: ',
                 style: GoogleFonts.krub(
                   fontSize: 12,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                 ),
               ),
               Expanded(
@@ -398,7 +398,7 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
                   style: GoogleFonts.krub(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -413,19 +413,19 @@ class _AdminPendingPayoutCardState extends State<AdminPendingPayoutCard> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
             decoration: BoxDecoration(
-              color: AppColors.primary.withValues(alpha: 0.1),
+              color: AdminColors.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(6),
             ),
             child: Row(
               children: [
-                const Icon(Icons.copy_rounded, size: 12, color: AppColors.primary),
+                const Icon(Icons.copy_rounded, size: 12, color: AdminColors.primary),
                 const SizedBox(width: 4),
                 Text(
                   'คัดลอก',
                   style: GoogleFonts.krub(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                   ),
                 ),
               ],

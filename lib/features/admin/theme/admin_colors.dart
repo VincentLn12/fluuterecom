@@ -5,10 +5,14 @@ class AdminColors {
   AdminColors._();
 
   // Core Executive Navy Palette
-  static const Color primaryDark = Color(0xFF0A192F); // Deep Midnight Navy (0xFF0A192F / 0xFF0F172A)
-  static const Color primary = Color(0xFF1E3A8A);     // Deep Royal Navy Blue
+  static const Color primaryDark = Color(
+    0xFF0A192F,
+  ); // Deep Midnight Navy (0xFF0A192F / 0xFF0F172A)
+  static const Color primary = Color(0xFF1E3A8A); // Deep Royal Navy Blue
   static const Color primaryLight = Color(0xFF2563EB); // Vibrant Executive Blue
-  static const Color accent = Color(0xFF38BDF8);       // Sky Cyan Highlight
+  static const Color secondary = Color(0xFF0284C7); // Ocean Blue
+  static const Color accent = Color(0xFF3B82F6); // Executive Blue
+  static const Color gold = Color(0xFFF59E0B); // Executive Amber Gold
 
   // Gradients
   static const LinearGradient headerGradient = LinearGradient(

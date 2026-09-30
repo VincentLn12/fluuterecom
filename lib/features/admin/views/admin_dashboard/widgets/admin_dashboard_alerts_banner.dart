@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:projecte/app/routes/app_routes.dart';
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/models/admin_dashboard_model.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardAlertsBanner extends StatelessWidget {
   const AdminDashboardAlertsBanner({super.key, required this.alerts});
@@ -18,16 +18,16 @@ class AdminDashboardAlertsBanner extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: const Color(0xFFF1F8F5),
+          color: AdminColors.infoBg,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFCCE4DA)),
+          border: Border.all(color: const Color(0xFFBFDBFE)),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(6),
               decoration: const BoxDecoration(
-                color: Color(0xFF1B4D3E),
+                color: AdminColors.primary,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.check_rounded, color: Colors.white, size: 14),
@@ -39,7 +39,7 @@ class AdminDashboardAlertsBanner extends StatelessWidget {
                 style: GoogleFonts.krub(
                   fontSize: 12.5,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF1B4D3E),
+                  color: AdminColors.primary,
                 ),
               ),
             ),
@@ -90,7 +90,7 @@ class AdminDashboardAlertsBanner extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 14.5,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
               ),
@@ -133,8 +133,8 @@ class AdminDashboardAlertsBanner extends StatelessWidget {
                   title: 'ร้านค้ารอโอนยอดเงิน',
                   count: alerts.pendingPayoutOrders,
                   icon: Icons.account_balance_wallet_rounded,
-                  color: const Color(0xFF1B4D3E),
-                  bgTint: const Color(0xFFF0F5F2),
+                  color: AdminColors.primary,
+                  bgTint: AdminColors.infoBg,
                   onTap: () => Get.toNamed(AppRoutes.adminPayouts),
                 ),
             ],

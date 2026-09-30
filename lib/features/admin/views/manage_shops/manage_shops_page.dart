@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:projecte/features/admin/controllers/admin_shops_controller.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'widgets/manage_shops_filter_panel.dart';
 import 'widgets/manage_shops_list.dart';
-
 
 class ManageShopsPage extends GetView<AdminShopsController> {
   const ManageShopsPage({super.key});
@@ -17,11 +17,11 @@ class ManageShopsPage extends GetView<AdminShopsController> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: AdminColors.background,
       appBar: _buildAppBar(context),
       body: SafeArea(
         child: RefreshIndicator(
-          color: const Color(0xFF1B4D3E),
+          color: AdminColors.primaryLight,
           onRefresh: () => controller.loadData(),
           child: Column(
             children: [
@@ -47,7 +47,7 @@ class ManageShopsPage extends GetView<AdminShopsController> {
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF0F382C),
+      backgroundColor: AdminColors.primaryDark,
       foregroundColor: Colors.white,
       elevation: 0,
       centerTitle: false,
@@ -125,13 +125,10 @@ class ManageShopsPage extends GetView<AdminShopsController> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF0F382C), Color(0xFF1B4D3E)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        gradient: AdminColors.headerGradient,
       ),
       child: Obx(() {
+
         final total = controller.totalShopsCount.value;
         final pending = controller.pendingCount.value;
         final active = controller.activeCount.value;

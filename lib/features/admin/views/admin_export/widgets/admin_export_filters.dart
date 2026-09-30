@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_export_controller.dart';
 import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_section_card.dart';
 import 'package:projecte/features/admin/views/admin_export/widgets/admin_export_input_decoration.dart';
@@ -42,7 +42,7 @@ class AdminExportFilters extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -91,7 +91,7 @@ class AdminExportFilters extends StatelessWidget {
                               style: GoogleFonts.krub(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.textPrimary,
+                                color: AdminColors.textPrimary,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -149,7 +149,7 @@ class AdminExportFilters extends StatelessWidget {
                         style: GoogleFonts.krub(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
+                          color: AdminColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 6),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_schedules_controller.dart';
 import '../../../models/admin_schedule_model.dart';
 
@@ -25,7 +25,7 @@ class AdminScheduleCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AdminColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class AdminScheduleCard extends StatelessWidget {
               const Icon(
                 Icons.access_time,
                 size: 14,
-                color: AppColors.textSecondary,
+                color: AdminColors.textSecondary,
               ),
               const SizedBox(width: 4),
               Expanded(
@@ -73,7 +73,7 @@ class AdminScheduleCard extends StatelessWidget {
                   'เริ่ม: ${schedule.startDateTime}',
                   style: GoogleFonts.krub(
                     fontSize: 12,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -87,7 +87,7 @@ class AdminScheduleCard extends StatelessWidget {
                 const Icon(
                   Icons.location_on_outlined,
                   size: 14,
-                  color: AppColors.textSecondary,
+                  color: AdminColors.textSecondary,
                 ),
                 const SizedBox(width: 4),
                 Expanded(
@@ -95,7 +95,7 @@ class AdminScheduleCard extends StatelessWidget {
                     schedule.address!,
                     style: GoogleFonts.krub(
                       fontSize: 12,
-                      color: AppColors.textSecondary,
+                      color: AdminColors.textSecondary,
                     ),
                   ),
                 ),
@@ -111,7 +111,7 @@ class AdminScheduleCard extends StatelessWidget {
                 onPressed: onEdit,
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline, color: AppColors.error),
+                icon: const Icon(Icons.delete_outline, color: AdminColors.error),
                 onPressed: () => controller.deleteSchedule(schedule.scheduleId),
               ),
             ],

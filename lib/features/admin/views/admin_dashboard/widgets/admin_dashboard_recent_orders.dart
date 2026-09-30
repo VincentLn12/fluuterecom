@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:projecte/app/routes/app_routes.dart';
-import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/admin/models/admin_dashboard_model.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminDashboardRecentOrders extends StatelessWidget {
   const AdminDashboardRecentOrders({super.key, required this.recentOrders});
@@ -23,13 +23,13 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: AdminColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
                     Icons.receipt_long_rounded,
                     size: 16,
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -38,7 +38,7 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.textPrimary,
+                    color: AdminColors.textPrimary,
                   ),
                 ),
               ],
@@ -49,13 +49,13 @@ class AdminDashboardRecentOrders extends StatelessWidget {
               label: Text(
                 'ดูทั้งหมด',
                 style: GoogleFonts.krub(
-                  color: AppColors.primary,
+                  color: AdminColors.primary,
                   fontWeight: FontWeight.bold,
                   fontSize: 13,
                 ),
               ),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.primary,
+                foregroundColor: AdminColors.primary,
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               ),
             ),
@@ -83,7 +83,7 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                   'ยังไม่มีคำสั่งซื้อล่าสุดในระบบ',
                   style: GoogleFonts.krub(
                     fontSize: 13,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
               ],
@@ -133,14 +133,14 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                             height: 40,
                             decoration: BoxDecoration(
                               color: isPaid
-                                  ? const Color(0xFF1B4D3E).withValues(alpha: 0.1)
+                                  ? AdminColors.success.withValues(alpha: 0.12)
                                   : const Color(0xFFE76F51).withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Icon(
                               isPaid ? Icons.check_circle_outline_rounded : Icons.pending_actions_rounded,
                               size: 20,
-                              color: isPaid ? const Color(0xFF1B4D3E) : const Color(0xFFE76F51),
+                              color: isPaid ? AdminColors.success : const Color(0xFFE76F51),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -157,7 +157,7 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                                       style: GoogleFonts.krub(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13.5,
-                                        color: AppColors.textPrimary,
+                                        color: AdminColors.textPrimary,
                                       ),
                                     ),
                                     const SizedBox(width: 6),
@@ -166,7 +166,7 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                                         '• ${order.shopName}',
                                         style: GoogleFonts.krub(
                                           fontSize: 12,
-                                          color: AppColors.textSecondary,
+                                          color: AdminColors.textSecondary,
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
@@ -182,7 +182,7 @@ class AdminDashboardRecentOrders extends StatelessWidget {
                                       style: GoogleFonts.krub(
                                         fontSize: 12.5,
                                         fontWeight: FontWeight.bold,
-                                        color: AppColors.primary,
+                                        color: AdminColors.primary,
                                       ),
                                     ),
                                     const SizedBox(width: 8),

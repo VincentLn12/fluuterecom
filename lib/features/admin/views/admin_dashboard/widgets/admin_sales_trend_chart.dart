@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../models/admin_dashboard_model.dart';
 
 String _formatTrendDate(String raw) {
@@ -97,12 +97,12 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: AppColors.border,
+          color: AdminColors.border,
           width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.04),
+            color: AdminColors.primaryDark.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -122,7 +122,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                       width: 3.5,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: AppColors.primary,
+                        color: AdminColors.primary,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -136,7 +136,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                             style: GoogleFonts.krub(
                               fontSize: 13.5,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
+                              color: AdminColors.textPrimary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -148,7 +148,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                             style: GoogleFonts.krub(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.secondary,
+                              color: AdminColors.secondary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -165,9 +165,9 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
               Container(
                 padding: const EdgeInsets.all(3),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: AdminColors.background,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
+                  border: Border.all(color: AdminColors.border),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
@@ -195,9 +195,9 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.08),
+                color: AdminColors.primary.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                border: Border.all(color: AdminColors.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [
@@ -206,7 +206,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                     style: GoogleFonts.krub(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: AdminColors.textPrimary,
                     ),
                   ),
                   const Spacer(),
@@ -223,7 +223,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                             style: GoogleFonts.krub(
                               fontSize: 13,
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
+                              color: AdminColors.primary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -237,7 +237,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                           style: GoogleFonts.krub(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
-                            color: AppColors.textSecondary,
+                            color: AdminColors.textSecondary,
                           ),
                         ),
                       ],
@@ -260,7 +260,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                   style: GoogleFonts.krub(
                     fontSize: 11.5,
                     fontWeight: FontWeight.w500,
-                    color: AppColors.textSecondary,
+                    color: AdminColors.textSecondary,
                   ),
                 ),
               ),
@@ -283,7 +283,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                           style: GoogleFonts.krub(
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimary,
+                            color: AdminColors.textPrimary,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -291,7 +291,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
                           'ระบบจะแสดงเส้นกราฟเมื่อมีคำสั่งซื้อจริงเกิดขึ้น',
                           style: GoogleFonts.krub(
                             fontSize: 11.5,
-                            color: AppColors.textSecondary,
+                            color: AdminColors.textSecondary,
                           ),
                         ),
                       ],
@@ -412,7 +412,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primaryDark.withValues(alpha: 0.08),
+                    color: AdminColors.primaryDark.withValues(alpha: 0.08),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
@@ -424,7 +424,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
           style: GoogleFonts.krub(
             fontSize: 10.5,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            color: isSelected ? AppColors.primary : AppColors.textSecondary,
+            color: isSelected ? AdminColors.primary : AdminColors.textSecondary,
           ),
         ),
       ),
@@ -442,12 +442,12 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
         duration: const Duration(milliseconds: 180),
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : Colors.transparent,
+          color: isSelected ? AdminColors.primary : Colors.transparent,
           borderRadius: BorderRadius.circular(10),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.28),
+                    color: AdminColors.primary.withValues(alpha: 0.28),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -459,7 +459,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
           style: GoogleFonts.krub(
             fontSize: 10.5,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            color: isSelected ? Colors.white : AppColors.textSecondary,
+            color: isSelected ? Colors.white : AdminColors.textSecondary,
           ),
         ),
       ),
@@ -477,10 +477,10 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.background,
+          color: isSelected ? AdminColors.primary : AdminColors.background,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? AppColors.primary : AppColors.border,
+            color: isSelected ? AdminColors.primary : AdminColors.border,
           ),
         ),
         child: Text(
@@ -488,7 +488,7 @@ class _AdminSalesTrendChartState extends State<AdminSalesTrendChart> {
           style: GoogleFonts.krub(
             fontSize: 11,
             fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            color: isSelected ? Colors.white : AppColors.textSecondary,
+            color: isSelected ? Colors.white : AdminColors.textSecondary,
           ),
         ),
       ),
@@ -555,7 +555,7 @@ class _InteractiveChartPainter extends CustomPainter {
       if (offsets.length == 1) {
         // Single point mode
         final p = offsets.first;
-        final singleDot = Paint()..color = AppColors.primary;
+        final singleDot = Paint()..color = AdminColors.primary;
         canvas.drawCircle(p, 5, singleDot);
       } else {
         // Area Path with Gradient
@@ -581,8 +581,8 @@ class _InteractiveChartPainter extends CustomPainter {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              AppColors.secondary.withValues(alpha: 0.25),
-              AppColors.secondary.withValues(alpha: 0.01),
+              AdminColors.secondary.withValues(alpha: 0.25),
+              AdminColors.secondary.withValues(alpha: 0.01),
             ],
           ).createShader(Rect.fromLTWH(padLeft, padTop, drawWidth, drawHeight));
 
@@ -592,8 +592,8 @@ class _InteractiveChartPainter extends CustomPainter {
         final strokePaint = Paint()
           ..shader = LinearGradient(
             colors: [
-              AppColors.primary,   // Forest Teal
-              AppColors.secondary, // Vibrant Mint Teal
+              AdminColors.primary,   // Forest Teal
+              AdminColors.secondary, // Vibrant Mint Teal
             ],
           ).createShader(Rect.fromLTWH(padLeft, padTop, drawWidth, drawHeight))
           ..strokeWidth = 2.8
@@ -611,8 +611,8 @@ class _InteractiveChartPainter extends CustomPainter {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            AppColors.secondary,
-            AppColors.primary,
+            AdminColors.secondary,
+            AdminColors.primary,
           ],
         ).createShader(Rect.fromLTWH(padLeft, padTop, drawWidth, drawHeight));
 
@@ -638,7 +638,7 @@ class _InteractiveChartPainter extends CustomPainter {
 
       // Vertical guide line
       final guidePaint = Paint()
-        ..color = AppColors.secondary.withValues(alpha: 0.4)
+        ..color = AdminColors.secondary.withValues(alpha: 0.4)
         ..strokeWidth = 1.2
         ..style = PaintingStyle.stroke;
 
@@ -650,11 +650,11 @@ class _InteractiveChartPainter extends CustomPainter {
 
       // Glowing dot
       final glowPaint = Paint()
-        ..color = AppColors.secondary.withValues(alpha: 0.35)
+        ..color = AdminColors.secondary.withValues(alpha: 0.35)
         ..style = PaintingStyle.fill;
       canvas.drawCircle(activeOffset, 9, glowPaint);
 
-      final outerDot = Paint()..color = AppColors.primary;
+      final outerDot = Paint()..color = AdminColors.primary;
       canvas.drawCircle(activeOffset, 5, outerDot);
 
       final innerDot = Paint()..color = Colors.white;
@@ -671,7 +671,7 @@ class _InteractiveChartPainter extends CustomPainter {
         style: GoogleFonts.krub(
           fontSize: 9.5,
           fontWeight: i == activeIdx ? FontWeight.bold : FontWeight.w500,
-          color: i == activeIdx ? AppColors.primary : AppColors.textSecondary,
+          color: i == activeIdx ? AdminColors.primary : AdminColors.textSecondary,
         ),
       );
 

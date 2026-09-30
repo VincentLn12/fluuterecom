@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_reports_controller.dart';
 import 'admin_report_card.dart';
 
@@ -16,14 +16,14 @@ class ManageReportsList extends StatelessWidget {
     return Obx(() {
       if (controller.isLoading.value) {
         return const Center(
-          child: CircularProgressIndicator(color: AppColors.primary),
+          child: CircularProgressIndicator(color: AdminColors.primary),
         );
       }
       if (controller.reports.isEmpty) {
         return Center(
           child: Text(
             'ไม่มีรายงานการร้องเรียน',
-            style: GoogleFonts.krub(color: AppColors.textSecondary),
+            style: GoogleFonts.krub(color: AdminColors.textSecondary),
           ),
         );
       }

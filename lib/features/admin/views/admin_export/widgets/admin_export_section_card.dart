@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminExportSectionCard extends StatelessWidget {
   const AdminExportSectionCard({
@@ -30,7 +30,7 @@ class AdminExportSectionCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE2E8F0), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primaryDark.withValues(alpha: 0.04),
+            color: AdminColors.primaryDark.withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -45,9 +45,7 @@ class AdminExportSectionCard extends StatelessWidget {
                 width: 28,
                 height: 28,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF0F382C), Color(0xFF1B4D3E)],
-                  ),
+                  gradient: AdminColors.cardAccentGradient,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Center(
@@ -62,7 +60,7 @@ class AdminExportSectionCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Icon(icon, color: AppColors.primary, size: 20),
+              Icon(icon, color: AdminColors.primary, size: 20),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
@@ -73,7 +71,7 @@ class AdminExportSectionCard extends StatelessWidget {
                       style: GoogleFonts.krub(
                         fontSize: 14.5,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
+                        color: AdminColors.textPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -84,7 +82,7 @@ class AdminExportSectionCard extends StatelessWidget {
                         subtitle!,
                         style: GoogleFonts.krub(
                           fontSize: 11.5,
-                          color: AppColors.textSecondary,
+                          color: AdminColors.textSecondary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

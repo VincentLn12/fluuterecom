@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../models/admin_tag_model.dart';
 
 class AdminTagChip extends StatelessWidget {
@@ -16,7 +16,7 @@ class AdminTagChip extends StatelessWidget {
       avatar: const Icon(
         Icons.label_outlined,
         size: 16,
-        color: AppColors.primary,
+        color: AdminColors.primary,
       ),
       label: Text(
         tag.tagName,
@@ -25,7 +25,7 @@ class AdminTagChip extends StatelessWidget {
       backgroundColor: Colors.white,
       deleteIcon: const Icon(Icons.edit_outlined, size: 16, color: Colors.blue),
       onDeleted: onEdit,
-      side: const BorderSide(color: AppColors.border),
+      side: const BorderSide(color: AdminColors.border),
     );
   }
 }

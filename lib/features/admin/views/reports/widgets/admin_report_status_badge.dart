@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminReportStatusBadge extends StatelessWidget {
   const AdminReportStatusBadge({super.key, required this.status});
@@ -12,11 +12,11 @@ class AdminReportStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (background, foreground) = switch (status.toLowerCase()) {
       'resolved' => (
-        AppColors.primary.withValues(alpha: 0.12),
-        AppColors.primary,
+        AdminColors.successBg,
+        AdminColors.success,
       ),
-      'inprogress' => (Colors.blue.withValues(alpha: 0.12), Colors.blue),
-      'pending' => (AppColors.error.withValues(alpha: 0.12), AppColors.error),
+      'inprogress' => (AdminColors.infoBg, AdminColors.info),
+      'pending' => (AdminColors.errorBg, AdminColors.error),
       _ => (Colors.grey.withValues(alpha: 0.12), Colors.grey),
     };
 

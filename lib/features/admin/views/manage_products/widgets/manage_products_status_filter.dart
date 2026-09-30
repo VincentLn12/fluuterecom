@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:projecte/features/admin/controllers/admin_products_controller.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class ManageProductsStatusFilter extends StatefulWidget {
   const ManageProductsStatusFilter({super.key, required this.controller});
@@ -57,7 +58,7 @@ class _ManageProductsStatusFilterState
                 const SizedBox(width: 12),
                 const Icon(
                   Icons.search_rounded,
-                  color: Color(0xFF1B4D3E),
+                  color: AdminColors.primary,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -123,7 +124,7 @@ class _ManageProductsStatusFilterState
                     label: 'ทั้งหมด',
                     count: total > 0 ? total : null,
                     isSelected: currentStatus == '',
-                    accentColor: const Color(0xFF1B4D3E),
+                    accentColor: AdminColors.primary,
                   ),
                   _buildTabChip(
                     statusKey: 'Active',

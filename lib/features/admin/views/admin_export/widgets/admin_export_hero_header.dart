@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 
 class AdminExportHeroHeader extends StatelessWidget {
   const AdminExportHeroHeader({super.key});
@@ -10,14 +11,7 @@ class AdminExportHeroHeader extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFF0F382C),
-            Color(0xFF1B4D3E),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        gradient: AdminColors.headerGradient,
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
       child: Row(
@@ -33,7 +27,7 @@ class AdminExportHeroHeader extends StatelessWidget {
             ),
             child: const Icon(
               Icons.summarize_rounded,
-              color: Color(0xFFD1FAE5),
+              color: Color(0xFFBAE6FD),
               size: 26,
             ),
           ),
@@ -55,7 +49,7 @@ class AdminExportHeroHeader extends StatelessWidget {
                   'เลือกประเภทรายงานและช่วงเวลาที่ต้องการ แล้วดาวน์โหลดเป็น PDF หรือ CSV ได้ทันที',
                   style: GoogleFonts.krub(
                     fontSize: 12,
-                    color: const Color(0xFFD1FAE5).withValues(alpha: 0.9),
+                    color: const Color(0xFFBAE6FD).withValues(alpha: 0.9),
                     height: 1.3,
                   ),
                 ),

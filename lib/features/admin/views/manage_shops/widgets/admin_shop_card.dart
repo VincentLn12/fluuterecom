@@ -5,9 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/admin/controllers/admin_shops_controller.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/shops/models/shop_model.dart';
 import 'admin_shop_status_badge.dart';
-
 
 class AdminShopCard extends StatelessWidget {
   const AdminShopCard({
@@ -67,7 +67,7 @@ class AdminShopCard extends StatelessWidget {
                       width: 50,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F382C).withValues(alpha: 0.08),
+                        color: AdminColors.primaryDark.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: const Color(0xFFE2E8F0)),
                       ),
@@ -80,18 +80,19 @@ class AdminShopCard extends StatelessWidget {
                                 fit: BoxFit.cover,
                                 errorBuilder: (ctx, err, stack) => const Icon(
                                   Icons.storefront_rounded,
-                                  color: Color(0xFF1B4D3E),
+                                  color: AdminColors.primary,
                                   size: 26,
                                 ),
                               )
                             : const Icon(
                                 Icons.storefront_rounded,
-                                color: Color(0xFF1B4D3E),
+                                color: AdminColors.primary,
                                 size: 26,
                               ),
                       ),
                     ),
                     const SizedBox(width: 12),
+
 
                     // Shop Name & Category
                     Expanded(
@@ -307,7 +308,7 @@ class AdminShopCard extends StatelessWidget {
                         const Icon(
                           Icons.account_balance_wallet_outlined,
                           size: 13,
-                          color: Color(0xFF1B4D3E),
+                          color: AdminColors.primary,
                         ),
                         const SizedBox(width: 6),
                         Expanded(
@@ -318,7 +319,7 @@ class AdminShopCard extends StatelessWidget {
                             style: GoogleFonts.krub(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: const Color(0xFF1B4D3E),
+                              color: AdminColors.primary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -409,7 +410,7 @@ class AdminShopCard extends StatelessWidget {
                             Get.toNamed(AppRoutes.adminShopProducts, arguments: shop);
                           },
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF1B4D3E),
+                            foregroundColor: AdminColors.primary,
                             side: const BorderSide(color: Color(0xFFCBD5E1)),
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                             shape: RoundedRectangleBorder(
@@ -428,6 +429,7 @@ class AdminShopCard extends StatelessWidget {
                           ),
                         ),
                       ),
+
                       const SizedBox(width: 6),
 
                       if (isActive)
@@ -534,7 +536,7 @@ class AdminShopCard extends StatelessWidget {
                           value: 'detail',
                           child: Row(
                             children: [
-                              const Icon(Icons.info_outline_rounded, size: 18, color: Color(0xFF1B4D3E)),
+                              const Icon(Icons.info_outline_rounded, size: 18, color: AdminColors.primary),
                               const SizedBox(width: 8),
                               Text('ดูรายละเอียดทั้งหมด', style: GoogleFonts.krub(fontSize: 13)),
                             ],
@@ -719,7 +721,7 @@ class AdminShopCard extends StatelessWidget {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F382C).withValues(alpha: 0.08),
+                      color: AdminColors.primaryDark.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(14),
                       border: Border.all(color: const Color(0xFFE2E8F0)),
                     ),
@@ -732,13 +734,13 @@ class AdminShopCard extends StatelessWidget {
                               fit: BoxFit.cover,
                               errorBuilder: (ctx, err, stack) => const Icon(
                                 Icons.storefront_rounded,
-                                color: Color(0xFF1B4D3E),
+                                color: AdminColors.primary,
                                 size: 30,
                               ),
                             )
                           : const Icon(
                               Icons.storefront_rounded,
-                              color: Color(0xFF1B4D3E),
+                              color: AdminColors.primary,
                               size: 30,
                             ),
                     ),
@@ -879,8 +881,8 @@ class AdminShopCard extends StatelessWidget {
                         Get.toNamed(AppRoutes.adminShopProducts, arguments: shop);
                       },
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF1B4D3E),
-                        side: const BorderSide(color: Color(0xFF1B4D3E)),
+                        foregroundColor: AdminColors.primary,
+                        side: const BorderSide(color: AdminColors.primary),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

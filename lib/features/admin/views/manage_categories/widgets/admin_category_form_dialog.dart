@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:projecte/app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import 'package:projecte/features/admin/controllers/admin_categories_controller.dart';
 import 'package:projecte/features/admin/models/admin_category_model.dart';
 
@@ -122,7 +122,7 @@ class AdminCategoryFormDialog {
             child: Text('ยกเลิก', style: GoogleFonts.krub(color: Colors.grey)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            style: ElevatedButton.styleFrom(backgroundColor: AdminColors.primary),
             onPressed: () async {
               await onSave();
               if (dialogContext.mounted) Navigator.pop(dialogContext);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_reports_controller.dart';
 import '../../../models/admin_report_model.dart';
 import 'admin_report_status_badge.dart';
@@ -24,7 +24,7 @@ class AdminReportCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AdminColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +53,7 @@ class AdminReportCard extends StatelessWidget {
             style: GoogleFonts.krub(
               fontWeight: FontWeight.w600,
               fontSize: 13,
-              color: AppColors.error,
+              color: AdminColors.error,
             ),
           ),
           if (report.description != null && report.description!.isNotEmpty) ...[
@@ -62,7 +62,7 @@ class AdminReportCard extends StatelessWidget {
               report.description!,
               style: GoogleFonts.krub(
                 fontSize: 12,
-                color: AppColors.textSecondary,
+                color: AdminColors.textSecondary,
               ),
             ),
           ],
@@ -105,7 +105,7 @@ class AdminReportCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../../app/theme/app_colors.dart';
+import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../../controllers/admin_contents_controller.dart';
 import '../../../models/admin_content_model.dart';
 
@@ -27,7 +27,7 @@ class AdminContentCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.border),
+        border: Border.all(color: AdminColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +47,7 @@ class AdminContentCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
+                  color: AdminColors.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
@@ -55,7 +55,7 @@ class AdminContentCard extends StatelessWidget {
                   style: GoogleFonts.krub(
                     fontSize: 11,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
+                    color: AdminColors.primary,
                   ),
                 ),
               ),
@@ -67,7 +67,7 @@ class AdminContentCard extends StatelessWidget {
               item.summary!,
               style: GoogleFonts.krub(
                 fontSize: 12,
-                color: AppColors.textSecondary,
+                color: AdminColors.textSecondary,
               ),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
@@ -101,7 +101,7 @@ class AdminContentCard extends StatelessWidget {
                   IconButton(
                     icon: const Icon(
                       Icons.archive_outlined,
-                      color: AppColors.error,
+                      color: AdminColors.error,
                     ),
                     onPressed: () => controller.archiveContent(item.contentId),
                   ),
