@@ -1,211 +1,137 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:projecte/features/shops/models/product_model.dart';
-
-import 'special_product_card.dart';
+import 'package:projecte/features/shops/views/shop_list/shop_list_palette.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/special_product_card.dart';
 
 class ShopFlashSaleSection extends StatelessWidget {
-  const ShopFlashSaleSection({
-    super.key,
-    required this.products,
-  });
+  const ShopFlashSaleSection({super.key, required this.products});
 
   final List<ProductModel> products;
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<int>(
-      stream: Stream.periodic(
-        const Duration(seconds: 1),
-        (tick) => tick,
-      ),
+      stream: Stream.periodic(const Duration(seconds: 1), (tick) => tick),
       builder: (context, snapshot) {
         final now = DateTime.now().toUtc();
-
         final activeProducts = products.where((product) {
           final deal = product.activeDeal;
-
           return product.quantity > 0 &&
               deal != null &&
               deal.availableQuantity > 0 &&
               (deal.endsAt == null || deal.endsAt!.isAfter(now));
         }).toList();
 
-        if (activeProducts.isEmpty) {
-          return const SizedBox.shrink();
-        }
+        if (activeProducts.isEmpty) return const SizedBox.shrink();
 
-        return Container(
-          margin: const EdgeInsets.fromLTRB(16, 18, 16, 8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 0, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _FlashSaleHeader(
-                dealCount: activeProducts.length,
+              // Header Row
+              Padding(
+                padding: const EdgeInsets.only(right: 16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFFF4A261),
+                            ShopListPalette.orange,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: ShopListPalette.orange.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.bolt_rounded,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'ดีลพิเศษวันนี้',
+                            style: TextStyle(
+                              color: ShopListPalette.ink,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: -0.2,
+                            ),
+                          ),
+                          SizedBox(height: 2),
+                          Text(
+                            'สินค้าชุมชนราคาพิเศษ จำนวนจำกัด',
+                            style: TextStyle(
+                              color: ShopListPalette.muted,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: ShopListPalette.orangeSoft,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: ShopListPalette.orange.withValues(alpha: 0.25),
+                        ),
+                      ),
+                      child: Text(
+                        '${activeProducts.length} ดีลร้อนแรง',
+                        style: const TextStyle(
+                          color: ShopListPalette.orangeDark,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(height: 14),
 
-              const SizedBox(height: 4),
-
+              // Horizontal Products List
               SizedBox(
-                height: 315,
+                height: 284,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.fromLTRB(
-                    16,
-                    10,
-                    16,
-                    18,
-                  ),
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.only(right: 16, bottom: 4),
                   itemCount: activeProducts.length,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(width: 12),
-                  itemBuilder: (_, index) {
-                    return SpecialProductCard(
-                      product: activeProducts[index],
-                      now: now,
-                    );
-                  },
+                  separatorBuilder: (_, _) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) => SpecialProductCard(
+                    product: activeProducts[index],
+                    now: now,
+                  ),
                 ),
               ),
             ],
           ),
         );
       },
-    );
-  }
-}
-
-class _FlashSaleHeader extends StatelessWidget {
-  const _FlashSaleHeader({
-    required this.dealCount,
-  });
-
-  final int dealCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        14,
-      ),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color(0xFFFFF4EF),
-            Color(0xFFFFFFFF),
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(24),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 42,
-            height: 42,
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFFF97316),
-                  Color(0xFFEA580C),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFFF97316)
-                      .withValues(alpha: 0.22),
-                  blurRadius: 12,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: const Icon(
-              Icons.bolt_rounded,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-
-          const SizedBox(width: 12),
-
-          const Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'Flash Sale',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF0F382C),
-                        height: 1.1,
-                      ),
-                    ),
-                    SizedBox(width: 7),
-                    Text(
-                      '⚡',
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'ดีลพิเศษจากร้านค้าชุมชน',
-                  style: TextStyle(
-                    fontSize: 12.5,
-                    color: Color(0xFF6B7F76),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 11,
-              vertical: 7,
-            ),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFEEE7),
-              borderRadius: BorderRadius.circular(999),
-            ),
-            child: Text(
-              '$dealCount ดีล',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFFEA580C),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

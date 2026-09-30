@@ -111,6 +111,10 @@ class HomePage extends GetView<HomeController> {
 
                 SizedBox(height: 26),
 
+                HomeDealsSection(),
+
+                SizedBox(height: 26),
+
                 HomeStoriesSection(),
 
                 SizedBox(height: 26),
@@ -127,9 +131,6 @@ class HomePage extends GetView<HomeController> {
 
                 SizedBox(height: 26),
 
-                HomeDealsSection(),
-
-                SizedBox(height: 26),
 
                 HomeCtaBanner(),
 

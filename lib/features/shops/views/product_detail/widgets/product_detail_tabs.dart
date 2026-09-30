@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/shops/controllers/product_detail_controller.dart';
 import 'package:projecte/features/shops/models/product_model.dart';
 import 'package:projecte/features/shops/models/shop_review_model.dart';
@@ -12,9 +12,9 @@ class ProductDetailNavTabs extends GetView<ProductDetailController> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Color(0xFFFFF9F2),
-        border: Border.symmetric(
-          horizontal: BorderSide(color: Color(0xFFE8D9C9), width: 1.2),
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: AppColors.border, width: 1),
         ),
       ),
       child: Obx(() {
@@ -24,68 +24,56 @@ class ProductDetailNavTabs extends GetView<ProductDetailController> {
         return Row(
           children: [
             Expanded(
-              child: InkWell(
+              child: _tabButton(
+                label: 'รายละเอียดสินค้า',
+                isSelected: currentTab == 'details',
                 onTap: () => controller.changeTab('details'),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: currentTab == 'details'
-                            ? const Color(0xFFD96C2C)
-                            : Colors.transparent,
-                        width: 2.5,
-                      ),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'รายละเอียดสินค้า',
-                      style: GoogleFonts.krub(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: currentTab == 'details'
-                            ? const Color(0xFFD96C2C)
-                            : const Color(0xFF786B62),
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
             Expanded(
-              child: InkWell(
+              child: _tabButton(
+                label: 'รีวิวจากผู้ซื้อ ($reviewCount)',
+                isSelected: currentTab == 'reviews',
                 onTap: () => controller.changeTab('reviews'),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: currentTab == 'reviews'
-                            ? const Color(0xFFD96C2C)
-                            : Colors.transparent,
-                        width: 2.5,
-                      ),
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      'รีวิวจากผู้ซื้อ ($reviewCount)',
-                      style: GoogleFonts.krub(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: currentTab == 'reviews'
-                            ? const Color(0xFFD96C2C)
-                            : const Color(0xFF786B62),
-                      ),
-                    ),
-                  ),
-                ),
               ),
             ),
           ],
         );
       }),
+    );
+  }
+
+  Widget _tabButton({
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? AppColors.primary : Colors.transparent,
+                width: 2.5,
+              ),
+            ),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                color: isSelected ? AppColors.primary : AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -102,45 +90,92 @@ class ProductDetailsTabContent extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(18),
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
-              Container(
-                width: 3.5,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD96C2C),
-                  borderRadius: BorderRadius.circular(2),
-                ),
+              Icon(
+                Icons.description_outlined,
+                size: 18,
+                color: AppColors.primary,
               ),
-              const SizedBox(width: 6),
+              SizedBox(width: 8),
               Text(
-                'รายละเอียดสินค้า',
-                style: GoogleFonts.krub(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: const Color(0xFF332820),
+                'ข้อมูลและรายละเอียดสินค้า',
+                style: TextStyle(
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Text(
             hasDesc
                 ? product.description!
                 : 'ไม่มีรายละเอียดเพิ่มเติมสำหรับสินค้าชิ้นนี้',
-            style: GoogleFonts.krub(
-              fontSize: 13.5,
-              color: const Color(0xFF332820),
-              height: 1.55,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Color(0xFF334155),
+              height: 1.6,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Specification Tags Box
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF8FAF9),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Column(
+              children: [
+                _specRow('แหล่งกำเนิด', 'ผลิตภัณฑ์ชุมชน จังหวัดกาญจนบุรี'),
+                const Divider(color: AppColors.border, height: 18),
+                if (product.shopName != null) ...[
+                  const Divider(color: AppColors.border, height: 18),
+                  _specRow('ร้านค้า', product.shopName!),
+                ],
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _specRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -155,31 +190,38 @@ class ProductReviewsTabContent extends StatelessWidget {
     if (reviews.isEmpty) {
       return Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 42, horizontal: 20),
         color: Colors.white,
         child: Column(
           children: [
-            Icon(
-              Icons.rate_review_outlined,
-              size: 48,
-              color: const Color(0xFFD96C2C).withValues(alpha: 0.5),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'ยังไม่มีรีวิวสำหรับสินค้านี้',
-              style: GoogleFonts.krub(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: const Color(0xFF332820),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: const BoxDecoration(
+                color: Color(0xFFE8F3EE),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.rate_review_outlined,
+                size: 38,
+                color: AppColors.primary,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              'สั่งซื้อสินค้านี้เพื่อเป็นคนแรกที่ร่วมแชร์ความคิดเห็น!',
+            const SizedBox(height: 14),
+            const Text(
+              'ยังไม่มีรีวิวสำหรับสินค้านี้',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'ร่วมสนับสนุนสินค้าชุมชน และเป็นคนแรกที่รีวิวสินค้านี้',
               textAlign: TextAlign.center,
-              style: GoogleFonts.krub(
-                fontSize: 12,
-                color: const Color(0xFF786B62),
+              style: TextStyle(
+                fontSize: 13,
+                color: AppColors.textSecondary,
               ),
             ),
           ],
@@ -187,249 +229,159 @@ class ProductReviewsTabContent extends StatelessWidget {
       );
     }
 
-    final double avgRating =
-        reviews.fold(0.0, (sum, r) => sum + r.rating) / reviews.length;
+    final averageRating =
+        reviews.fold<double>(0, (sum, review) => sum + review.rating) /
+            reviews.length;
 
     return Container(
-      padding: const EdgeInsets.all(16),
       color: Colors.white,
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Rating Summary Box
+          // Review Score Summary Card
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFF9F2),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE8D9C9)),
+              color: const Color(0xFFFFFBEB),
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: const Color(0xFFFDE68A)),
             ),
             child: Row(
               children: [
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      avgRating.toStringAsFixed(1),
-                      style: GoogleFonts.krub(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w900,
-                        color: const Color(0xFF332820),
-                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        Text(
+                          averageRating.toStringAsFixed(1),
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF92400E),
+                          ),
+                        ),
+                        const Text(
+                          ' / 5.0',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFFB45309),
+                          ),
+                        ),
+                      ],
                     ),
                     Row(
                       children: List.generate(
                         5,
-                        (index) => const Icon(
-                          Icons.star_rounded,
-                          size: 14,
-                          color: Color(0xFFE9C46A),
+                        (index) => Icon(
+                          index < averageRating.floor()
+                              ? Icons.star_rounded
+                              : Icons.star_border_rounded,
+                          size: 16,
+                          color: AppColors.gold,
                         ),
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${reviews.length} รีวิว',
-                      style: GoogleFonts.krub(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF786B62),
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    children: List.generate(5, (idx) {
-                      final star = 5 - idx;
-                      final count = reviews
-                          .where((r) => r.rating.round() == star)
-                          .length;
-                      final pct = count / reviews.length;
-                      return _buildRatingBar(star, pct);
-                    }),
+                const Spacer(),
+                Text(
+                  'จากทั้งหมด ${reviews.length} รีวิว',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF92400E),
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(height: 16),
 
-          const SizedBox(height: 14),
-
-          ...reviews.map(
-            (rev) => _buildReviewItem(
-              userName: rev.userName,
-              rating: rev.rating.round(),
-              comment: rev.comment,
-              createdAt:
-                  '${rev.createdAt.day}/${rev.createdAt.month}/${rev.createdAt.year}',
-              reply: rev.ownerReply,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRatingBar(int star, double percent) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1.5),
-      child: Row(
-        children: [
-          Text(
-            '$star',
-            style: GoogleFonts.krub(fontSize: 10, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 3),
-          const Icon(Icons.star_rounded, size: 11, color: Color(0xFFE9C46A)),
-          const SizedBox(width: 5),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: percent,
-                backgroundColor: const Color(0xFFE8D9C9),
-                valueColor: const AlwaysStoppedAnimation<Color>(
-                  Color(0xFFD96C2C),
-                ),
-                minHeight: 5,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewItem({
-    required String userName,
-    required int rating,
-    required String comment,
-    required String createdAt,
-    String? reply,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFF9F2),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8D9C9)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 14,
-                    backgroundColor: const Color(
-                      0xFFD96C2C,
-                    ).withValues(alpha: 0.15),
-                    child: Text(
-                      userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                      style: GoogleFonts.krub(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFFD96C2C),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        userName,
-                        style: GoogleFonts.krub(
-                          fontSize: 12.5,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF332820),
-                        ),
-                      ),
-                      Text(
-                        createdAt,
-                        style: GoogleFonts.krub(
-                          fontSize: 9.5,
-                          color: const Color(0xFF786B62),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                children: List.generate(
-                  5,
-                  (index) => Icon(
-                    index < rating
-                        ? Icons.star_rounded
-                        : Icons.star_outline_rounded,
-                    size: 14,
-                    color: index < rating
-                        ? const Color(0xFFE9C46A)
-                        : Colors.grey[400],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (comment.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              comment,
-              style: GoogleFonts.krub(
-                fontSize: 12.5,
-                color: const Color(0xFF332820),
-                height: 1.4,
-              ),
-            ),
-          ],
-          if (reply != null && reply.trim().isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF7F0E6),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFE8D9C9)),
-              ),
-              child: Column(
+          // Review Items
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: reviews.length,
+            separatorBuilder: (_, _) =>
+                const Divider(color: AppColors.border, height: 24),
+            itemBuilder: (context, index) {
+              final r = reviews[index];
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     children: [
-                      const Icon(
-                        Icons.reply_rounded,
-                        size: 13,
-                        color: Color(0xFFD96C2C),
+                      CircleAvatar(
+                        radius: 16,
+                        backgroundColor: const Color(0xFFE8F3EE),
+                        child: Text(
+                          r.userName.isNotEmpty
+                              ? r.userName[0].toUpperCase()
+                              : 'U',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              r.userName,
+                              style: const TextStyle(
+                                fontSize: 13.5,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            Row(
+                              children: List.generate(
+                                5,
+                                (starIdx) => Icon(
+                                  starIdx < r.rating
+                                      ? Icons.star_rounded
+                                      : Icons.star_border_rounded,
+                                  size: 14,
+                                  color: AppColors.gold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       Text(
-                        'ตอบกลับจากร้านค้า:',
-                        style: GoogleFonts.krub(
-                          fontSize: 10.5,
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFFD96C2C),
+                        '${r.createdAt.day}/${r.createdAt.month}/${r.createdAt.year}',
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    reply,
-                    style: GoogleFonts.krub(
-                      fontSize: 11.5,
-                      color: const Color(0xFF332820),
+                  if (r.comment.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      r.comment,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        color: Color(0xFF334155),
+                        height: 1.45,
+                      ),
                     ),
-                  ),
+                  ],
                 ],
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ],
       ),
     );

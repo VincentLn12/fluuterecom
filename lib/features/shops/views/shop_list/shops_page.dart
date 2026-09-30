@@ -1,444 +1,400 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecte/features/shops/controllers/shop_controller.dart';
+import 'package:projecte/features/shops/views/shop_list/shop_list_palette.dart';
 import 'package:projecte/features/shops/views/shop_list/widgets/shop_card.dart';
 import 'package:projecte/features/shops/views/shop_list/widgets/shop_flash_sale_section.dart';
 import 'package:projecte/features/shops/views/shop_list/widgets/shop_interactive_map_view.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/shop_list_filters.dart';
+import 'package:projecte/features/shops/views/shop_list/widgets/shop_list_header.dart';
 import 'package:projecte/shared/widgets/loading_widget.dart';
-import 'package:projecte/shared/widgets/empty_widget.dart';
-import 'package:projecte/shared/widgets/app_search_field.dart';
-import 'package:projecte/shared/widgets/app_category_chip.dart';
-import 'package:projecte/shared/widgets/app_view_toggle.dart';
 
-class ShopsPage extends GetView<ShopController> {
+class ShopsPage extends StatefulWidget {
   const ShopsPage({super.key});
+
+  @override
+  State<ShopsPage> createState() => _ShopsPageState();
+}
+
+class _ShopsPageState extends State<ShopsPage> {
+  late final ShopController controller;
+  late final TextEditingController searchController;
+  Timer? _searchDebounce;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<ShopController>();
+    searchController = TextEditingController(
+      text: controller.searchQuery.value,
+    );
+  }
+
+  @override
+  void dispose() {
+    _searchDebounce?.cancel();
+    searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    _searchDebounce?.cancel();
+    if (query.isEmpty) {
+      controller.setSearch('');
+      return;
+    }
+    _searchDebounce = Timer(
+      const Duration(milliseconds: 350),
+      () => controller.setSearch(query),
+    );
+  }
+
+  void _clearFilters() {
+    _searchDebounce?.cancel();
+    searchController.clear();
+    controller.clearFilters();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F7F4),
+      backgroundColor: ShopListPalette.canvas,
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF4F7F4),
-        foregroundColor: const Color(0xFF173D32),
+        backgroundColor: const Color(0xFF0C2B22),
+        foregroundColor: Colors.white,
         elevation: 0,
+        scrolledUnderElevation: 0,
         centerTitle: false,
-        titleSpacing: 16,
-        title: Row(
+        titleSpacing: 20,
+        title: const Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE2F0E8),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.storefront_rounded,
-                size: 20,
-                color: Color(0xFF26734D),
-              ),
+            Icon(
+              Icons.storefront_rounded,
+              size: 22,
+              color: ShopListPalette.gold,
             ),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'ร้านค้า & สินค้าชุมชน',
-                    style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF173D32),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+            SizedBox(width: 9),
+            Text(
+              'ร้านค้าชุมชน',
+              style: TextStyle(
+                fontSize: 18.5,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.2,
               ),
             ),
           ],
         ),
         actions: [
-          Obx(
-            () => controller.viewType.value == 'list'
-                ? IconButton(
-                    tooltip: 'เปลี่ยนมุมมองการ์ด',
-                    icon: Icon(
-                      controller.displayMode.value == 'grid'
-                          ? Icons.view_list_rounded
-                          : Icons.grid_view_rounded,
-                      color: const Color(0xFF26734D),
-                    ),
-                    onPressed: controller.toggleDisplayMode,
-                  )
-                : const SizedBox.shrink(),
-          ),
-          IconButton(
-            tooltip: 'ล้างตัวกรอง',
-            icon: const Icon(Icons.restart_alt_rounded),
-            onPressed: controller.clearFilters,
-          ),
-          const SizedBox(width: 6),
+          Obx(() {
+            final hasFilters =
+                controller.searchQuery.value.isNotEmpty ||
+                controller.selectedCategoryId.value != null ||
+                controller.selectedDistrictId.value != null ||
+                controller.onlyOpenNow.value;
+            if (!hasFilters) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: TextButton.icon(
+                onPressed: _clearFilters,
+                icon: const Icon(
+                  Icons.filter_alt_off_rounded,
+                  size: 15,
+                  color: ShopListPalette.gold,
+                ),
+                label: const Text(
+                  'ล้างตัวกรอง',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white.withValues(alpha: 0.12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            );
+          }),
         ],
       ),
       body: Obx(() {
-        final displayedShops = controller.displayedShops;
+        final shops = controller.displayedShops;
+        final showingList = controller.viewType.value == 'list';
+        final loading = controller.isLoading.value;
+        final featuredMode = controller.displayMode.value == 'grid'
+            ? 'featured'
+            : 'list';
 
         return RefreshIndicator(
           onRefresh: controller.refreshPage,
-          color: const Color(0xFF26734D),
-          backgroundColor: Colors.white,
+          color: ShopListPalette.primary,
           child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
+            ),
             slivers: [
-              // 1. HERO MARKETPLACE BILLBOARD & SEARCH BAR
+              // 1. Header with search bar
               SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(14, 8, 14, 0),
-                  padding: const EdgeInsets.fromLTRB(16, 18, 16, 16),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF174936), Color(0xFF26734D)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(22),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFF174936).withValues(alpha: 0.15),
-                        blurRadius: 14,
-                        offset: Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'ของดีจากร้านท้องถิ่น',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 19,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      const Text(
-                        'ค้นหาร้านค้าและสินค้าชุมชนในกาญจนบุรี',
-                        style: TextStyle(
-                          color: Color(0xFFD5E8DC),
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 13),
-                      AppSearchField(
-                        hintText: 'ค้นหาร้านค้า สินค้า OTOP หรือของฝาก...',
-                        onChanged: controller.setSearch,
-                        iconColor: const Color(0xFF26734D),
-                      ),
-                      const SizedBox(height: 12),
-                      AppViewToggle<String>(
-                        selectedValue: controller.viewType.value,
-                        onChanged: controller.setViewType,
-                        activeColor: const Color(0xFF65A878),
-                        options: const [
-                          ToggleOption(
-                            value: 'list',
-                            label: 'รายการร้านค้า',
-                            icon: Icons.storefront_rounded,
-                          ),
-                          ToggleOption(
-                            value: 'map',
-                            label: 'แผนที่ร้านค้า',
-                            icon: Icons.map_rounded,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                child: ShopListHeader(
+                  searchController: searchController,
+                  onSearchChanged: _onSearchChanged,
                 ),
               ),
 
-              // 2. QUICK FILTER BUTTONS & CATEGORIES & DISTRICTS
+              // 2. Filter Controls (Tabs, Categories, District, Open Now)
               SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(14, 12, 14, 0),
-                  padding: const EdgeInsets.fromLTRB(0, 2, 0, 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xFFE4ECE6)),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              // Quick Filter Pill: 🟢 เปิดอยู่ตอนนี้
-                              GestureDetector(
-                                onTap: controller.toggleOnlyOpenNow,
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 200),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 14,
-                                    vertical: 8.5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: controller.onlyOpenNow.value
-                                        ? const Color(0xFF26734D)
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(
-                                      color: controller.onlyOpenNow.value
-                                          ? const Color(0xFF26734D)
-                                          : const Color(0xFFE0EAE6),
-                                      width: 1.2,
-                                    ),
-                                    boxShadow: controller.onlyOpenNow.value
-                                        ? [
-                                            BoxShadow(
-                                              color: const Color(
-                                                0xFF26734D,
-                                              ).withValues(alpha: 0.35),
-                                              blurRadius: 8,
-                                              offset: const Offset(0, 3),
-                                            ),
-                                          ]
-                                        : [
-                                            BoxShadow(
-                                              color: Colors.black.withValues(
-                                                alpha: 0.03,
-                                              ),
-                                              blurRadius: 4,
-                                              offset: const Offset(0, 2),
-                                            ),
-                                          ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 8,
-                                        height: 8,
-                                        decoration: BoxDecoration(
-                                          color: controller.onlyOpenNow.value
-                                              ? Colors.white
-                                              : const Color(0xFF26734D),
-                                          shape: BoxShape.circle,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 6),
-                                      Text(
-                                        'เปิดอยู่ตอนนี้',
-                                        style: TextStyle(
-                                          color: controller.onlyOpenNow.value
-                                              ? Colors.white
-                                              : const Color(0xFF284A39),
-                                          fontWeight:
-                                              controller.onlyOpenNow.value
-                                              ? FontWeight.bold
-                                              : FontWeight.w600,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-
-                              // Category Chips
-                              AppCategoryChip(
-                                label: 'ทั้งหมด',
-                                selectedColor: const Color(0xFF26734D),
-                                isSelected:
-                                    controller.selectedCategoryId.value == null,
-                                onTap: () => controller.selectCategory(null),
-                              ),
-                              ...controller.categories.map((cat) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: AppCategoryChip(
-                                    label: cat.name,
-                                    selectedColor: const Color(0xFF26734D),
-                                    isSelected:
-                                        controller.selectedCategoryId.value ==
-                                        cat.id,
-                                    onTap: () =>
-                                        controller.selectCategory(cat.id),
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // District Filter Dropdown
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 6,
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.filter_alt_outlined,
-                              size: 18,
-                              color: Color(0xFF284A39),
-                            ),
-                            const SizedBox(width: 4),
-                            const Text(
-                              'อำเภอ:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                                color: Color(0xFF284A39),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Container(
-                                height: 40,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: const Color(0xFFE0EAE6),
-                                  ),
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String?>(
-                                    value: controller.selectedDistrictId.value,
-                                    hint: const Text(
-                                      'ทุกอำเภอ',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
-                                    isExpanded: true,
-                                    items: [
-                                      const DropdownMenuItem<String?>(
-                                        value: null,
-                                        child: Text(
-                                          'ทุกอำเภอในกาญจนบุรี',
-                                          style: TextStyle(fontSize: 14),
-                                        ),
-                                      ),
-                                      ...controller.districts.map(
-                                        (d) => DropdownMenuItem<String?>(
-                                          value: d.id,
-                                          child: Text(
-                                            d.name,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                    onChanged: controller.selectDistrict,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                    ],
-                  ),
-                ),
+                child: ShopListFilters(controller: controller),
               ),
 
-              if (controller.viewType.value == 'list' &&
-                  controller.specialProducts.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: ShopFlashSaleSection(
-                    products: controller.specialProducts,
-                  ),
-                ),
-
-              if (controller.viewType.value == 'list' &&
-                  !controller.isLoading.value &&
-                  displayedShops.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 20, 18, 2),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.storefront_rounded,
-                          size: 18,
-                          color: Color(0xFF26734D),
-                        ),
-                        const SizedBox(width: 7),
-                        const Text(
-                          'ร้านค้าชุมชน',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF244637),
-                          ),
-                        ),
-                        const Spacer(),
-                        Text(
-                          '${displayedShops.length} ร้าน',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF718078),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-              // 3. MAIN CONTENT BODY (GRID vs LIST vs MAP)
-              if (controller.isLoading.value)
+              // 3. Main Content
+              if (loading)
                 const SliverFillRemaining(child: LoadingWidget())
-              else if (controller.viewType.value == 'map')
+              else if (!showingList)
                 SliverFillRemaining(
-                  child: ShopInteractiveMapView(shops: displayedShops),
+                  child: ShopInteractiveMapView(shops: shops),
                 )
-              else if (displayedShops.isEmpty)
-                const SliverFillRemaining(
-                  child: EmptyWidget(
-                    message: 'ไม่พบข้อมูลร้านค้าตรงกับเงื่อนไขที่เลือก',
-                  ),
+              else if (shops.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _emptyState(),
                 )
-              else if (controller.displayMode.value == 'grid')
-                SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = displayedShops[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ShopCard(item: item, displayMode: 'grid'),
-                      );
-                    }, childCount: displayedShops.length),
-                  ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final item = displayedShops[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: ShopCard(item: item, displayMode: 'list'),
-                      );
-                    }, childCount: displayedShops.length),
+              else ...[
+                // Featured / Highlight Shop Section
+                SliverToBoxAdapter(
+                  child: _sectionTitle(
+                    title: 'ร้านค้าแนะนำ',
+                    subtitle: 'คัดสรรร้านเด่นของชุมชน',
+                    badge: '${shops.length} ร้านให้เลือก',
+                    showToggle: true,
                   ),
                 ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  sliver: SliverToBoxAdapter(
+                    child: ShopCard(
+                      item: shops.first,
+                      displayMode: featuredMode,
+                    ),
+                  ),
+                ),
+
+                // Special Deals / Flash Sale Section
+                if (controller.specialProducts.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: ShopFlashSaleSection(
+                      products: controller.specialProducts,
+                    ),
+                  ),
+
+                // Remaining Shops List
+                if (shops.length > 1) ...[
+                  SliverToBoxAdapter(
+                    child: _sectionTitle(
+                      title: 'สำรวจร้านค้าทั้งหมด',
+                      subtitle: 'สินค้าและบริการจากคนในท้องถิ่น',
+                      badge: '${shops.length - 1} ร้าน',
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 32),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) => Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: ShopCard(item: shops[index + 1]),
+                        ),
+                        childCount: shops.length - 1,
+                      ),
+                    ),
+                  ),
+                ] else
+                  const SliverToBoxAdapter(child: SizedBox(height: 36)),
+              ],
             ],
           ),
         );
       }),
+    );
+  }
+
+  Widget _emptyState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                color: ShopListPalette.primarySoft,
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.storefront_outlined,
+                size: 40,
+                color: ShopListPalette.primary,
+              ),
+            ),
+            const SizedBox(height: 18),
+            const Text(
+              'ยังไม่พบร้านค้าที่ตรงกับการค้นหา',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: ShopListPalette.ink,
+                fontSize: 17,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'ลองค้นหาด้วยคำอื่น หรือล้างตัวกรองเพื่อดูร้านค้าทั้งหมด',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: ShopListPalette.muted,
+                fontSize: 13,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              onPressed: _clearFilters,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ShopListPalette.primary,
+                foregroundColor: Colors.white,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+              ),
+              icon: const Icon(Icons.refresh_rounded, size: 18),
+              label: const Text(
+                'ล้างตัวกรองทั้งหมด',
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sectionTitle({
+    required String title,
+    required String subtitle,
+    required String badge,
+    bool showToggle = false,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: ShopListPalette.ink,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: ShopListPalette.primarySoft,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        badge,
+                        style: const TextStyle(
+                          color: ShopListPalette.primary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    color: ShopListPalette.muted,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (showToggle)
+            Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              child: InkWell(
+                onTap: controller.toggleDisplayMode,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: ShopListPalette.line),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        controller.displayMode.value == 'grid'
+                            ? Icons.view_agenda_outlined
+                            : Icons.grid_view_rounded,
+                        size: 16,
+                        color: ShopListPalette.primary,
+                      ),
+                      const SizedBox(width: 5),
+                      Text(
+                        controller.displayMode.value == 'grid'
+                            ? 'มุมมองการ์ด'
+                            : 'มุมมองรายการ',
+                        style: const TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w700,
+                          color: ShopListPalette.inkSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

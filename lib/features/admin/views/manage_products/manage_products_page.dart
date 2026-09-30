@@ -3,19 +3,36 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../app/theme/app_colors.dart';
+import '../../../shops/models/shop_model.dart';
 import '../../controllers/admin_products_controller.dart';
 import 'widgets/manage_products_list.dart';
 import 'widgets/manage_products_status_filter.dart';
 
-class ManageProductsPage extends GetView<AdminProductsController> {
-  const ManageProductsPage({super.key});
+class AdminManageProductsPage extends StatefulWidget {
+  const AdminManageProductsPage({super.key});
+
+  @override
+  State<AdminManageProductsPage> createState() =>
+      _AdminManageProductsPageState();
+}
+
+class _AdminManageProductsPageState extends State<AdminManageProductsPage> {
+  late final AdminProductsController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<AdminProductsController>();
+    final shop = Get.arguments;
+    if (shop is ShopModel) {
+      controller.setShop(shop.shopId, shop.shopName);
+    } else {
+      controller.setShop('', '');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (!Get.isRegistered<AdminProductsController>()) {
-      Get.put(AdminProductsController());
-    }
-
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(

@@ -34,7 +34,7 @@ class OrderPaymentExpiryNotice extends StatelessWidget {
               children: [
                 Text(
                   expired
-                      ? 'คำสั่งซื้อนี้ถูกยกเลิก เพราะชำระเงินไม่ทันเวลา'
+                      ? 'หมดเวลาชำระเงินแล้ว กรุณาสั่งซื้อสินค้าใหม่อีกครั้ง'
                       : 'เหลือเวลา $hours ชั่วโมง $minutes นาที $seconds วินาที',
                   style: GoogleFonts.krub(
                     fontSize: 12.5,

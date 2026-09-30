@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/shops/controllers/product_detail_controller.dart';
 import 'package:projecte/features/shops/models/product_model.dart';
 import 'package:projecte/features/shops/views/product_detail/widgets/product_detail_bottom_bar.dart';
 import 'package:projecte/features/shops/views/product_detail/widgets/product_detail_gallery.dart';
 import 'package:projecte/features/shops/views/product_detail/widgets/product_detail_info_panel.dart';
 import 'package:projecte/features/shops/views/product_detail/widgets/product_detail_seller_card.dart';
+import 'package:projecte/features/shops/views/product_detail/widgets/product_detail_tabs.dart';
 import 'package:projecte/shared/widgets/error_widget.dart';
 import 'package:projecte/shared/widgets/loading_widget.dart';
 
@@ -16,15 +17,17 @@ class ProductDetailPage extends GetView<ProductDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6F7),
+      backgroundColor: AppColors.background,
       body: Obx(() {
         final product = controller.product.value;
         final sellerShop = controller.sellerShop.value;
+
         if (controller.isLoading.value && product == null) {
           return const Center(
             child: LoadingWidget(message: 'กำลังโหลดข้อมูลสินค้า...'),
           );
         }
+
         if (product == null) {
           return Center(
             child: CustomErrorWidget(
@@ -54,104 +57,68 @@ class ProductDetailPage extends GetView<ProductDetailController> {
         return RefreshIndicator(
           onRefresh: () =>
               controller.loadProductAndShop(product.id, product.shopId),
-          color: const Color(0xFFEE4D2D),
+          color: AppColors.primary,
           child: SafeArea(
             bottom: false,
             child: CustomScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
               slivers: [
+                // 1. Image Gallery with back and favorite buttons
                 SliverToBoxAdapter(
                   child: ProductDetailGallery(product: product, images: images),
                 ),
+
+                // 2. Main Product Info & Pricing Panel
                 SliverToBoxAdapter(
                   child: Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+                    padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
                     child: ProductDetailInfoPanel(
                       product: product,
                       shop: sellerShop,
                     ),
                   ),
                 ),
-                if (product.description?.trim().isNotEmpty == true)
-                  SliverToBoxAdapter(
-                    child: _DescriptionCard(description: product.description!),
-                  ),
+
+                // 3. Seller Merchant Card
                 if (sellerShop != null)
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(12, 10, 12, 14),
+                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                       child: ProductDetailSellerCard(shop: sellerShop),
                     ),
                   ),
-                const SliverToBoxAdapter(child: SizedBox(height: 18)),
+
+                // 4. Navigation Tabs (Details vs Reviews)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8),
+                    child: ProductDetailNavTabs(),
+                  ),
+                ),
+
+                // 5. Active Tab Content
+                SliverToBoxAdapter(
+                  child: Obx(() {
+                    if (controller.activeTab.value == 'reviews') {
+                      return ProductReviewsTabContent(
+                        reviews: controller.shopReviews,
+                      );
+                    }
+                    return ProductDetailsTabContent(product: product);
+                  }),
+                ),
+
+                // Bottom spacer for comfortable scrolling
+                const SliverToBoxAdapter(child: SizedBox(height: 32)),
               ],
             ),
           ),
         );
       }),
       bottomNavigationBar: const ProductDetailBottomBar(),
-    );
-  }
-}
-
-class _DescriptionCard extends StatefulWidget {
-  const _DescriptionCard({required this.description});
-
-  final String description;
-
-  @override
-  State<_DescriptionCard> createState() => _DescriptionCardState();
-}
-
-class _DescriptionCardState extends State<_DescriptionCard> {
-  bool _expanded = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final isLong = widget.description.length > 150;
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.only(top: 10),
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 12),
-      color: Colors.white,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'รายละเอียดสินค้า',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: Color(0xFF222222),
-            ),
-          ),
-          const SizedBox(height: 7),
-          Text(
-            widget.description,
-            maxLines: isLong && !_expanded ? 3 : null,
-            overflow: isLong && !_expanded ? TextOverflow.ellipsis : null,
-            style: const TextStyle(
-              fontSize: 13,
-              height: 1.5,
-              color: Color(0xFF555555),
-            ),
-          ),
-          if (isLong)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => setState(() => _expanded = !_expanded),
-                style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFFEE4D2D),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  minimumSize: const Size(0, 34),
-                ),
-                child: Text(_expanded ? 'ย่อรายละเอียด' : 'ดูเพิ่มเติม  ›'),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

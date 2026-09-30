@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/app/theme/app_colors.dart';
 import 'package:projecte/features/shops/controllers/product_detail_controller.dart';
 
 class ProductDetailBottomBar extends GetView<ProductDetailController> {
@@ -14,52 +14,73 @@ class ProductDetailBottomBar extends GetView<ProductDetailController> {
 
       final inStock = product.quantity > 0;
       return Container(
-        padding: const EdgeInsets.fromLTRB(14, 8, 14, 8),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+        decoration: const BoxDecoration(
           color: Colors.white,
-          border: const Border(top: BorderSide(color: Color(0xFFE8E4DF))),
+          border: Border(top: BorderSide(color: AppColors.border, width: 1)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF332820).withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
+              color: Color(0x100D2B22),
+              blurRadius: 14,
+              offset: Offset(0, -4),
             ),
           ],
         ),
         child: SafeArea(
+          top: false,
           child: Row(
             children: [
+              // Favorite Button
               Obx(
-                () => IconButton(
-                  tooltip: 'เพิ่มรายการโปรด',
-                  onPressed: controller.toggleFavorite,
-                  icon: Icon(
-                    controller.isFavorite.value
-                        ? Icons.favorite_rounded
-                        : Icons.favorite_border_rounded,
-                    color: const Color(0xFFEE4D2D),
+                () => Material(
+                  color: const Color(0xFFF3F7F5),
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: controller.toggleFavorite,
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        controller.isFavorite.value
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
+                        color: controller.isFavorite.value
+                            ? AppColors.error
+                            : AppColors.textSecondary,
+                        size: 22,
+                      ),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(width: 4),
-              // Quick Add To Cart Button
+              const SizedBox(width: 10),
+
+              // Add To Cart Button
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: inStock ? controller.addToCart : null,
-                  icon: const Icon(Icons.add_shopping_cart_rounded, size: 18),
-                  label: Text(
+                  icon: const Icon(
+                    Icons.add_shopping_cart_rounded,
+                    size: 19,
+                  ),
+                  label: const Text(
                     'ใส่ตะกร้า',
-                    style: GoogleFonts.krub(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14.5,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFFEE4D2D),
-                    side: const BorderSide(color: Color(0xFFEE4D2D)),
+                    foregroundColor: AppColors.primary,
+                    side: const BorderSide(
+                      color: AppColors.primary,
+                      width: 1.5,
+                    ),
                     minimumSize: const Size(0, 48),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                   ),
                 ),
@@ -72,23 +93,28 @@ class ProductDetailBottomBar extends GetView<ProductDetailController> {
                 flex: 1,
                 child: ElevatedButton.icon(
                   onPressed: inStock ? controller.buyNow : null,
-                  icon: const Icon(Icons.bolt_rounded, size: 18),
+                  icon: const Icon(
+                    Icons.bolt_rounded,
+                    size: 20,
+                    color: AppColors.gold,
+                  ),
                   label: Text(
-                    inStock ? 'ซื้อเลย' : 'สินค้าหมด',
-                    style: GoogleFonts.krub(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+                    inStock ? 'ซื้อทันที' : 'สินค้าหมด',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 14.5,
                       color: Colors.white,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFEE4D2D),
-                    disabledBackgroundColor: Colors.grey[400],
+                    backgroundColor: inStock
+                        ? AppColors.primaryDark
+                        : Colors.grey[400],
+                    elevation: 0,
                     minimumSize: const Size(0, 48),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(14),
                     ),
-                    elevation: 2,
                   ),
                 ),
               ),

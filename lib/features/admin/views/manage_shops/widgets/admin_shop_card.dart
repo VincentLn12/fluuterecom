@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../../app/routes/app_routes.dart';
 import '../../../../../app/theme/app_colors.dart';
-import '../../../controllers/admin_products_controller.dart';
 import '../../../controllers/admin_shops_controller.dart';
 import '../../../../shops/models/shop_model.dart';
 import 'admin_shop_status_badge.dart';
@@ -94,9 +93,7 @@ class AdminShopCard extends StatelessWidget {
                   style: GoogleFonts.krub(fontSize: 12),
                 ),
                 onPressed: () {
-                  final productsController = Get.put(AdminProductsController());
-                  productsController.setShop(shop.shopId, shop.shopName);
-                  Get.toNamed(AppRoutes.myShopProducts);
+                  Get.toNamed(AppRoutes.adminShopProducts, arguments: shop);
                 },
               ),
               PopupMenuButton<String>(

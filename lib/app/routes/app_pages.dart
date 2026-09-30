@@ -46,6 +46,8 @@ import '../../features/admin/views/admin_dashboard/admin_dashboard_page.dart';
 import '../../features/admin/views/admin_orders/admin_orders_page.dart';
 import '../../features/admin/views/admin_payouts/admin_payouts_page.dart';
 import '../../features/admin/views/manage_shops/manage_shops_page.dart';
+import '../../features/admin/views/manage_products/manage_products_page.dart'
+    as admin_products;
 import '../../features/admin/views/manage_categories/manage_categories_page.dart';
 import '../../features/admin/views/manage_contents/manage_contents_page.dart';
 import '../../features/admin/views/manage_tags/manage_tags_page.dart';
@@ -216,6 +218,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.adminShops,
       page: () => const ManageShopsPage(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.adminShopProducts,
+      page: () => const admin_products.AdminManageProductsPage(),
       binding: AdminBinding(),
     ),
     GetPage(

@@ -40,6 +40,7 @@ abstract class AppRoutes {
   static const adminOrders = '/admin/orders';
   static const adminPayouts = '/admin/payouts';
   static const adminShops = '/admin/shops';
+  static const adminShopProducts = '/admin/shops/products';
   static const adminCategories = '/admin/categories';
   static const adminProductCategories = '/admin/product-categories';
   static const adminContents = '/admin/contents';

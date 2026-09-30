@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/shops/models/shop_model.dart';
+import 'package:projecte/features/shops/views/shop_list/shop_list_palette.dart';
 
 class ShopInteractiveMapView extends StatefulWidget {
   final List<ShopModel> shops;
@@ -38,7 +39,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           valid.map((e) => e.longitude!).reduce((a, b) => a + b) / valid.length;
       return LatLng(avgLat, avgLng);
     }
-    return const LatLng(14.0234, 99.5321);
+    return const LatLng(14.0234, 99.5321); // Kanchanaburi default
   }
 
   @override
@@ -47,38 +48,45 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
 
     if (validItems.isEmpty) {
       return Container(
-        color: const Color(0xFFF7F0E6),
+        color: ShopListPalette.canvas,
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(18),
-                decoration: const BoxDecoration(
-                  color: Color(0xFFFFF9F2),
-                  shape: BoxShape.circle,
+          child: Padding(
+            padding: const EdgeInsets.all(28.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: ShopListPalette.primarySoft,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.map_outlined,
+                    size: 52,
+                    color: ShopListPalette.primary,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.storefront_rounded,
-                  size: 56,
-                  color: Color(0xFFD96C2C),
+                const SizedBox(height: 16),
+                const Text(
+                  'ยังไม่มีพิกัดร้านค้าตามตัวกรองนี้',
+                  style: TextStyle(
+                    fontSize: 16.5,
+                    fontWeight: FontWeight.w800,
+                    color: ShopListPalette.ink,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'ไม่พบพิกัดร้านค้าตามเงื่อนไขที่เลือก',
-                style: TextStyle(
-                  fontSize: 16.5,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF332820),
+                const SizedBox(height: 6),
+                const Text(
+                  'ลองเลือกอำเภออื่น หรือเปลี่ยนหมวดหมู่ร้านค้า',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: ShopListPalette.muted,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'ลองเปลี่ยนการเลือกหมวดหมู่หรืออำเภออื่น',
-                style: TextStyle(fontSize: 13.5, color: Colors.grey),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );
@@ -113,24 +121,24 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           ],
         ),
 
-        // Count Badge
+        // Count Badge (Frosted Pill)
         Positioned(
           top: 16,
           left: 16,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF2B1F17).withValues(alpha: 0.9),
+              color: const Color(0xDE0C2B22),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Colors.white.withValues(alpha: 0.25),
                 width: 0.8,
               ),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  color: Color(0x33000000),
+                  blurRadius: 12,
+                  offset: Offset(0, 4),
                 ),
               ],
             ),
@@ -139,16 +147,16 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
               children: [
                 const Icon(
                   Icons.storefront_rounded,
-                  size: 17,
-                  color: Color(0xFFE9C46A),
+                  size: 16,
+                  color: ShopListPalette.gold,
                 ),
-                const SizedBox(width: 6),
+                const SizedBox(width: 7),
                 Text(
                   'พบ ${validItems.length} ร้านค้าบนแผนที่',
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ],
@@ -158,16 +166,17 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
 
         // Recenter FAB Button
         Positioned(
-          bottom: 20,
+          bottom: 24,
           right: 16,
           child: FloatingActionButton.small(
             heroTag: 'shop_map_recenter',
             onPressed: () {
               _mapController.move(_initialCenter, 10.5);
             },
-            backgroundColor: const Color(0xFF2B1F17),
+            backgroundColor: ShopListPalette.primaryDark,
             foregroundColor: Colors.white,
-            elevation: 6,
+            elevation: 4,
+            tooltip: 'จัดกึ่งกลางแผนที่',
             child: const Icon(Icons.my_location_rounded, size: 20),
           ),
         ),
@@ -190,16 +199,19 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: const LinearGradient(
-                colors: [Color(0xFF332820), Color(0xFF1F1713)],
+                colors: [
+                  ShopListPalette.primaryDark,
+                  ShopListPalette.primary,
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              border: Border.all(color: const Color(0xFFE9C46A), width: 2.8),
-              boxShadow: [
+              border: Border.all(color: ShopListPalette.gold, width: 2.8),
+              boxShadow: const [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.38),
+                  color: Color(0x44000000),
                   blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  offset: Offset(0, 4),
                 ),
               ],
             ),
@@ -218,7 +230,9 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           // Downward Pointer Tail
           CustomPaint(
             size: const Size(12, 7),
-            painter: _ShopPinTrianglePainter(color: const Color(0xFF332820)),
+            painter: _ShopPinTrianglePainter(
+              color: ShopListPalette.primaryDark,
+            ),
           ),
         ],
       ),
@@ -227,11 +241,11 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
 
   Widget _buildShopMarkerFallbackIcon() {
     return Container(
-      color: const Color(0xFF332820),
+      color: ShopListPalette.primaryDark,
       child: const Center(
         child: Icon(
           Icons.storefront_rounded,
-          color: Color(0xFFE9C46A),
+          color: ShopListPalette.gold,
           size: 24,
         ),
       ),
@@ -241,112 +255,152 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
   void _showShopPreviewSheet(BuildContext context, ShopModel item) {
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
         final isOpen = item.isOpenNow;
 
         return Container(
-          margin: const EdgeInsets.all(16),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.25),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+                color: Color(0x33000000),
+                blurRadius: 24,
+                offset: Offset(0, 10),
               ),
             ],
           ),
+          clipBehavior: Clip.antiAlias,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty)
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(24),
+              // Sheet Drag Handle
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 8, bottom: 4),
+                  width: 38,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(2),
                   ),
-                  child: AspectRatio(
-                    aspectRatio: 21 / 9,
-                    child: Image.network(
-                      item.coverImageUrl!,
-                      fit: BoxFit.cover,
-                    ),
+                ),
+              ),
+
+              if (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty)
+                AspectRatio(
+                  aspectRatio: 21 / 9,
+                  child: Image.network(
+                    item.coverImageUrl!,
+                    fit: BoxFit.cover,
                   ),
                 ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(18.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Status and Category row
                     Row(
                       children: [
-                        if (item.categoryName != null)
+                        if (item.categoryName != null) ...[
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
+                              horizontal: 9,
+                              vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFD96C2C),
+                              color: ShopListPalette.primarySoft,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
                               item.categoryName!,
                               style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                                color: ShopListPalette.primary,
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.w800,
                               ),
                             ),
                           ),
-                        const SizedBox(width: 6),
+                          const SizedBox(width: 8),
+                        ],
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 3,
+                            horizontal: 9,
+                            vertical: 4,
                           ),
                           decoration: BoxDecoration(
                             color: isOpen
-                                ? const Color(0xFF2E7D32)
-                                : Colors.grey[700],
+                                ? ShopListPalette.greenSoft
+                                : ShopListPalette.surfaceMuted,
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Text(
-                            isOpen ? 'เปิดทำการ' : 'ปิดทำการ',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isOpen
+                                      ? ShopListPalette.green
+                                      : ShopListPalette.mutedLight,
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                isOpen ? 'เปิดบริการอยู่' : 'ปิดชั่วคราว',
+                                style: TextStyle(
+                                  color: isOpen
+                                      ? ShopListPalette.green
+                                      : ShopListPalette.muted,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
+
+                    // Shop Name
                     Text(
                       item.name,
                       style: const TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF332820),
+                        fontWeight: FontWeight.w900,
+                        color: ShopListPalette.ink,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
+
+                    // Description / Address
                     if (item.description != null &&
                         item.description!.isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Text(
                         item.description!,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+                        style: const TextStyle(
+                          fontSize: 12.5,
+                          color: ShopListPalette.muted,
+                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
+
+                    // Actions Row
                     Row(
                       children: [
+                        // Navigate Button
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () async {
@@ -361,17 +415,28 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                               }
                             },
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: const Color(0xFFD96C2C),
-                              side: const BorderSide(color: Color(0xFFD96C2C)),
+                              foregroundColor: ShopListPalette.primary,
+                              side: const BorderSide(
+                                color: ShopListPalette.primaryLight,
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            icon: const Icon(Icons.near_me_outlined, size: 16),
-                            label: const Text('นำทาง'),
+                            icon: const Icon(
+                              Icons.near_me_outlined,
+                              size: 16,
+                            ),
+                            label: const Text(
+                              'นำทาง',
+                              style: TextStyle(fontWeight: FontWeight.w700),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
+
+                        // View Shop Details Button
                         Expanded(
                           child: ElevatedButton.icon(
                             onPressed: () {
@@ -382,17 +447,22 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF332820),
+                              backgroundColor: ShopListPalette.primaryDark,
                               foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                               ),
                             ),
                             icon: const Icon(
                               Icons.storefront_rounded,
                               size: 16,
                             ),
-                            label: const Text('ดูร้านค้า'),
+                            label: const Text(
+                              'ดูหน้าร้าน',
+                              style: TextStyle(fontWeight: FontWeight.w800),
+                            ),
                           ),
                         ),
                       ],

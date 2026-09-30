@@ -53,7 +53,7 @@ class LoginPage extends GetView<AuthController> {
               const SizedBox(height: 24),
               Center(
                 child: Text(
-                  'ยินดีต้อนรับกลับมา',
+                  'เข้าสู่ระบบ',
                   style: GoogleFonts.krub(
                     fontSize: 26,
                     fontWeight: FontWeight.bold,
@@ -80,7 +80,10 @@ class LoginPage extends GetView<AuthController> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: const Color(0xFFEADCCF), width: 1.2),
+                  border: Border.all(
+                    color: const Color(0xFFEADCCF),
+                    width: 1.2,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: const Color(0xFF332820).withValues(alpha: 0.06),
@@ -103,8 +106,11 @@ class LoginPage extends GetView<AuthController> {
                     const SizedBox(height: 8),
                     AppTextField(
                       controller: controller.emailController,
-                      hintText: 'example@email.com',
-                      prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFFD96C2C)),
+                      hintText: 'test@email.com',
+                      prefixIcon: const Icon(
+                        Icons.email_outlined,
+                        color: Color(0xFFD96C2C),
+                      ),
                       keyboardType: TextInputType.emailAddress,
                     ),
                     const SizedBox(height: 18),
@@ -118,30 +124,37 @@ class LoginPage extends GetView<AuthController> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Obx(() => AppTextField(
-                          controller: controller.passwordController,
-                          hintText: 'กรอกรหัสผ่าน',
-                          obscureText: controller.obscurePassword.value,
-                          prefixIcon: const Icon(Icons.lock_outline_rounded, color: Color(0xFFD96C2C)),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.obscurePassword.value
-                                  ? Icons.visibility_off_outlined
-                                  : Icons.visibility_outlined,
-                              color: Colors.grey[600],
-                            ),
-                            onPressed: controller.toggleObscurePassword,
+                    Obx(
+                      () => AppTextField(
+                        controller: controller.passwordController,
+                        hintText: 'กรอกรหัสผ่าน',
+                        obscureText: controller.obscurePassword.value,
+                        prefixIcon: const Icon(
+                          Icons.lock_outline_rounded,
+                          color: Color(0xFFD96C2C),
+                        ),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            controller.obscurePassword.value
+                                ? Icons.visibility_off_outlined
+                                : Icons.visibility_outlined,
+                            color: Colors.grey[600],
                           ),
-                        )),
+                          onPressed: controller.toggleObscurePassword,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 28),
 
                     // Submit Button
-                    Obx(() => AppButton(
-                          text: 'เข้าสู่ระบบ',
-                          isLoading: controller.isLoading.value,
-                          onPressed: controller.login,
-                          color: const Color(0xFFD96C2C),
-                        )),
+                    Obx(
+                      () => AppButton(
+                        text: 'เข้าสู่ระบบ',
+                        isLoading: controller.isLoading.value,
+                        onPressed: controller.login,
+                        color: const Color(0xFFD96C2C),
+                      ),
+                    ),
                   ],
                 ),
               ),
