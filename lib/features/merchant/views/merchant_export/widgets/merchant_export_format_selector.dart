@@ -16,16 +16,18 @@ class MerchantExportFormatSelector extends StatelessWidget {
       children: [
         MerchantExportSectionCard(
           stepNumber: '3',
-          title: 'เลือกรูปแบบไฟล์ (File Format)',
-          icon: Icons.file_present_rounded,
+          title: 'รูปแบบไฟล์เอกสาร',
+          subtitle: 'เลือกรูปแบบไฟล์ที่ต้องการนำไปใช้งาน',
+          icon: Icons.description_outlined,
           children: [
             Obx(() {
               return Row(
                 children: [
                   Expanded(
                     child: MerchantExportFormatOptionTile(
-                      title: '📄 เอกสาร PDF',
-                      subtitle: 'ตาราง A4 แนวนอน พิมพ์ง่าย',
+                      title: 'PDF Document',
+                      subtitle: 'ตารางขนาด A4 แนวนอน พร้อมพิมพ์หรือส่งต่อ',
+                      badge: 'PDF FILE',
                       value: 'pdf',
                       selectedValue: controller.selectedFormat.value,
                       color: const Color(0xFFE11D48),
@@ -36,8 +38,9 @@ class MerchantExportFormatSelector extends StatelessWidget {
                   const SizedBox(width: 12),
                   Expanded(
                     child: MerchantExportFormatOptionTile(
-                      title: '📊 ไฟล์ CSV',
-                      subtitle: 'นำไปเปิดใน MS Excel (UTF-8)',
+                      title: 'CSV Spreadsheet',
+                      subtitle: 'นำไปคำนวณต่อใน Excel, Google Sheets',
+                      badge: 'EXCEL / CSV',
                       value: 'csv',
                       selectedValue: controller.selectedFormat.value,
                       color: const Color(0xFF059669),
@@ -50,8 +53,7 @@ class MerchantExportFormatSelector extends StatelessWidget {
             }),
           ],
         ),
-
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
       ],
     );
   }

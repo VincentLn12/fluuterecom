@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 
 class MerchantExportInputDecoration {
   const MerchantExportInputDecoration._();
@@ -10,15 +11,15 @@ class MerchantExportInputDecoration {
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+        borderSide: const BorderSide(color: MerchantColors.border),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFCBD5E1)),
+        borderSide: const BorderSide(color: MerchantColors.border),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFF047857), width: 1.8),
+        borderSide: const BorderSide(color: MerchantColors.primary, width: 1.8),
       ),
     );
   }

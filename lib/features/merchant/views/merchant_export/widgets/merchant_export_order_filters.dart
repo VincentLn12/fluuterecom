@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 import 'package:projecte/features/merchant/controllers/merchant_export_controller.dart';
 import 'package:projecte/features/merchant/views/merchant_export/widgets/merchant_export_section_card.dart';
 import 'package:projecte/features/merchant/views/merchant_export/widgets/merchant_export_input_decoration.dart';
@@ -21,10 +22,11 @@ class MerchantExportOrderFilters extends StatelessWidget {
           }
 
           return Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
+            padding: const EdgeInsets.only(bottom: 16.0),
             child: MerchantExportSectionCard(
               stepNumber: '4',
-              title: 'ตัวกรองเพิ่มเติมสำหรับออเดอร์',
+              title: 'ตัวกรองคำสั่งซื้อเพิ่มเติม',
+              subtitle: 'คัดกรองเฉพาะสถานะการชำระเงินหรือสถานะออเดอร์ที่ต้องการ',
               icon: Icons.filter_alt_rounded,
               children: [
                 Row(
@@ -38,19 +40,18 @@ class MerchantExportOrderFilters extends StatelessWidget {
                             style: GoogleFonts.krub(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF475569),
+                              color: MerchantColors.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 6),
                           Obx(() {
                             return DropdownButtonFormField<String>(
-                              initialValue:
-                                  controller.selectedPaymentStatus.value,
+                              initialValue: controller.selectedPaymentStatus.value,
                               isExpanded: true,
                               decoration: MerchantExportInputDecoration.build(),
                               style: GoogleFonts.krub(
                                 fontSize: 13,
-                                color: const Color(0xFF0F172A),
+                                color: MerchantColors.textPrimary,
                               ),
                               items: const [
                                 DropdownMenuItem(
@@ -90,19 +91,18 @@ class MerchantExportOrderFilters extends StatelessWidget {
                             style: GoogleFonts.krub(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF475569),
+                              color: MerchantColors.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 6),
                           Obx(() {
                             return DropdownButtonFormField<String>(
-                              initialValue:
-                                  controller.selectedOrderStatus.value,
+                              initialValue: controller.selectedOrderStatus.value,
                               isExpanded: true,
                               decoration: MerchantExportInputDecoration.build(),
                               style: GoogleFonts.krub(
                                 fontSize: 13,
-                                color: const Color(0xFF0F172A),
+                                color: MerchantColors.textPrimary,
                               ),
                               items: const [
                                 DropdownMenuItem(
