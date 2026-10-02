@@ -18,6 +18,19 @@ class MerchantDashboardController extends GetxController {
     loadDashboardData();
   }
 
+  int get totalAlertsCount {
+    final rep = report.value;
+    if (rep == null) return 0;
+    return rep.pendingShipmentOrdersCount +
+        rep.pendingSlipOrdersCount +
+        rep.lowStockProductsCount;
+  }
+
+  int get pendingShipments => report.value?.pendingShipmentOrdersCount ?? 0;
+  int get pendingSlips => report.value?.pendingSlipOrdersCount ?? 0;
+  int get lowStockCount => report.value?.lowStockProductsCount ?? 0;
+  int get activeDealsCount => report.value?.promotionAnalytics.activeDealsCount ?? 0;
+
   Future<void> loadDashboardData() async {
     isLoading.value = true;
     try {
