@@ -10,41 +10,95 @@ class ManageOrdersController extends GetxController {
   final orders = <OrderModel>[].obs;
   final isLoading = true.obs;
   final selectedStatus = 'All'.obs;
+  final searchQuery = ''.obs;
+  final Rx<ShopModel?> myShop = Rx<ShopModel?>(null);
 
   List<OrderModel> get filteredOrders {
-    final status = selectedStatus.value;
-    if (status == 'All' || status.isEmpty) return orders;
+    var list = orders.toList();
+    final status = selectedStatus.value.trim().toLowerCase();
 
-    return orders.where((o) {
-      final orderStat = o.orderStatus.trim().toLowerCase();
-      final payStat = o.paymentStatus.trim().toLowerCase();
-      final targetStat = status.trim().toLowerCase();
+    if (status.isNotEmpty && status != 'all') {
+      list = list.where((o) {
+        final orderStat = o.orderStatus.trim().toLowerCase();
+        final payStat = o.paymentStatus.trim().toLowerCase();
 
-      if (targetStat == 'pendingverification') {
-        return payStat == 'pendingverification';
-      } else if (targetStat == 'paid') {
-        return payStat == 'paid' &&
+        if (status == 'pendingverification') {
+          return payStat == 'pendingverification';
+        } else if (status == 'paid' || status == 'toship') {
+          return (payStat == 'paid' || orderStat == 'confirmed' || orderStat == 'processing') &&
+              orderStat != 'shipped' &&
+              orderStat != 'completed' &&
+              orderStat != 'cancelled';
+        } else if (status == 'shipped') {
+          return orderStat == 'shipped';
+        } else if (status == 'completed') {
+          return orderStat == 'completed';
+        } else if (status == 'cancelled') {
+          return orderStat == 'cancelled';
+        }
+        return orderStat == status;
+      }).toList();
+    }
+
+    final q = searchQuery.value.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list.where((o) {
+        final num = (o.orderNumber ?? o.id).toLowerCase();
+        final name = (o.receiverName ?? '').toLowerCase();
+        final phone = (o.receiverPhone ?? '').toLowerCase();
+        final tracking = (o.trackingNumber ?? '').toLowerCase();
+        return num.contains(q) ||
+            name.contains(q) ||
+            phone.contains(q) ||
+            tracking.contains(q);
+      }).toList();
+    }
+
+    return list;
+  }
+
+  // Live KPI Counters
+  int get totalCount => orders.length;
+
+  int get pendingShipmentCount => orders.where((o) {
+        final orderStat = o.orderStatus.trim().toLowerCase();
+        final payStat = o.paymentStatus.trim().toLowerCase();
+        return (payStat == 'paid' || orderStat == 'confirmed' || orderStat == 'processing') &&
             orderStat != 'shipped' &&
             orderStat != 'completed' &&
             orderStat != 'cancelled';
-      } else if (targetStat == 'shipped') {
-        return orderStat == 'shipped';
-      } else if (targetStat == 'completed') {
-        return orderStat == 'completed';
-      } else if (targetStat == 'cancelled') {
-        return orderStat == 'cancelled';
-      }
-      return orderStat == targetStat;
-    }).toList();
+      }).length;
+
+  int get pendingSlipCount => orders
+      .where((o) => o.paymentStatus.trim().toLowerCase() == 'pendingverification')
+      .length;
+
+  int get shippedCount => orders
+      .where((o) => o.orderStatus.trim().toLowerCase() == 'shipped')
+      .length;
+
+  int get completedCount => orders
+      .where((o) => o.orderStatus.trim().toLowerCase() == 'completed')
+      .length;
+
+  int getCountForStatus(String status) {
+    final s = status.trim().toLowerCase();
+    if (s == 'all' || s.isEmpty) return totalCount;
+    if (s == 'toship' || s == 'paid') return pendingShipmentCount;
+    if (s == 'pendingverification') return pendingSlipCount;
+    if (s == 'shipped') return shippedCount;
+    if (s == 'completed') return completedCount;
+    return orders
+        .where((o) => o.orderStatus.trim().toLowerCase() == s)
+        .length;
   }
 
   final statusTabs = [
     {'value': 'All', 'label': 'ทั้งหมด'},
-    {'value': 'Pending', 'label': 'รอยืนยันออเดอร์'},
-    {'value': 'Confirmed', 'label': 'ยืนยันแล้ว'},
-    {'value': 'Processing', 'label': 'เตรียมจัดส่ง'},
+    {'value': 'ToShip', 'label': 'รอจัดส่ง'},
+    {'value': 'PendingVerification', 'label': 'รอตรวจสลิป'},
     {'value': 'Shipped', 'label': 'จัดส่งแล้ว'},
-    {'value': 'Completed', 'label': 'สำเร็จ'},
+    {'value': 'Completed', 'label': 'สำเร็จแล้ว'},
     {'value': 'Cancelled', 'label': 'ยกเลิก'},
   ];
 
@@ -53,8 +107,6 @@ class ManageOrdersController extends GetxController {
     super.onInit();
     loadOrders();
   }
-
-  final Rx<ShopModel?> myShop = Rx<ShopModel?>(null);
 
   Future<void> loadOrders() async {
     isLoading.value = true;
@@ -76,6 +128,14 @@ class ManageOrdersController extends GetxController {
 
   void changeStatusTab(String status) {
     selectedStatus.value = status;
+  }
+
+  void setSearchQuery(String q) {
+    searchQuery.value = q;
+  }
+
+  void clearSearch() {
+    searchQuery.value = '';
   }
 
   Future<void> submitShipmentFulfillment({
@@ -103,61 +163,69 @@ class ManageOrdersController extends GetxController {
 
       if (success) {
         Get.back();
-        loadOrders();
         Get.snackbar(
-          'บันทึกข้อมูลจัดส่งแล้ว',
-          'บันทึกการจัดส่งและเลขพัสดุ $trackingNumber เรียบร้อยแล้ว',
+          'สำเร็จ',
+          'บันทึกข้อมูลการจัดส่งเรียบร้อยแล้ว',
           backgroundColor: const Color(0xFF047857),
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
         );
+        loadOrders();
       } else {
         Get.snackbar(
           'เกิดข้อผิดพลาด',
-          'ไม่สามารถบันทึกข้อมูลจัดส่งได้ กรุณาลองใหม่อีกครั้ง',
+          'ไม่สามารถอัปเดตการจัดส่งได้ กรุณาลองใหม่อีกครั้ง',
           backgroundColor: Colors.red.shade700,
           colorText: Colors.white,
           snackPosition: SnackPosition.BOTTOM,
         );
       }
     } catch (e) {
-      Get.snackbar(
-        'เกิดข้อผิดพลาด',
-        e.toString(),
-        backgroundColor: Colors.red.shade700,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      debugPrint('Error updating shipment: $e');
     }
   }
 
-  Future<void> changeFulfillmentStatus(OrderModel order, String status) async {
-    final current = order.orderStatus.toLowerCase();
-    final allowed =
-        (current == 'pending' &&
-            (status == 'Confirmed' || status == 'Cancelled')) ||
-        (current == 'confirmed' && status == 'Processing');
-    if (!allowed) return;
-    final success = await _repository.updateOrderStatus(order.id, status);
-    if (success) {
-      await loadOrders();
-      Get.snackbar(
-        'อัปเดตออเดอร์แล้ว',
-        status == 'Confirmed'
-            ? 'ยืนยันออเดอร์แล้ว'
-            : status == 'Processing'
-            ? 'เริ่มเตรียมจัดส่งแล้ว'
-            : 'ยกเลิกออเดอร์แล้ว',
-        backgroundColor: const Color(0xFF047857),
-        colorText: Colors.white,
-      );
-    } else {
-      Get.snackbar(
-        'อัปเดตไม่สำเร็จ',
-        'กรุณาลองใหม่อีกครั้ง',
-        backgroundColor: Colors.red.shade700,
-        colorText: Colors.white,
-      );
+  Future<void> changeFulfillmentStatus(OrderModel order, String newStatus) async {
+    try {
+      final success = await _repository.updateOrderStatus(order.id, newStatus);
+      if (success) {
+        Get.snackbar(
+          'สำเร็จ',
+          'อัปเดตสถานะออเดอร์เรียบร้อยแล้ว',
+          backgroundColor: const Color(0xFF047857),
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        loadOrders();
+      } else {
+        Get.snackbar(
+          'เกิดข้อผิดพลาด',
+          'ไม่สามารถอัปเดตสถานะออเดอร์ได้ กรุณาลองใหม่อีกครั้ง',
+          backgroundColor: Colors.red.shade700,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      debugPrint('Error changing fulfillment status: $e');
+    }
+  }
+
+  Future<void> cancelOrder(String orderId) async {
+    try {
+      final success = await _repository.updateOrderStatus(orderId, 'Cancelled');
+      if (success) {
+        Get.snackbar(
+          'ยกเลิกออเดอร์แล้ว',
+          'อัปเดตสถานะเป็นยกเลิกคำสั่งซื้อเรียบร้อย',
+          backgroundColor: Colors.red.shade700,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        loadOrders();
+      }
+    } catch (e) {
+      debugPrint('Error cancelling order: $e');
     }
   }
 }
