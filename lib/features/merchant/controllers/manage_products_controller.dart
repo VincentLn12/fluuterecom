@@ -11,13 +11,39 @@ class ManageProductsController extends GetxController {
   final products = <ProductModel>[].obs;
   final isLoading = true.obs;
   final searchQuery = ''.obs;
+  final selectedFilter = 'all'.obs; // 'all', 'active', 'lowStock', 'outOfStock'
+
+  int get totalCount => products.length;
+  int get activeCount =>
+      products.where((p) => p.status.toLowerCase() == 'active').length;
+  int get lowStockCount =>
+      products.where((p) => p.quantity > 0 && p.quantity <= 5).length;
+  int get outOfStockCount => products.where((p) => p.quantity <= 0).length;
 
   List<ProductModel> get filteredProducts {
     final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) return products;
-    return products
-        .where((p) => p.name.toLowerCase().contains(query))
-        .toList();
+    return products.where((p) {
+      final matchesSearch = query.isEmpty ||
+          p.name.toLowerCase().contains(query) ||
+          (p.description?.toLowerCase().contains(query) ?? false);
+      if (!matchesSearch) return false;
+
+      switch (selectedFilter.value) {
+        case 'active':
+          return p.status.toLowerCase() == 'active';
+        case 'lowStock':
+          return p.quantity > 0 && p.quantity <= 5;
+        case 'outOfStock':
+          return p.quantity <= 0;
+        case 'all':
+        default:
+          return true;
+      }
+    }).toList();
+  }
+
+  void setFilter(String filter) {
+    selectedFilter.value = filter;
   }
 
   @override

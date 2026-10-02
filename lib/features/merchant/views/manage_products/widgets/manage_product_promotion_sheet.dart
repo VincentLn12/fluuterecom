@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projecte/features/shops/models/product_model.dart';
 import 'package:projecte/features/merchant/repositories/merchant_repository.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 
 class ManageProductPromotionSheet {
   const ManageProductPromotionSheet._();
 
-  Future<void> show(BuildContext context, ProductModel product) async {
+  static Future<void> show(BuildContext context, ProductModel product) async {
     final repository = MerchantRepository();
     var deals = await repository.fetchProductDeals(product.id);
     if (!context.mounted) return;
@@ -23,6 +24,10 @@ class ManageProductPromotionSheet {
     await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (sheetContext) => StatefulBuilder(
         builder: (context, setState) {
           final activeDeals = deals
@@ -34,38 +39,101 @@ class ManageProductPromotionSheet {
           return Padding(
             padding: EdgeInsets.fromLTRB(
               20,
+              16,
               20,
-              20,
-              MediaQuery.of(context).viewInsets.bottom + 20,
+              MediaQuery.of(context).viewInsets.bottom + 24,
             ),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'โปรโมชัน: ${product.name}',
-                    style: GoogleFonts.krub(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  Center(
+                    child: Container(
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: MerchantColors.warningBg,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Icon(
+                          Icons.local_fire_department_rounded,
+                          color: Color(0xFFD97706),
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'โปรโมชัน: ${product.name}',
+                          style: GoogleFonts.krub(
+                            fontSize: 16.5,
+                            fontWeight: FontWeight.bold,
+                            color: MerchantColors.textPrimary,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
                   if (deals.isNotEmpty) ...[
                     Text(
-                      'ดีลของสินค้านี้',
-                      style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                      'ดีลปัจจุบันของสินค้านี้',
+                      style: GoogleFonts.krub(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                        color: MerchantColors.textPrimary,
+                      ),
                     ),
+                    const SizedBox(height: 8),
                     ...deals.map(
-                      (deal) => ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          '${deal.label} • ลด ${deal.discountValue}${deal.discountType == 'Percent' ? '%' : ' บาท'}',
+                      (deal) => Container(
+                        margin: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8FAFC),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: MerchantColors.border),
                         ),
-                        subtitle: Text(
-                          '${deal.status} • ใช้แล้ว ${deal.usedQuantity}/${deal.totalQuantity} • สิ้นสุด ${_thaiDate(deal.endsAt)}',
-                        ),
-                        trailing: deal.status.toLowerCase() == 'active'
-                            ? TextButton(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${deal.label} • ลด ${deal.discountValue}${deal.discountType == 'Percent' ? '%' : ' ฿'}',
+                                    style: GoogleFonts.krub(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                      color: MerchantColors.textPrimary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    '${deal.status} • ใช้แล้ว ${deal.usedQuantity}/${deal.totalQuantity} • สิ้นสุด ${_thaiDate(deal.endsAt)}',
+                                    style: GoogleFonts.krub(
+                                      fontSize: 11,
+                                      color: MerchantColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (deal.status.toLowerCase() == 'active')
+                              TextButton(
                                 onPressed: () async {
                                   final ok = await repository.stopProductDeal(
                                     deal.id ?? '',
@@ -77,53 +145,80 @@ class ManageProductPromotionSheet {
                                     setState(() {});
                                   }
                                 },
+                                style: TextButton.styleFrom(
+                                  foregroundColor: MerchantColors.error,
+                                ),
                                 child: const Text('หยุดดีล'),
-                              )
-                            : null,
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                    const Divider(),
+                    const SizedBox(height: 8),
+                    const Divider(color: Color(0xFFE2E8F0)),
+                    const SizedBox(height: 8),
                   ],
                   Text(
                     'สร้างโปรโมชันใหม่',
-                    style: GoogleFonts.krub(fontWeight: FontWeight.bold),
+                    style: GoogleFonts.krub(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                      color: MerchantColors.textPrimary,
+                    ),
                   ),
+                  const SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     initialValue: dealType,
                     items: const [
                       DropdownMenuItem(
                         value: 'FlashDeal',
-                        child: Text('โปรโมชันพิเศษ'),
+                        child: Text('โปรโมชันพิเศษ (Flash Deal)'),
                       ),
                       DropdownMenuItem(
                         value: 'LocalDeal',
-                        child: Text('โปรเด็ดชุมชน'),
+                        child: Text('โปรเด็ดชุมชน (Local Deal)'),
                       ),
                     ],
                     onChanged: (value) =>
                         setState(() => dealType = value ?? dealType),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'ประเภทโปรโมชัน',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 12),
                   DropdownButtonFormField<String>(
                     initialValue: discountType,
                     items: const [
                       DropdownMenuItem(
                         value: 'Percent',
-                        child: Text('ลดเป็นเปอร์เซ็นต์'),
+                        child: Text('ลดเป็นเปอร์เซ็นต์ (%)'),
                       ),
                       DropdownMenuItem(
                         value: 'FixedAmount',
-                        child: Text('ลดเป็นจำนวนเงิน'),
+                        child: Text('ลดเป็นจำนวนเงิน (฿)'),
                       ),
                     ],
                     onChanged: (value) =>
                         setState(() => discountType = value ?? discountType),
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'รูปแบบส่วนลด',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 12),
                   TextField(
                     controller: discountController,
                     keyboardType: TextInputType.number,
@@ -131,25 +226,39 @@ class ManageProductPromotionSheet {
                       labelText: discountType == 'Percent'
                           ? 'ส่วนลด (%)'
                           : 'ส่วนลด (บาท)',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 12),
                   TextField(
                     controller: quantityController,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: 'จำนวนสิทธิ์ทั้งหมด',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 12,
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 10),
                   Text(
-                    'เริ่ม ${_thaiDate(startsAt)}',
-                    style: GoogleFonts.krub(fontSize: 12),
+                    'เริ่ม ${_thaiDate(startsAt)} - สิ้นสุด ${_thaiDate(endsAt)}',
+                    style: GoogleFonts.krub(
+                      fontSize: 12,
+                      color: MerchantColors.textSecondary,
+                    ),
                   ),
-                  Text(
-                    'สิ้นสุด ${_thaiDate(endsAt)}',
-                    style: GoogleFonts.krub(fontSize: 12),
-                  ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -170,6 +279,8 @@ class ManageProductPromotionSheet {
                                 Get.snackbar(
                                   'ข้อมูลโปรโมชันไม่ถูกต้อง',
                                   'กรุณาตรวจสอบส่วนลด จำนวนสิทธิ์ และช่วงเวลา',
+                                  backgroundColor: MerchantColors.error,
+                                  colorText: Colors.white,
                                 );
                                 return;
                               }
@@ -187,15 +298,33 @@ class ManageProductPromotionSheet {
                                 Get.snackbar(
                                   'สร้างโปรโมชันสำเร็จ',
                                   'ระบบบันทึกโปรโมชันของสินค้าแล้ว',
+                                  backgroundColor: MerchantColors.primary,
+                                  colorText: Colors.white,
                                 );
                               } else {
                                 Get.snackbar(
                                   'สร้างโปรโมชันไม่สำเร็จ',
                                   'กรุณาตรวจสอบสต็อกและสิทธิ์ที่เหลือ',
+                                  backgroundColor: MerchantColors.error,
+                                  colorText: Colors.white,
                                 );
                               }
                             },
-                      child: const Text('สร้างโปรโมชัน'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MerchantColors.primary,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: Text(
+                        'สร้างโปรโมชัน',
+                        style: GoogleFonts.krub(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -209,7 +338,7 @@ class ManageProductPromotionSheet {
     quantityController.dispose();
   }
 
-  String _thaiDate(DateTime? value) {
+  static String _thaiDate(DateTime? value) {
     if (value == null) return '-';
     final thai = value.toUtc().add(const Duration(hours: 7));
     return '${thai.day}/${thai.month}/${thai.year + 543} ${thai.hour.toString().padLeft(2, '0')}:${thai.minute.toString().padLeft(2, '0')} น.';
