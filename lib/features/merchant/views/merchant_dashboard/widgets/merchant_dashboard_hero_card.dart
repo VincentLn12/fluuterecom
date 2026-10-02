@@ -27,7 +27,12 @@ class MerchantDashboardHeroCard extends StatelessWidget {
 
     final todayRev = report?.todayRevenue ?? 0.0;
     final monthRev = report?.monthRevenue ?? 0.0;
-    final totalOrders = report?.totalOrders ?? 0;
+    final activeOrdersCount = (report?.completedOrdersCount ?? 0) +
+        (report?.pendingShipmentOrdersCount ?? 0) +
+        (report?.pendingSlipOrdersCount ?? 0);
+    final totalOrders = activeOrdersCount > 0
+        ? activeOrdersCount
+        : (report?.totalOrders ?? 0);
 
     return Container(
       decoration: BoxDecoration(

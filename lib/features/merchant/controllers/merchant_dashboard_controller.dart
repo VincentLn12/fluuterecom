@@ -21,15 +21,16 @@ class MerchantDashboardController extends GetxController {
   int get totalAlertsCount {
     final rep = report.value;
     if (rep == null) return 0;
-    return rep.pendingShipmentOrdersCount +
-        rep.pendingSlipOrdersCount +
-        rep.lowStockProductsCount;
+    // Slips are handled by Admin, so Merchant alerts focus on shipments to pack and low stock
+    return rep.pendingShipmentOrdersCount + rep.lowStockProductsCount;
   }
 
   int get pendingShipments => report.value?.pendingShipmentOrdersCount ?? 0;
-  int get pendingSlips => report.value?.pendingSlipOrdersCount ?? 0;
+  int get pendingVerifications => report.value?.pendingSlipOrdersCount ?? 0;
+  int get pendingSlips => pendingVerifications;
   int get lowStockCount => report.value?.lowStockProductsCount ?? 0;
   int get activeDealsCount => report.value?.promotionAnalytics.activeDealsCount ?? 0;
+
 
   Future<void> loadDashboardData() async {
     isLoading.value = true;

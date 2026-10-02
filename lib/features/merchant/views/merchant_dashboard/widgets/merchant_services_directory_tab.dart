@@ -37,34 +37,16 @@ class MerchantServicesDirectoryTab extends StatelessWidget {
 
         const SizedBox(height: 18),
 
-        // 2. Products & Promotion Catalog Group
+        // 2. Products Catalog Group
         _buildServiceGroup(
-          groupTitle: 'ระบบสินค้าและโปรโมชั่น (Products & Deals)',
+          groupTitle: 'ระบบสินค้า (Products)',
           icon: Icons.inventory_2_rounded,
           items: [
             _ServiceItem(
-              title: 'รายการสินค้าทั้งหมดในร้าน',
-              desc: 'ดูรายการสินค้า จัดการสต็อก ราคา และสถานะการวางจำหน่าย',
-              color: const Color(0xFFD97706),
+              title: 'สินค้าทั้งหมดในร้าน',
+              desc: 'ดูรายการสินค้าในคลัง จัดการสต็อก ราคา และโปรโมชัน',
+              color: MerchantColors.primary,
               route: AppRoutes.myShopProducts,
-            ),
-            _ServiceItem(
-              title: 'เพิ่มสินค้าชิ้นใหม่',
-              desc: 'ลงรายการสินค้าใหม่ อัปโหลดรูปภาพ ระบุสต็อกและราคา',
-              color: const Color(0xFF047857),
-              route: AppRoutes.myShopProductForm,
-            ),
-            _ServiceItem(
-              title: 'โปรโมชั่น & Flash Deals ร้านค้า',
-              desc: 'จัดการแคมเปญส่วนลด โปรโมชั่นเด็ดชุมชน กระตุ้นยอดขาย',
-              color: const Color(0xFF9333EA),
-              route: AppRoutes.myShopProductDeals,
-            ),
-            _ServiceItem(
-              title: 'สร้างแคมเปญโปรโมชั่นใหม่',
-              desc: 'กำหนดโปรโมชั่นลดราคาพิเศษและ Flash Deal ให้กับสินค้าในร้าน',
-              color: const Color(0xFFEA580C),
-              route: AppRoutes.myShopProductDealForm,
             ),
           ],
         ),

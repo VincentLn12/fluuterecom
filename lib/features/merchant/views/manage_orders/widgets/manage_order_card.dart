@@ -493,7 +493,7 @@ class ManageOrderCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       order.paymentStatus == 'PendingVerification'
-                          ? 'ลูกค้าแนบสลิปชำระเงินแล้ว ระบบกำลังอยู่ระหว่างรอ Admin ตรวจสอบอนุมัติ'
+                          ? 'ลูกค้าชำระเงินแล้ว อยู่ระหว่างรอ Admin ตรวจสอบยอด (เมื่ออนุมัติแล้วจะสามารถกดจัดส่งได้)'
                           : 'ลูกค้ายังไม่ได้ชำระเงินในระบบ กรุณารอการชำระเงินสำเร็จก่อนจัดส่งสินค้า',
                       style: GoogleFonts.krub(
                         fontSize: 12,

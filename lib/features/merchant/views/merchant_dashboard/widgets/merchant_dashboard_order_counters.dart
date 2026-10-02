@@ -74,12 +74,13 @@ class MerchantDashboardOrderCounters extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildCounterItem(
-                  label: 'รอตรวจสลิป',
+                  label: 'รอระบบยืนยันยอด',
                   count: pendingSlip,
-                  icon: Icons.receipt_long_rounded,
+                  icon: Icons.hourglass_top_rounded,
                   color: const Color(0xFFD97706),
                   bg: const Color(0xFFFFFBEB),
                   borderColor: const Color(0xFFFDE68A),
+                  status: 'PendingVerification',
                 ),
               ),
               const SizedBox(width: 10),
@@ -91,6 +92,7 @@ class MerchantDashboardOrderCounters extends StatelessWidget {
                   color: const Color(0xFF2563EB),
                   bg: const Color(0xFFEFF6FF),
                   borderColor: const Color(0xFFBFDBFE),
+                  status: 'ToShip',
                 ),
               ),
               const SizedBox(width: 10),
@@ -102,6 +104,7 @@ class MerchantDashboardOrderCounters extends StatelessWidget {
                   color: const Color(0xFF059669),
                   bg: const Color(0xFFECFDF5),
                   borderColor: const Color(0xFFA7F3D0),
+                  status: 'Completed',
                 ),
               ),
             ],
@@ -118,9 +121,14 @@ class MerchantDashboardOrderCounters extends StatelessWidget {
     required Color color,
     required Color bg,
     required Color borderColor,
+    String? status,
   }) {
     return InkWell(
-      onTap: () => Get.toNamed(AppRoutes.myShopOrders),
+      onTap: () => Get.toNamed(
+        AppRoutes.myShopOrders,
+        parameters: status != null ? {'status': status} : null,
+        arguments: status != null ? {'status': status} : null,
+      ),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/merchant/models/merchant_dashboard_model.dart';
 import 'package:projecte/features/merchant/views/merchant_dashboard/widgets/dashboard_format.dart';
 
@@ -64,27 +66,39 @@ class MerchantDashboardMetrics extends StatelessWidget {
               bg: const Color(0xFFF0F9FF),
               borderColor: const Color(0xFFBAE6FD),
             ),
-            _buildStatCard(
-              title: 'สินค้าในร้านทั้งหมด',
-              value: '$totalProd รายการ',
-              icon: Icons.inventory_2_rounded,
-              color: const Color(0xFF7C3AED),
-              bg: const Color(0xFFF5F3FF),
-              borderColor: const Color(0xFFDDD6FE),
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => Get.toNamed(AppRoutes.myShopProducts),
+              child: _buildStatCard(
+                title: 'สินค้าในร้านทั้งหมด',
+                value: '$totalProd รายการ',
+                icon: Icons.inventory_2_rounded,
+                color: const Color(0xFF7C3AED),
+                bg: const Color(0xFFF5F3FF),
+                borderColor: const Color(0xFFDDD6FE),
+              ),
             ),
-            _buildStatCard(
-              title: 'สินค้าสต็อกต่ำ',
-              value: '$lowStock รายการ',
-              icon: Icons.warning_amber_rounded,
-              color: lowStock > 0
-                  ? const Color(0xFFE11D48)
-                  : const Color(0xFF64748B),
-              bg: lowStock > 0
-                  ? const Color(0xFFFFF1F2)
-                  : const Color(0xFFF8FAFC),
-              borderColor: lowStock > 0
-                  ? const Color(0xFFFECDD3)
-                  : const Color(0xFFE2E8F0),
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => Get.toNamed(
+                AppRoutes.myShopProducts,
+                parameters: {'filter': 'lowStock'},
+                arguments: {'filter': 'lowStock'},
+              ),
+              child: _buildStatCard(
+                title: 'สินค้าสต็อกต่ำ',
+                value: '$lowStock รายการ',
+                icon: Icons.warning_amber_rounded,
+                color: lowStock > 0
+                    ? const Color(0xFFE11D48)
+                    : const Color(0xFF64748B),
+                bg: lowStock > 0
+                    ? const Color(0xFFFFF1F2)
+                    : const Color(0xFFF8FAFC),
+                borderColor: lowStock > 0
+                    ? const Color(0xFFFECDD3)
+                    : const Color(0xFFE2E8F0),
+              ),
             ),
           ],
         ),

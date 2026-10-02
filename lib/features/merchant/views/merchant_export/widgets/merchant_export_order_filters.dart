@@ -64,7 +64,7 @@ class MerchantExportOrderFilters extends StatelessWidget {
                                 ),
                                 DropdownMenuItem(
                                   value: 'PendingVerification',
-                                  child: Text('รอตรวจสลิป'),
+                                  child: Text('รอระบบยืนยันยอด'),
                                 ),
                                 DropdownMenuItem(
                                   value: 'Unpaid',

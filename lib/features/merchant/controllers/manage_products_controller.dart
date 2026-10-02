@@ -49,7 +49,19 @@ class ManageProductsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    checkAndUpdateFilter();
     loadProducts();
+  }
+
+  void checkAndUpdateFilter() {
+    final param = Get.parameters['filter'] ??
+        (Get.arguments is Map ? Get.arguments['filter'] : null);
+    if (param != null && param.toString().isNotEmpty) {
+      final val = param.toString();
+      if (selectedFilter.value != val) {
+        selectedFilter.value = val;
+      }
+    }
   }
 
   Future<void> loadProducts() async {

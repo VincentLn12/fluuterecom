@@ -11,15 +11,44 @@ class ManageContentsController extends GetxController {
   final isLoading = true.obs;
   final searchQuery = ''.obs;
 
+  final selectedFilter = 'all'.obs; // 'all', 'published', 'draft', 'video'
+
+  int get totalCount => contents.length;
+  int get publishedCount => contents
+      .where((c) => (c.status ?? 'published').toLowerCase() == 'published')
+      .length;
+  int get draftCount =>
+      contents.where((c) => (c.status ?? '').toLowerCase() == 'draft').length;
+  int get videoCount =>
+      contents.where((c) => c.youtubeUrl != null && c.youtubeUrl!.isNotEmpty).length;
+  int get totalViews =>
+      contents.fold<int>(0, (sum, item) => sum + item.viewCount);
+
   List<ContentModel> get filteredContents {
     final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) return contents;
     return contents.where((c) {
       final titleMatch = c.title.toLowerCase().contains(query);
       final descMatch = c.description?.toLowerCase().contains(query) ?? false;
       final catMatch = c.categoryName?.toLowerCase().contains(query) ?? false;
-      return titleMatch || descMatch || catMatch;
+      final matchesSearch = query.isEmpty || titleMatch || descMatch || catMatch;
+      if (!matchesSearch) return false;
+
+      switch (selectedFilter.value) {
+        case 'published':
+          return (c.status ?? 'published').toLowerCase() == 'published';
+        case 'draft':
+          return (c.status ?? '').toLowerCase() == 'draft';
+        case 'video':
+          return c.youtubeUrl != null && c.youtubeUrl!.isNotEmpty;
+        case 'all':
+        default:
+          return true;
+      }
     }).toList();
+  }
+
+  void setFilter(String filter) {
+    selectedFilter.value = filter;
   }
 
   @override

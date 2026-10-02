@@ -52,7 +52,7 @@ class MerchantDashboardQuickActions extends StatelessWidget {
             ),
             _buildActionButton(
               title: 'จัดการคำสั่งซื้อ',
-              subtitle: 'ตรวจสอบสลิป/แจ้งจัดส่ง',
+              subtitle: 'เตรียมแพ็กของ/แจ้งจัดส่ง',
               icon: Icons.assignment_rounded,
               color: const Color(0xFF2563EB),
               bg: const Color(0xFFEFF6FF),

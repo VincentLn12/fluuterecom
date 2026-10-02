@@ -13,10 +13,9 @@ class MerchantActionRadarTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pendingShipments = report?.pendingShipmentOrdersCount ?? 0;
-    final pendingSlips = report?.pendingSlipOrdersCount ?? 0;
     final lowStock = report?.lowStockProductsCount ?? 0;
     final activeDeals = report?.promotionAnalytics.activeDealsCount ?? 0;
-    final totalUrgent = pendingShipments + pendingSlips + lowStock;
+    final totalUrgent = pendingShipments + lowStock;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,8 +73,8 @@ class MerchantActionRadarTab extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       totalUrgent > 0
-                          ? 'ตรวจสอบคำสั่งซื้อ สลิปชำระเงิน และสินค้าในสต็อก'
-                          : 'ไม่มีออเดอร์ค้างส่งหรือสลิปรอตรวจสอบในขณะนี้',
+                          ? 'ตรวจสอบสินค้าค้างจัดส่ง และสต็อกสินค้าในร้านค้า'
+                          : 'ไม่มีสินค้าค้างส่ง หรือสต็อกสินค้าหมดในขณะนี้',
                       style: GoogleFonts.krub(
                         fontSize: 11.5,
                         color: totalUrgent > 0
@@ -92,7 +91,7 @@ class MerchantActionRadarTab extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-        // 2. Action Radar Cards
+        // 2. Action Radar Cards (Focusing strictly on Merchant's tasks)
         _buildActionItemCard(
           title: 'คำสั่งซื้อที่ต้องจัดส่ง (To Ship)',
           count: pendingShipments,
@@ -105,27 +104,15 @@ class MerchantActionRadarTab extends StatelessWidget {
           iconColor: const Color(0xFFD97706),
           isUrgent: pendingShipments > 0,
           buttonText: 'ไปหน้าแพ็คของและจัดส่ง',
-          onAction: () => Get.toNamed(AppRoutes.myShopOrders),
+          onAction: () => Get.toNamed(
+            AppRoutes.myShopOrders,
+            parameters: {'status': 'ToShip'},
+            arguments: {'status': 'ToShip'},
+          ),
         ),
 
         const SizedBox(height: 12),
 
-        _buildActionItemCard(
-          title: 'สลิปโอนเงินรอตรวจสอบ (Pending Slips)',
-          count: pendingSlips,
-          unit: 'สลิป',
-          description: pendingSlips > 0
-              ? 'มีลูกค้าแนบสลิปชำระเงิน รอร้านค้ายืนยันความถูกต้อง'
-              : 'ตรวจสลิปครบทุกรายการแล้ว',
-          icon: Icons.receipt_long_rounded,
-          iconBgColor: const Color(0xFFEFF6FF),
-          iconColor: const Color(0xFF2563EB),
-          isUrgent: pendingSlips > 0,
-          buttonText: 'ตรวจสอบสลิปการโอน',
-          onAction: () => Get.toNamed(AppRoutes.myShopOrders),
-        ),
-
-        const SizedBox(height: 12),
 
         _buildActionItemCard(
           title: 'สินค้าใกล้หมดสต็อก (Low Stock)',
@@ -139,7 +126,11 @@ class MerchantActionRadarTab extends StatelessWidget {
           iconColor: const Color(0xFFDC2626),
           isUrgent: lowStock > 0,
           buttonText: 'อัปเดตสต็อกสินค้า',
-          onAction: () => Get.toNamed(AppRoutes.myShopProducts),
+          onAction: () => Get.toNamed(
+            AppRoutes.myShopProducts,
+            parameters: {'filter': 'lowStock'},
+            arguments: {'filter': 'lowStock'},
+          ),
         ),
 
         const SizedBox(height: 12),
@@ -150,13 +141,13 @@ class MerchantActionRadarTab extends StatelessWidget {
           unit: 'แคมเปญ',
           description: activeDeals > 0
               ? 'มีโปรโมชั่นส่วนลดและดีลพิเศษกำลังดึงดูดลูกค้า'
-              : 'ยังไม่มีโปรโมชั่นที่เปิดใช้งาน ลองสร้างดีลใหม่เพื่อเพิ่มยอดขาย',
+              : 'ยังไม่มีโปรโมชั่นที่เปิดใช้งาน เลือกสินค้าเพื่อตั้งค่าดีลโปรโมชั่น',
           icon: Icons.flash_on_rounded,
           iconBgColor: const Color(0xFFF3E8FF),
           iconColor: const Color(0xFF9333EA),
           isUrgent: false,
-          buttonText: 'จัดการโปรโมชั่นร้านค้า',
-          onAction: () => Get.toNamed(AppRoutes.myShopProductDeals),
+          buttonText: 'ไปที่รายการสินค้าเพื่อตั้งโปรโมชั่น',
+          onAction: () => Get.toNamed(AppRoutes.myShopProducts),
         ),
       ],
     );

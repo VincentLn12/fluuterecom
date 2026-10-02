@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/merchant/controllers/manage_contents_controller.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 import 'package:projecte/features/merchant/views/manage_contents/widgets/manage_content_card.dart';
 import 'package:projecte/features/merchant/views/manage_contents/widgets/manage_contents_empty_state.dart';
 import 'package:projecte/features/merchant/views/manage_contents/widgets/manage_contents_hero.dart';
@@ -15,35 +16,70 @@ class ManageContentsPage extends GetView<ManageContentsController> {
 
   @override
   Widget build(BuildContext context) {
+    if (!Get.isRegistered<ManageContentsController>()) {
+      Get.put(ManageContentsController());
+    }
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: MerchantColors.background,
       appBar: AppBar(
-        title: Text(
-          'จัดการเรื่องราว & ข่าวสารร้าน',
-          style: GoogleFonts.krub(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            color: Colors.white,
-          ),
-        ),
+        backgroundColor: MerchantColors.primaryDark,
+        foregroundColor: Colors.white,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF064E3B), Color(0xFF047857), Color(0xFF059669)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        centerTitle: false,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: Colors.white,
             ),
           ),
+          onPressed: () => Navigator.of(context).pop(),
         ),
-        foregroundColor: Colors.white,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'จัดการเรื่องราว & ข่าวสาร',
+              style: GoogleFonts.krub(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              'Merchant Stories & Articles',
+              style: GoogleFonts.krub(
+                fontSize: 11,
+                color: const Color(0xFFA7F3D0),
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
-            tooltip: 'รีเฟรช',
-            icon: const Icon(Icons.refresh_rounded, color: Colors.white),
+            tooltip: 'รีเฟรชข้อมูล',
+            icon: Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.refresh_rounded,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
             onPressed: controller.loadContents,
           ),
-          const SizedBox(width: 6),
+          const SizedBox(width: 8),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -51,62 +87,69 @@ class ManageContentsPage extends GetView<ManageContentsController> {
           final result = await Get.toNamed(AppRoutes.myShopContentForm);
           if (result == true) controller.loadContents();
         },
-        backgroundColor: const Color(0xFF047857),
+        backgroundColor: MerchantColors.primary,
         foregroundColor: Colors.white,
         elevation: 6,
-        icon: const Icon(Icons.add_circle_outline_rounded, size: 24),
+        icon: const Icon(Icons.add_circle_outline_rounded, size: 22),
         label: Text(
           'เขียนเรื่องราวใหม่',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold, fontSize: 14),
+          style: GoogleFonts.krub(
+            fontWeight: FontWeight.bold,
+            fontSize: 13.5,
+          ),
         ),
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const LoadingWidget(message: 'กำลังโหลดบทความและข่าวสาร...');
+          return const LoadingWidget(message: 'กำลังโหลดเรื่องราวและข่าวสาร...');
         }
 
         final contents = controller.filteredContents;
-        final totalViews = controller.contents.fold<int>(
-          0,
-          (sum, item) => sum + item.viewCount,
-        );
 
-        return CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: ManageContentsHero(
-                shopName: controller.myShop.value?.shopName,
-                totalContents: controller.contents.length,
-                totalViews: totalViews,
-              ),
+        return RefreshIndicator(
+          onRefresh: () => controller.loadContents(),
+          color: MerchantColors.primary,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(
+              parent: BouncingScrollPhysics(),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 44)),
-            SliverToBoxAdapter(
-              child: ManageContentsSearchField(controller: controller),
-            ),
-            const SliverToBoxAdapter(child: SizedBox(height: 16)),
-            if (contents.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: ManageContentsEmptyState(
-                  isShopNull: controller.myShop.value == null,
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final item = contents[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: ManageContentCard(item: item),
-                    );
-                  }, childCount: contents.length),
-                ),
+            slivers: [
+              // Top Hero Banner & Interactive KPI Metrics
+              SliverToBoxAdapter(
+                child: ManageContentsHero(controller: controller),
               ),
-          ],
+
+              // Search Bar & Filter Chips
+              SliverToBoxAdapter(
+                child: ManageContentsSearchField(controller: controller),
+              ),
+
+              // Main Contents List or Empty State
+              if (contents.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: ManageContentsEmptyState(
+                    isShopNull: controller.myShop.value == null,
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final item = contents[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 14),
+                          child: ManageContentCard(item: item),
+                        );
+                      },
+                      childCount: contents.length,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
       }),
     );

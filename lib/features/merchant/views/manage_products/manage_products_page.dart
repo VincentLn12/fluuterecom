@@ -18,6 +18,7 @@ class ManageProductsPage extends GetView<ManageProductsController> {
     if (!Get.isRegistered<ManageProductsController>()) {
       Get.put(ManageProductsController());
     }
+    controller.checkAndUpdateFilter();
 
     return Scaffold(
       backgroundColor: MerchantColors.background,

@@ -13,6 +13,28 @@ class ManageOrdersController extends GetxController {
   final searchQuery = ''.obs;
   final Rx<ShopModel?> myShop = Rx<ShopModel?>(null);
 
+  bool _isExpired(OrderModel o) {
+    final orderStat = o.orderStatus.trim().toLowerCase();
+    final payStat = o.paymentStatus.trim().toLowerCase();
+
+    // 1. Explicit expired
+    if (orderStat == 'expired' || payStat == 'expired' || o.isPaymentExpired) {
+      return true;
+    }
+
+    // 2. Explicit cancelled
+    if (orderStat == 'cancelled') return true;
+
+    // 3. Pending/Unpaid without slip (abandoned order)
+    if (orderStat == 'pending' &&
+        (payStat == 'pending' || payStat == 'unpaid') &&
+        (o.slipImageUrl == null || o.slipImageUrl!.trim().isEmpty)) {
+      return true;
+    }
+
+    return false;
+  }
+
   List<OrderModel> get filteredOrders {
     var list = orders.toList();
     final status = selectedStatus.value.trim().toLowerCase();
@@ -23,21 +45,25 @@ class ManageOrdersController extends GetxController {
         final payStat = o.paymentStatus.trim().toLowerCase();
 
         if (status == 'pendingverification') {
-          return payStat == 'pendingverification';
+          return payStat == 'pendingverification' && !_isExpired(o);
         } else if (status == 'paid' || status == 'toship') {
           return (payStat == 'paid' || orderStat == 'confirmed' || orderStat == 'processing') &&
               orderStat != 'shipped' &&
               orderStat != 'completed' &&
-              orderStat != 'cancelled';
+              orderStat != 'cancelled' &&
+              !_isExpired(o);
         } else if (status == 'shipped') {
           return orderStat == 'shipped';
         } else if (status == 'completed') {
           return orderStat == 'completed';
         } else if (status == 'cancelled') {
-          return orderStat == 'cancelled';
+          return orderStat == 'cancelled' || _isExpired(o);
         }
-        return orderStat == status;
+        return orderStat == status && !_isExpired(o);
       }).toList();
+    } else {
+      // คำสั่งซื้อทั้งหมด: ไม่รวมออเดอร์ที่หมดอายุ
+      list = list.where((o) => !_isExpired(o)).toList();
     }
 
     final q = searchQuery.value.trim().toLowerCase();
@@ -57,8 +83,8 @@ class ManageOrdersController extends GetxController {
     return list;
   }
 
-  // Live KPI Counters
-  int get totalCount => orders.length;
+  // Live KPI Counters (คำสั่งซื้อทั้งหมด ไม่รวมหมดอายุ)
+  int get totalCount => orders.where((o) => !_isExpired(o)).length;
 
   int get pendingShipmentCount => orders.where((o) {
         final orderStat = o.orderStatus.trim().toLowerCase();
@@ -66,12 +92,15 @@ class ManageOrdersController extends GetxController {
         return (payStat == 'paid' || orderStat == 'confirmed' || orderStat == 'processing') &&
             orderStat != 'shipped' &&
             orderStat != 'completed' &&
-            orderStat != 'cancelled';
+            orderStat != 'cancelled' &&
+            !_isExpired(o);
       }).length;
 
-  int get pendingSlipCount => orders
-      .where((o) => o.paymentStatus.trim().toLowerCase() == 'pendingverification')
+  int get pendingVerificationCount => orders
+      .where((o) => o.paymentStatus.trim().toLowerCase() == 'pendingverification' && !_isExpired(o))
       .length;
+
+  int get pendingSlipCount => pendingVerificationCount;
 
   int get shippedCount => orders
       .where((o) => o.orderStatus.trim().toLowerCase() == 'shipped')
@@ -81,22 +110,27 @@ class ManageOrdersController extends GetxController {
       .where((o) => o.orderStatus.trim().toLowerCase() == 'completed')
       .length;
 
+  int get cancelledCount => orders
+      .where((o) => o.orderStatus.trim().toLowerCase() == 'cancelled' || _isExpired(o))
+      .length;
+
   int getCountForStatus(String status) {
     final s = status.trim().toLowerCase();
     if (s == 'all' || s.isEmpty) return totalCount;
     if (s == 'toship' || s == 'paid') return pendingShipmentCount;
-    if (s == 'pendingverification') return pendingSlipCount;
+    if (s == 'pendingverification') return pendingVerificationCount;
     if (s == 'shipped') return shippedCount;
     if (s == 'completed') return completedCount;
+    if (s == 'cancelled') return cancelledCount;
     return orders
-        .where((o) => o.orderStatus.trim().toLowerCase() == s)
+        .where((o) => o.orderStatus.trim().toLowerCase() == s && !_isExpired(o))
         .length;
   }
 
   final statusTabs = [
     {'value': 'All', 'label': 'ทั้งหมด'},
     {'value': 'ToShip', 'label': 'รอจัดส่ง'},
-    {'value': 'PendingVerification', 'label': 'รอตรวจสลิป'},
+    {'value': 'PendingVerification', 'label': 'รอระบบยืนยันยอด'},
     {'value': 'Shipped', 'label': 'จัดส่งแล้ว'},
     {'value': 'Completed', 'label': 'สำเร็จแล้ว'},
     {'value': 'Cancelled', 'label': 'ยกเลิก'},
@@ -105,7 +139,21 @@ class ManageOrdersController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    checkAndUpdateStatusTab();
     loadOrders();
+  }
+
+  void checkAndUpdateStatusTab() {
+    final status = Get.parameters['status'] ??
+        (Get.arguments is Map
+            ? Get.arguments['status']
+            : (Get.arguments is String ? Get.arguments : null));
+    if (status != null && status.toString().isNotEmpty) {
+      final s = status.toString();
+      if (selectedStatus.value.toLowerCase() != s.toLowerCase()) {
+        selectedStatus.value = s;
+      }
+    }
   }
 
   Future<void> loadOrders() async {

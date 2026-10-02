@@ -12,7 +12,11 @@ class MerchantDashboardRecentOrders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recentOrders = report?.recentOrders ?? [];
+    final recentOrders = (report?.recentOrders ?? []).where((o) {
+      final orderStat = o.orderStatus.trim().toLowerCase();
+      final payStat = o.paymentStatus.trim().toLowerCase();
+      return orderStat != 'expired' && payStat != 'expired';
+    }).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,7 +207,7 @@ class MerchantDashboardRecentOrders extends StatelessWidget {
     if (payStat == 'pendingverification') {
       bg = const Color(0xFFFFFBEB);
       fg = const Color(0xFFD97706);
-      label = 'รอตรวจสลิป';
+      label = 'รอระบบยืนยันยอด';
     } else if (orderStat == 'completed') {
       bg = const Color(0xFFECFDF5);
       fg = const Color(0xFF059669);

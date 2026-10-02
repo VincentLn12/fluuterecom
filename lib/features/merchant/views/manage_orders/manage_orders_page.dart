@@ -18,6 +18,7 @@ class ManageOrdersPage extends GetView<ManageOrdersController> {
     if (!Get.isRegistered<ManageOrdersController>()) {
       Get.put(ManageOrdersController());
     }
+    controller.checkAndUpdateStatusTab();
 
     return Scaffold(
       backgroundColor: MerchantColors.background,

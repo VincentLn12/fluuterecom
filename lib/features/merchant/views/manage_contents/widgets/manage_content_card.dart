@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/contents/models/content_model.dart';
 import 'package:projecte/features/merchant/controllers/manage_contents_controller.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 
 class ManageContentCard extends GetView<ManageContentsController> {
   const ManageContentCard({super.key, required this.item});
@@ -14,26 +15,26 @@ class ManageContentCard extends GetView<ManageContentsController> {
   Widget build(BuildContext context) {
     final displayCoverImage =
         (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty)
-        ? item.coverImageUrl!
-        : item.youtubeThumbnail;
+            ? item.coverImageUrl!
+            : item.youtubeThumbnail;
 
     final hasVideo = item.youtubeUrl != null && item.youtubeUrl!.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFCBD5E1), width: 0.8),
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: MerchantColors.border, width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
+            color: MerchantColors.primaryDark.withValues(alpha: 0.04),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(22),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,7 +56,7 @@ class ManageContentCard extends GetView<ManageContentsController> {
                                 const Icon(
                                   Icons.broken_image_outlined,
                                   color: Color(0xFF64748B),
-                                  size: 40,
+                                  size: 38,
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
@@ -81,8 +82,8 @@ class ManageContentCard extends GetView<ManageContentsController> {
                                 ),
                                 child: const Icon(
                                   Icons.auto_stories_rounded,
-                                  color: Color(0xFF047857),
-                                  size: 36,
+                                  color: MerchantColors.primary,
+                                  size: 34,
                                 ),
                               ),
                               const SizedBox(height: 6),
@@ -117,9 +118,9 @@ class ManageContentCard extends GetView<ManageContentsController> {
 
                 // Category Tag Pill & Status Badge (Top Bar)
                 Positioned(
-                  top: 14,
-                  left: 14,
-                  right: 14,
+                  top: 12,
+                  left: 12,
+                  right: 12,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -129,12 +130,10 @@ class ManageContentCard extends GetView<ManageContentsController> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10,
-                              vertical: 5,
+                              vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(
-                                0xFF0F172A,
-                              ).withValues(alpha: 0.85),
+                              color: const Color(0xFF0F172A).withValues(alpha: 0.8),
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.white24),
                             ),
@@ -174,16 +173,16 @@ class ManageContentCard extends GetView<ManageContentsController> {
                 // Video Badge Pill (Bottom Left on Image)
                 if (hasVideo)
                   Positioned(
-                    bottom: 12,
-                    left: 14,
+                    bottom: 10,
+                    left: 12,
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
+                        horizontal: 9,
+                        vertical: 4,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.red.shade700,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: const [
                           BoxShadow(
                             color: Colors.black26,
@@ -198,14 +197,14 @@ class ManageContentCard extends GetView<ManageContentsController> {
                           const Icon(
                             Icons.play_circle_fill_rounded,
                             color: Colors.white,
-                            size: 14,
+                            size: 13,
                           ),
                           const SizedBox(width: 4),
                           Text(
                             'วิดีโอ YouTube',
                             style: GoogleFonts.krub(
                               color: Colors.white,
-                              fontSize: 11,
+                              fontSize: 10.5,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -218,41 +217,41 @@ class ManageContentCard extends GetView<ManageContentsController> {
 
             // Content Info Body
             Padding(
-              padding: const EdgeInsets.all(18),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     item.title,
                     style: GoogleFonts.krub(
-                      fontSize: 16,
+                      fontSize: 15.5,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF0F172A),
-                      height: 1.35,
+                      color: MerchantColors.textPrimary,
+                      height: 1.3,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   if (item.description != null &&
                       item.description!.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 5),
                     Text(
                       item.description!,
                       style: GoogleFonts.krub(
-                        fontSize: 13,
-                        color: const Color(0xFF64748B),
-                        height: 1.45,
+                        fontSize: 12.5,
+                        color: MerchantColors.textSecondary,
+                        height: 1.4,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
-                  const SizedBox(height: 16),
-
-                  const Divider(height: 1, color: Color(0xFFE2E8F0)),
                   const SizedBox(height: 14),
 
-                  // Metadata & Actions Footer Row (Overflow Safe)
+                  const Divider(height: 1, color: Color(0xFFF1F5F9)),
+                  const SizedBox(height: 12),
+
+                  // Metadata & Actions Footer Row
                   Row(
                     children: [
                       // View Counter & Location Badges
@@ -299,7 +298,7 @@ class ManageContentCard extends GetView<ManageContentsController> {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFEF3C7),
+                                  color: MerchantColors.warningBg,
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Row(
@@ -311,17 +310,15 @@ class ManageContentCard extends GetView<ManageContentsController> {
                                       color: Color(0xFFD97706),
                                     ),
                                     const SizedBox(width: 4),
-                                    Flexible(
-                                      child: Text(
-                                        item.districtName!,
-                                        style: GoogleFonts.krub(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFFB45309),
-                                        ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
+                                    Text(
+                                      item.districtName!,
+                                      style: GoogleFonts.krub(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.bold,
+                                        color: const Color(0xFFB45309),
                                       ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ],
                                 ),
@@ -352,22 +349,29 @@ class ManageContentCard extends GetView<ManageContentsController> {
                                 vertical: 6,
                               ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF059669),
+                                color: MerchantColors.primary,
                                 borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: MerchantColors.primary.withValues(alpha: 0.2),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   const Icon(
                                     Icons.edit_rounded,
-                                    size: 14,
+                                    size: 13,
                                     color: Colors.white,
                                   ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'แก้ไข',
                                     style: GoogleFonts.krub(
-                                      fontSize: 12,
+                                      fontSize: 11.5,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                     ),
@@ -383,7 +387,7 @@ class ManageContentCard extends GetView<ManageContentsController> {
                             child: Container(
                               padding: const EdgeInsets.all(6),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFFFF1F2),
+                                color: MerchantColors.errorBg,
                                 borderRadius: BorderRadius.circular(10),
                                 border: Border.all(
                                   color: const Color(0xFFFECDD3),
@@ -391,8 +395,8 @@ class ManageContentCard extends GetView<ManageContentsController> {
                               ),
                               child: const Icon(
                                 Icons.delete_outline_rounded,
-                                size: 16,
-                                color: Color(0xFFE11D48),
+                                size: 15,
+                                color: MerchantColors.error,
                               ),
                             ),
                           ),
@@ -410,22 +414,22 @@ class ManageContentCard extends GetView<ManageContentsController> {
   }
 
   Widget _buildStatusBadge(String statusLabel) {
-    Color bg = const Color(0xFF047857);
+    Color bg = MerchantColors.success;
     Color text = Colors.white;
 
     if (statusLabel.contains('รอ')) {
-      bg = const Color(0xFFD97706);
+      bg = MerchantColors.warning;
       text = Colors.white;
     } else if (statusLabel.contains('เก็บ') || statusLabel.contains('ร่าง')) {
-      bg = const Color(0xFF475569);
+      bg = const Color(0xFF64748B);
       text = Colors.white;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
         color: bg,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: const [
           BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
         ],
@@ -433,7 +437,7 @@ class ManageContentCard extends GetView<ManageContentsController> {
       child: Text(
         statusLabel,
         style: GoogleFonts.krub(
-          fontSize: 11,
+          fontSize: 10.5,
           fontWeight: FontWeight.bold,
           color: text,
         ),

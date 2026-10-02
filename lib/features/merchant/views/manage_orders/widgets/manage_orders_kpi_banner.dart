@@ -40,10 +40,10 @@ class ManageOrdersKpiBanner extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: _buildMetricCard(
-                title: 'รอตรวจสลิป',
+                title: 'รอระบบยืนยัน',
                 value: '$pendingSlip',
-                subText: pendingSlip > 0 ? 'รอยืนยันยอด' : 'ไม่มีค้าง',
-                icon: Icons.receipt_long_rounded,
+                subText: pendingSlip > 0 ? 'Admin ตรวจสอบ' : 'ไม่มีค้าง',
+                icon: Icons.hourglass_top_rounded,
                 iconColor: const Color(0xFF38BDF8),
                 isSelected: selected == 'pendingverification',
                 onTap: () => controller.changeStatusTab('PendingVerification'),
@@ -66,7 +66,7 @@ class ManageOrdersKpiBanner extends StatelessWidget {
               child: _buildMetricCard(
                 title: 'ทั้งหมด',
                 value: '$total',
-                subText: 'รายการในร้าน',
+                subText: 'ไม่รวมหมดอายุ',
                 icon: Icons.inventory_2_rounded,
                 iconColor: Colors.white,
                 isSelected: selected == 'all' || selected.isEmpty,
