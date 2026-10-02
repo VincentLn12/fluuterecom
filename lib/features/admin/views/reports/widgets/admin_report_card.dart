@@ -189,14 +189,17 @@ class AdminReportCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isCurrent ? color.withValues(alpha: 0.08) : Colors.transparent,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isCurrent ? color.withValues(alpha: 0.4) : const Color(0xFFE2E8F0),
           width: 1,
         ),
       ),
-      child: ListTile(
+      child: Material(
+        color: isCurrent ? color.withValues(alpha: 0.08) : Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
         leading: Container(
@@ -232,8 +235,9 @@ class AdminReportCard extends StatelessWidget {
           }
         },
       ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {

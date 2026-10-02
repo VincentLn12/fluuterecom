@@ -156,14 +156,17 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: isSelected ? const Color(0xFFEFF6FF) : Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isSelected ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0),
           width: isSelected ? 1.5 : 1,
         ),
       ),
-      child: ListTile(
+      child: Material(
+        color: isSelected ? const Color(0xFFEFF6FF) : Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: ListTile(
         onTap: onTap,
         title: Text(
           title,
@@ -195,8 +198,9 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               )
             : null,
       ),
-    );
-  }
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -1608,7 +1612,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: const Color(0xFFE0EAE6)),
             boxShadow: const [
@@ -1619,7 +1622,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               ),
             ],
           ),
-          child: ListView.separated(
+          child: Material(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            clipBehavior: Clip.antiAlias,
+            child: ListView.separated(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,
@@ -1668,9 +1675,10 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
             },
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 }
 
 class _ServiceItem {
