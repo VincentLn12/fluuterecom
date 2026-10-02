@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:projecte/app/routes/app_routes.dart';
 import 'package:projecte/features/shops/models/product_model.dart';
+import 'package:projecte/features/merchant/repositories/merchant_repository.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_product_summary.dart';
 import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_list_card.dart';
 import 'package:projecte/features/merchant/views/product_deals/widgets/product_deals_create_button.dart';
-import 'package:projecte/features/merchant/repositories/merchant_repository.dart';
+import 'package:projecte/shared/widgets/loading_widget.dart';
 
 class ProductDealsPage extends StatefulWidget {
   const ProductDealsPage({super.key});
@@ -17,16 +19,9 @@ class ProductDealsPage extends StatefulWidget {
 
 class _ProductDealsPageState extends State<ProductDealsPage> {
   final _repository = MerchantRepository();
-  final _discountController = TextEditingController();
-  final _quantityController = TextEditingController();
-  final _startsController = TextEditingController();
-  final _endsController = TextEditingController();
   ProductModel? product;
   List<dynamic> deals = [];
   bool loading = true;
-  bool saving = false;
-  String dealType = 'FlashDeal';
-  String discountType = 'Percent';
 
   @override
   void initState() {
@@ -34,10 +29,6 @@ class _ProductDealsPageState extends State<ProductDealsPage> {
     final args = Get.arguments;
     if (args is ProductModel) {
       product = args;
-      _quantityController.text = args.quantity.toString();
-      final now = DateTime.now().toUtc();
-      _startsController.text = now.toIso8601String();
-      _endsController.text = now.add(const Duration(days: 1)).toIso8601String();
       _loadDeals();
     } else {
       loading = false;
@@ -48,220 +39,267 @@ class _ProductDealsPageState extends State<ProductDealsPage> {
     final item = product;
     if (item == null) return;
     setState(() => loading = true);
-    final result = await _repository.fetchProductDeals(item.id);
-    if (mounted) {
-      setState(() {
-        deals = result;
-        loading = false;
-      });
-    }
-  }
-
-  Future<void> _createDeal() async {
-    final item = product;
-    if (item == null) return;
-    final discount = double.tryParse(_discountController.text) ?? 0;
-    final quantity = int.tryParse(_quantityController.text) ?? 0;
-    final starts = DateTime.tryParse(_startsController.text)?.toUtc();
-    final ends = DateTime.tryParse(_endsController.text)?.toUtc();
-    if (discount <= 0 ||
-        quantity <= 0 ||
-        starts == null ||
-        ends == null ||
-        !ends.isAfter(starts) ||
-        (discountType == 'Percent' && discount >= 100) ||
-        (discountType == 'FixedAmount' && discount >= item.price)) {
-      Get.snackbar(
-        'ข้อมูลไม่ถูกต้อง',
-        'ตรวจสอบส่วนลด จำนวนสิทธิ์ และช่วงเวลาอีกครั้ง',
-      );
-      return;
-    }
-    setState(() => saving = true);
-    final ok = await _repository.createProductDeal(item.id, {
-      'dealType': dealType,
-      'discountType': discountType,
-      'discountValue': discount,
-      'totalQuantity': quantity,
-      'startsAt': starts.toIso8601String(),
-      'endsAt': ends.toIso8601String(),
-    });
-    if (mounted) setState(() => saving = false);
-    if (ok) {
-      _discountController.clear();
-      await _loadDeals();
-      Get.snackbar(
-        'สร้างโปรโมชันสำเร็จ',
-        'เพิ่มดีลให้สินค้านี้แล้ว',
-        backgroundColor: const Color(0xFF047857),
-        colorText: Colors.white,
-      );
-    } else {
-      Get.snackbar(
-        'สร้างโปรโมชันไม่สำเร็จ',
-        'กรุณาตรวจสอบสต็อกและสิทธิ์ที่เหลือ',
-      );
+    try {
+      final result = await _repository.fetchProductDeals(item.id);
+      if (mounted) {
+        setState(() {
+          deals = result;
+          loading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => loading = false);
     }
   }
 
   Future<void> _stopDeal(String id) async {
     final ok = await _repository.stopProductDeal(id);
-    if (ok) await _loadDeals();
-  }
-
-  @override
-  void dispose() {
-    _discountController.dispose();
-    _quantityController.dispose();
-    _startsController.dispose();
-    _endsController.dispose();
-    super.dispose();
+    if (ok) {
+      await _loadDeals();
+      Get.snackbar(
+        'หยุดดีลสำเร็จ',
+        'โปรโมชันถูกระงับการใช้งานเรียบร้อยแล้ว',
+        backgroundColor: MerchantColors.primary,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } else {
+      Get.snackbar(
+        'เกิดข้อผิดพลาด',
+        'ไม่สามารถหยุดดีลได้ กรุณาลองใหม่อีกครั้ง',
+        backgroundColor: MerchantColors.error,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final item = product;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF1F5F9),
+      backgroundColor: MerchantColors.background,
       appBar: AppBar(
-        title: Text(
-          'จัดการโปรโมชัน',
-          style: GoogleFonts.krub(fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: const Color(0xFF064E3B),
+        backgroundColor: MerchantColors.primaryDark,
         foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: false,
+        leading: IconButton(
+          icon: Container(
+            padding: const EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              size: 16,
+              color: Colors.white,
+            ),
+          ),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'จัดการโปรโมชันสินค้า',
+              style: GoogleFonts.krub(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              'Merchant Deals & Promotions',
+              style: GoogleFonts.krub(
+                fontSize: 11,
+                color: const Color(0xFFA7F3D0),
+              ),
+            ),
+          ],
+        ),
         actions: [
           IconButton(
+            tooltip: 'สร้างโปรโมชัน',
+            icon: Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.add_rounded,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
             onPressed: () async {
+              if (item == null) return;
               final result = await Get.toNamed(
                 AppRoutes.myShopProductDealForm,
                 arguments: item,
               );
               if (result == true) _loadDeals();
             },
-            icon: const Icon(Icons.add_rounded),
-            tooltip: 'สร้างโปรโมชัน',
           ),
           IconButton(
+            tooltip: 'รีเฟรช',
+            icon: Container(
+              padding: const EdgeInsets.all(7),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.12),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.refresh_rounded,
+                size: 18,
+                color: Colors.white,
+              ),
+            ),
             onPressed: _loadDeals,
-            icon: const Icon(Icons.refresh_rounded),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: item == null
-          ? const Center(child: Text('ไม่พบข้อมูลสินค้า'))
-          : loading
-          ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.all(16),
-              children: [
-                ProductDealsProductSummary(product: item),
-                const SizedBox(height: 18),
-                ProductDealsListCard(deals: deals, onStopDeal: _stopDeal),
-                const SizedBox(height: 16),
-                ProductDealsCreateButton(
-                  onPressed: () async {
-                    final result = await Get.toNamed(
-                      AppRoutes.myShopProductDealForm,
-                      arguments: item,
-                    );
-                    if (result == true) _loadDeals();
-                  },
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline_rounded,
+                      size: 48,
+                      color: MerchantColors.error,
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'ไม่พบข้อมูลสินค้าที่ระบุ',
+                      style: GoogleFonts.krub(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => Get.back(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MerchantColors.primary,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('กลับไปยังคลังสินค้า'),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            )
+          : loading
+              ? const LoadingWidget(message: 'กำลังโหลดข้อมูลโปรโมชัน...')
+              : RefreshIndicator(
+                  onRefresh: _loadDeals,
+                  color: MerchantColors.primary,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(
+                      parent: BouncingScrollPhysics(),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Hero Header Banner
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 22),
+                          decoration: const BoxDecoration(
+                            gradient: MerchantColors.heroGradient,
+                            borderRadius: BorderRadius.vertical(
+                              bottom: Radius.circular(26),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.25),
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.local_fire_department_rounded,
+                                  color: Color(0xFFFDE68A),
+                                  size: 28,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'จัดโปรโมชันเพิ่มยอดขาย',
+                                      style: GoogleFonts.krub(
+                                        fontSize: 16.5,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 3),
+                                    Text(
+                                      'สร้าง Flash Deal หรือโปรโมชันลดราคาพิเศษเพื่อดึงดูดลูกค้าให้สั่งซื้อทันที',
+                                      style: GoogleFonts.krub(
+                                        fontSize: 12,
+                                        color: const Color(0xFFA7F3D0).withValues(alpha: 0.95),
+                                        height: 1.35,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Main Content
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 40),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Target Product Summary Card
+                              ProductDealsProductSummary(product: item),
+
+                              const SizedBox(height: 16),
+
+                              // Deals List Card
+                              ProductDealsListCard(
+                                deals: deals,
+                                onStopDeal: _stopDeal,
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Create Deal CTA Button
+                              ProductDealsCreateButton(
+                                onPressed: () async {
+                                  final result = await Get.toNamed(
+                                    AppRoutes.myShopProductDealForm,
+                                    arguments: item,
+                                  );
+                                  if (result == true) _loadDeals();
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
     );
   }
-
-  // ignore: unused_element
-  Widget _buildCreateCard() => _card(
-    'สร้างโปรโมชันใหม่',
-    Icons.add_circle_outline_rounded,
-    [
-      DropdownButtonFormField<String>(
-        initialValue: dealType,
-        items: const [
-          DropdownMenuItem(value: 'FlashDeal', child: Text('โปรโมชันพิเศษ')),
-          DropdownMenuItem(value: 'LocalDeal', child: Text('โปรเด็ดชุมชน')),
-        ],
-        onChanged: (value) => setState(() => dealType = value ?? dealType),
-        decoration: const InputDecoration(labelText: 'ประเภทโปรโมชัน'),
-      ),
-      DropdownButtonFormField<String>(
-        initialValue: discountType,
-        items: const [
-          DropdownMenuItem(value: 'Percent', child: Text('ลดเป็นเปอร์เซ็นต์')),
-          DropdownMenuItem(
-            value: 'FixedAmount',
-            child: Text('ลดเป็นจำนวนเงิน'),
-          ),
-        ],
-        onChanged: (value) =>
-            setState(() => discountType = value ?? discountType),
-        decoration: const InputDecoration(labelText: 'รูปแบบส่วนลด'),
-      ),
-      TextField(
-        controller: _discountController,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: discountType == 'Percent' ? 'ส่วนลด (%)' : 'ส่วนลด (บาท)',
-        ),
-      ),
-      TextField(
-        controller: _quantityController,
-        keyboardType: TextInputType.number,
-        decoration: const InputDecoration(labelText: 'จำนวนสิทธิ์ทั้งหมด'),
-      ),
-      TextField(
-        controller: _startsController,
-        decoration: const InputDecoration(labelText: 'เวลาเริ่ม (ISO/UTC)'),
-      ),
-      TextField(
-        controller: _endsController,
-        decoration: const InputDecoration(labelText: 'เวลาสิ้นสุด (ISO/UTC)'),
-      ),
-      const SizedBox(height: 14),
-      SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          onPressed: saving ? null : _createDeal,
-          icon: const Icon(Icons.save_rounded),
-          label: Text(saving ? 'กำลังบันทึก...' : 'สร้างโปรโมชัน'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF047857),
-            foregroundColor: Colors.white,
-          ),
-        ),
-      ),
-    ],
-  );
-
-  Widget _card(String title, IconData icon, List<Widget> children) => Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(18),
-      border: Border.all(color: const Color(0xFFE2E8F0)),
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: const Color(0xFFE65100)),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: GoogleFonts.krub(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
-        ),
-        const Divider(height: 24),
-        ...children,
-      ],
-    ),
-  );
 }

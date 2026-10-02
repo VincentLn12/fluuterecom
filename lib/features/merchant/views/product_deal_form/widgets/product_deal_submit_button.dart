@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:projecte/features/merchant/theme/merchant_colors.dart';
 
 class ProductDealSubmitButton extends StatelessWidget {
   const ProductDealSubmitButton({
@@ -12,16 +14,47 @@ class ProductDealSubmitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
+      height: 52,
+      decoration: BoxDecoration(
+        gradient: MerchantColors.headerGradient,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: MerchantColors.primaryDark.withValues(alpha: 0.25),
+            blurRadius: 14,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: ElevatedButton.icon(
         onPressed: isSaving ? null : onPressed,
-        icon: const Icon(Icons.save_rounded),
-        label: Text(isSaving ? 'กำลังบันทึก...' : 'บันทึกโปรโมชัน'),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF047857),
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 13),
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        icon: isSaving
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2.2,
+                ),
+              )
+            : const Icon(Icons.check_circle_outline_rounded, size: 22),
+        label: Text(
+          isSaving ? 'กำลังบันทึกโปรโมชัน...' : 'บันทึกและเปิดใช้งานโปรโมชัน',
+          style: GoogleFonts.krub(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: Colors.white,
+          ),
         ),
       ),
     );
