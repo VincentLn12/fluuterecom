@@ -116,7 +116,7 @@ class ContentModel {
       latitude: parseCoord(json['latitude']),
       longitude: parseCoord(json['longitude']),
       viewCount: int.tryParse(json['viewCount']?.toString() ?? '0') ?? 0,
-      rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
+      rating: double.tryParse(json['rating']?.toString() ?? '') ?? 0,
       tags: parsedTags,
       publishedAt:
           json['publishedAt']?.toString() ?? json['createdAt']?.toString(),

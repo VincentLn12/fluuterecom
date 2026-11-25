@@ -1,3 +1,5 @@
+import '../../contents/controllers/content_controller.dart';
+import '../widgets/home_section_header.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../contents/models/content_model.dart';
@@ -97,7 +99,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    bannerPageController = PageController(viewportFraction: 0.92);
+    bannerPageController = PageController(viewportFraction: 0.88);
     fetchHomeData();
   }
 
@@ -152,6 +154,11 @@ class HomeController extends GetxController {
 
   void onSearchSubmit(String query) {
     if (query.trim().isEmpty) return;
-    Get.toNamed('/contents', arguments: {'search': query.trim()});
+    final search = query.trim();
+    if (!Get.isRegistered<ContentController>()) {
+      Get.put(ContentController());
+    }
+    Get.find<ContentController>().applyFilters(search: search);
+    openMainTab(2, '/contents', arguments: {'search': search});
   }
 }

@@ -34,6 +34,15 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Skip lint on release builds (stripe_android lint needs an unavailable artifact)
+subprojects {
+    tasks.configureEach {
+        if (name.startsWith("lint")) {
+            enabled = false
+        }
+    }
+}
+
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }

@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
+import 'home_network_image.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
 import 'home_section_header.dart';
+import '../widgets/home_colors.dart';
 
 class HomeShopsSection extends GetView<HomeController> {
   const HomeShopsSection({super.key});
-
-  static const Color brandPrimary = Color(0xFFC85A17);
-  static const Color brandSoft = Color(0xFFFFF3EB);
-  static const Color cardWhite = Colors.white;
-  static const Color textBlack = Color(0xFF0F172A);
-  static const Color textMuted = Color(0xFF64748B);
-  static const Color borderLight = Color(0xFFE2D6C6);
 
   Widget _buildShopPlaceholder() {
     return Container(
@@ -45,44 +40,10 @@ class HomeShopsSection extends GetView<HomeController> {
           // =========================
           // HEADER ROW
           // =========================
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Expanded(
-                  child: HomeSectionHeader(
-                    title: 'ร้านค้าชุมชนแนะนำ',
-                    subtitle: 'สนับสนุนสินค้าและผลิตภัณฑ์ตรงจากชาวบ้าน',
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => Get.toNamed('/shops'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: brandPrimary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'ดูทั้งหมด',
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      SizedBox(width: 3),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 13),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          HomeSectionHeader(
+            title: 'ร้านค้าชุมชนแนะนำ',
+            subtitle: 'สนับสนุนสินค้าและผลิตภัณฑ์ตรงจากชาวบ้าน',
+            onSeeAll: () => openMainTab(1, '/shops'),
           ),
           const SizedBox(height: 14),
 
@@ -106,19 +67,18 @@ class HomeShopsSection extends GetView<HomeController> {
                 return Container(
                   width: 210,
                   decoration: BoxDecoration(
-                    color: cardWhite,
+                    color: HomeColors.cardWhite,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: borderLight, width: 1.2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(19),
+                    borderRadius: BorderRadius.circular(20),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -133,11 +93,9 @@ class HomeShopsSection extends GetView<HomeController> {
                                   height: 110,
                                   width: double.infinity,
                                   child: hasImage
-                                      ? Image.network(
-                                          shop.coverImageUrl!,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (ctx, err, stack) =>
-                                              _buildShopPlaceholder(),
+                                      ? HomeNetworkImage(
+                                          url: shop.coverImageUrl!,
+                                          placeholder: _buildShopPlaceholder(),
                                         )
                                       : _buildShopPlaceholder(),
                                 ),
@@ -216,8 +174,8 @@ class HomeShopsSection extends GetView<HomeController> {
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
                                         fontSize: 15,
-                                        fontWeight: FontWeight.w900,
-                                        color: textBlack,
+                                        fontWeight: FontWeight.w700,
+                                        color: HomeColors.textBlack,
                                       ),
                                     ),
 
@@ -228,12 +186,11 @@ class HomeShopsSection extends GetView<HomeController> {
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: brandSoft,
+                                        color: HomeColors.brandSoft,
                                         borderRadius: BorderRadius.circular(12),
                                         border: Border.all(
-                                          color: brandPrimary.withValues(
-                                            alpha: 0.2,
-                                          ),
+                                          color: HomeColors.brandPrimary
+                                              .withValues(alpha: 0.2),
                                         ),
                                       ),
                                       child: Row(
@@ -242,7 +199,7 @@ class HomeShopsSection extends GetView<HomeController> {
                                           const Icon(
                                             Icons.location_on_rounded,
                                             size: 13,
-                                            color: brandPrimary,
+                                            color: HomeColors.brandPrimary,
                                           ),
                                           const SizedBox(width: 3),
                                           Flexible(
@@ -252,8 +209,8 @@ class HomeShopsSection extends GetView<HomeController> {
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontSize: 11.5,
-                                                fontWeight: FontWeight.w800,
-                                                color: brandPrimary,
+                                                fontWeight: FontWeight.w600,
+                                                color: HomeColors.brandPrimary,
                                               ),
                                             ),
                                           ),
@@ -268,15 +225,15 @@ class HomeShopsSection extends GetView<HomeController> {
                                           'เยี่ยมชมร้านค้า',
                                           style: TextStyle(
                                             fontSize: 12,
-                                            fontWeight: FontWeight.w800,
-                                            color: textMuted,
+                                            fontWeight: FontWeight.w600,
+                                            color: HomeColors.textMuted,
                                           ),
                                         ),
                                         SizedBox(width: 4),
                                         Icon(
                                           Icons.arrow_forward_rounded,
                                           size: 14,
-                                          color: brandPrimary,
+                                          color: HomeColors.brandPrimary,
                                         ),
                                       ],
                                     ),

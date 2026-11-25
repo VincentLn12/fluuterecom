@@ -87,13 +87,19 @@ class _ContentVideoPlayerState extends State<ContentVideoPlayer> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 6,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 icon: const Icon(Icons.play_arrow, size: 16),
-                label: const Text('เปิดดูบน YouTube', style: TextStyle(fontSize: 12)),
+                label: const Text(
+                  'เปิดดูบน YouTube',
+                  style: TextStyle(fontSize: 12),
+                ),
               ),
             ],
           ),

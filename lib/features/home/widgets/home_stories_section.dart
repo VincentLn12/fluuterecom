@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
+import 'home_network_image.dart';
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
 import 'home_section_header.dart';
+import '../widgets/home_colors.dart';
 
 class HomeStoriesSection extends GetView<HomeController> {
   const HomeStoriesSection({super.key});
-
-  static const Color brandPrimary = Color(0xFFC85A17);
-  static const Color brandSoft = Color(0xFFFFF3EB);
-  static const Color cardWhite = Colors.white;
-  static const Color textBlack = Color(0xFF0F172A);
-  static const Color textMuted = Color(0xFF64748B);
-  static const Color borderLight = Color(0xFFE2D6C6);
 
   Widget _buildPlaceholderBox() {
     return Container(
@@ -44,44 +39,10 @@ class HomeStoriesSection extends GetView<HomeController> {
           // =========================
           // HEADER
           // =========================
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Expanded(
-                  child: HomeSectionHeader(
-                    title: 'ค้นพบเสน่ห์กาญจนบุรี',
-                    subtitle: 'แนะนำแหล่งท่องเที่ยวและสถานที่น่าสนใจ',
-                  ),
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: () => Get.toNamed('/contents'),
-                  style: TextButton.styleFrom(
-                    foregroundColor: brandPrimary,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'ดูทั้งหมด',
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      SizedBox(width: 3),
-                      Icon(Icons.arrow_forward_ios_rounded, size: 13),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+          HomeSectionHeader(
+            title: 'ค้นพบเสน่ห์กาญจนบุรี',
+            subtitle: 'แนะนำแหล่งท่องเที่ยวและสถานที่น่าสนใจ',
+            onSeeAll: () => openMainTab(2, '/contents'),
           ),
 
           const SizedBox(height: 14),
@@ -107,24 +68,26 @@ class HomeStoriesSection extends GetView<HomeController> {
                     : item.youtubeThumbnail;
 
                 // Ensure YouTube letterbox black bars (hqdefault) are replaced with clean 16:9 (mqdefault)
-                final imageUrl = rawUrl.replaceAll('hqdefault.jpg', 'mqdefault.jpg');
+                final imageUrl = rawUrl.replaceAll(
+                  'hqdefault.jpg',
+                  'mqdefault.jpg',
+                );
 
                 return Container(
                   width: 230,
                   decoration: BoxDecoration(
-                    color: cardWhite,
+                    color: HomeColors.cardWhite,
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: borderLight, width: 1.2),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(19),
+                    borderRadius: BorderRadius.circular(20),
                     child: Material(
                       color: Colors.transparent,
                       child: InkWell(
@@ -143,12 +106,9 @@ class HomeStoriesSection extends GetView<HomeController> {
                                   height: 155,
                                   width: double.infinity,
                                   child: imageUrl.isNotEmpty
-                                      ? Image.network(
-                                          imageUrl,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return _buildPlaceholderBox();
-                                          },
+                                      ? HomeNetworkImage(
+                                          url: imageUrl,
+                                          placeholder: _buildPlaceholderBox(),
                                         )
                                       : _buildPlaceholderBox(),
                                 ),
@@ -165,7 +125,7 @@ class HomeStoriesSection extends GetView<HomeController> {
                                         vertical: 5,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: brandPrimary,
+                                        color: HomeColors.brandPrimary,
                                         borderRadius: BorderRadius.circular(20),
                                         boxShadow: const [
                                           BoxShadow(
@@ -182,7 +142,7 @@ class HomeStoriesSection extends GetView<HomeController> {
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                     ),
@@ -198,7 +158,9 @@ class HomeStoriesSection extends GetView<HomeController> {
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: brandPrimary.withValues(alpha: 0.88),
+                                      color: HomeColors.brandPrimary.withValues(
+                                        alpha: 0.88,
+                                      ),
                                       borderRadius: BorderRadius.circular(16),
                                     ),
                                     child: Row(
@@ -214,7 +176,7 @@ class HomeStoriesSection extends GetView<HomeController> {
                                           '${item.viewCount}',
                                           style: const TextStyle(
                                             fontSize: 11,
-                                            fontWeight: FontWeight.w800,
+                                            fontWeight: FontWeight.w600,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -230,10 +192,16 @@ class HomeStoriesSection extends GetView<HomeController> {
                             // =========================
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
+                                padding: const EdgeInsets.fromLTRB(
+                                  12,
+                                  12,
+                                  12,
+                                  10,
+                                ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     // Title Text
                                     Text(
@@ -243,8 +211,8 @@ class HomeStoriesSection extends GetView<HomeController> {
                                       style: const TextStyle(
                                         fontSize: 15,
                                         height: 1.3,
-                                        fontWeight: FontWeight.w900,
-                                        color: textBlack,
+                                        fontWeight: FontWeight.w700,
+                                        color: HomeColors.textBlack,
                                       ),
                                     ),
 
@@ -255,10 +223,11 @@ class HomeStoriesSection extends GetView<HomeController> {
                                         vertical: 4.5,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: brandSoft,
+                                        color: HomeColors.brandSoft,
                                         borderRadius: BorderRadius.circular(14),
                                         border: Border.all(
-                                          color: brandPrimary.withValues(alpha: 0.2),
+                                          color: HomeColors.brandPrimary
+                                              .withValues(alpha: 0.2),
                                         ),
                                       ),
                                       child: Row(
@@ -267,7 +236,7 @@ class HomeStoriesSection extends GetView<HomeController> {
                                           const Icon(
                                             Icons.location_on_rounded,
                                             size: 14,
-                                            color: brandPrimary,
+                                            color: HomeColors.brandPrimary,
                                           ),
                                           const SizedBox(width: 3),
                                           Flexible(
@@ -277,8 +246,8 @@ class HomeStoriesSection extends GetView<HomeController> {
                                               overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontSize: 12,
-                                                fontWeight: FontWeight.w800,
-                                                color: brandPrimary,
+                                                fontWeight: FontWeight.w600,
+                                                color: HomeColors.brandPrimary,
                                               ),
                                             ),
                                           ),
@@ -293,15 +262,15 @@ class HomeStoriesSection extends GetView<HomeController> {
                                           'อ่านเรื่องราว',
                                           style: TextStyle(
                                             fontSize: 12.5,
-                                            fontWeight: FontWeight.w800,
-                                            color: textMuted,
+                                            fontWeight: FontWeight.w600,
+                                            color: HomeColors.textMuted,
                                           ),
                                         ),
                                         SizedBox(width: 4),
                                         Icon(
                                           Icons.arrow_forward_rounded,
                                           size: 15,
-                                          color: brandPrimary,
+                                          color: HomeColors.brandPrimary,
                                         ),
                                       ],
                                     ),

@@ -6,6 +6,7 @@ import 'package:projecte/features/admin/theme/admin_colors.dart';
 import '../../controllers/admin_dashboard_controller.dart';
 import '../../models/admin_dashboard_model.dart';
 import 'widgets/admin_sales_trend_chart.dart';
+import 'package:projecte/shared/widgets/back_to_home_button.dart';
 
 class AdminDashboardPage extends StatefulWidget {
   const AdminDashboardPage({super.key});
@@ -240,6 +241,11 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        BackToHomeButton(
+                          color: AdminColors.primary,
+                          borderColor: AdminColors.border,
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

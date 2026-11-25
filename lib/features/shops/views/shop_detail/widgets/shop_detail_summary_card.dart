@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 import 'package:projecte/features/shops/models/shop_model.dart';
-import 'shop_detail_action_bar.dart';
 
+/// Logo, name, category/location and a stats strip under the banner.
 class ShopDetailHeaderCard extends StatelessWidget {
   final ShopModel shop;
   final double rating;
   final int reviewCount;
   final int productCount;
-  final bool isFollowing;
-  final VoidCallback onToggleFollow;
-  final VoidCallback onShare;
-  final VoidCallback onDirections;
+  final VoidCallback? onRatingTap;
+  final VoidCallback? onProductsTap;
 
   const ShopDetailHeaderCard({
     super.key,
@@ -18,149 +17,65 @@ class ShopDetailHeaderCard extends StatelessWidget {
     required this.rating,
     required this.reviewCount,
     required this.productCount,
-    required this.isFollowing,
-    required this.onToggleFollow,
-    required this.onShare,
-    required this.onDirections,
+    this.onRatingTap,
+    this.onProductsTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isOpen = shop.isOpenNow;
-    final logoImage = shop.coverImageUrl ?? shop.backgroundImageUrl;
+    final open = shop.isOpenNow;
+    final hasHours = shop.openingTime != null && shop.closingTime != null;
+    final meta = [
+      shop.categoryName ?? 'ร้านค้าชุมชน',
+      if (shop.districtName?.isNotEmpty ?? false) 'อ.${shop.districtName}',
+    ].join(' · ');
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFE0EAE6), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF0F382C).withValues(alpha: 0.1),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row 1: Floating Logo + Title & Badges
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Store Logo
               Container(
-                width: 70,
-                height: 70,
+                width: 64,
+                height: 64,
+                padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE0EAE6), width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.08),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
+                  border: Border.all(color: DetailColors.line),
                 ),
                 child: ClipOval(
-                  child: logoImage != null && logoImage.isNotEmpty
-                      ? Image.network(
-                          logoImage,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              _buildLogoPlaceholder(),
-                        )
-                      : _buildLogoPlaceholder(),
+                  child: DetailImage(
+                    url: shop.coverImageUrl,
+                    placeholderIcon: Icons.storefront_rounded,
+                  ),
                 ),
               ),
               const SizedBox(width: 14),
-
-              // Title & Badges
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Badges (Category & District)
-                    Wrap(
-                      spacing: 6,
-                      runSpacing: 4,
-                      children: [
-                        if (shop.categoryName != null &&
-                            shop.categoryName!.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 9,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFE76F51), Color(0xFFF4A261)],
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              shop.categoryName!,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        if (shop.districtName != null &&
-                            shop.districtName!.isNotEmpty)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEBF6F3),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              'อ.${shop.districtName}',
-                              style: const TextStyle(
-                                color: Color(0xFF2A9D8F),
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                      ],
+                    Text(
+                      shop.name,
+                      style: const TextStyle(
+                        fontSize: 21,
+                        fontWeight: FontWeight.w700,
+                        color: DetailColors.ink,
+                        height: 1.3,
+                        letterSpacing: -0.3,
+                      ),
                     ),
-                    const SizedBox(height: 5),
-
-                    // Shop Name (Display full name without truncation)
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: shop.name,
-                            style: const TextStyle(
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF0D2B22),
-                              height: 1.25,
-                            ),
-                          ),
-                          const WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 6),
-                              child: Icon(
-                                Icons.verified_rounded,
-                                color: Color(0xFF2A9D8F),
-                                size: 19,
-                              ),
-                            ),
-                          ),
-                        ],
+                    const SizedBox(height: 3),
+                    Text(
+                      meta,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13.5,
+                        color: DetailColors.muted,
                       ),
                     ),
                   ],
@@ -168,126 +83,127 @@ class ShopDetailHeaderCard extends StatelessWidget {
               ),
             ],
           ),
-
-          const SizedBox(height: 14),
-          const Divider(color: Color(0xFFE0EAE6), height: 1),
-          const SizedBox(height: 14),
-
-          // Row 2: Stats (Rating, Product Count, Opening Status & Hours)
-          Row(
-            children: [
-              // Rating
-              Expanded(
-                child: _buildStatItem(
-                  icon: Icons.star_rounded,
-                  iconColor: const Color(0xFFE9C46A),
-                  title: rating > 0 ? rating.toStringAsFixed(1) : 'NEW',
-                  subtitle: '$reviewCount รีวิว',
-                ),
+          const SizedBox(height: 18),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            decoration: BoxDecoration(
+              color: DetailColors.canvas,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  _Stat(
+                    icon: Icons.star_rounded,
+                    iconColor: DetailColors.star,
+                    value: rating > 0 ? rating.toStringAsFixed(1) : 'ใหม่',
+                    label: reviewCount > 0
+                        ? '$reviewCount รีวิว'
+                        : 'ยังไม่มีรีวิว',
+                    onTap: onRatingTap,
+                  ),
+                  const _StatDivider(),
+                  _Stat(
+                    icon: Icons.shopping_bag_outlined,
+                    value: '$productCount',
+                    label: 'สินค้า',
+                    onTap: onProductsTap,
+                  ),
+                  const _StatDivider(),
+                  _Stat(
+                    icon: Icons.circle,
+                    iconSize: 9,
+                    iconColor: open
+                        ? const Color(0xFF16A34A)
+                        : DetailColors.muted,
+                    value: open ? 'เปิดอยู่' : 'ปิดแล้ว',
+                    valueColor: open ? const Color(0xFF16A34A) : null,
+                    label: hasHours
+                        ? '${shop.openingTime} - ${shop.closingTime}'
+                        : 'เวลาทำการ',
+                  ),
+                ],
               ),
-
-              _buildVerticalDivider(),
-
-              // Product Count
-              Expanded(
-                child: _buildStatItem(
-                  icon: Icons.inventory_2_rounded,
-                  iconColor: const Color(0xFF2A9D8F),
-                  title: '$productCount',
-                  subtitle: 'รายการสินค้า',
-                ),
-              ),
-
-              _buildVerticalDivider(),
-
-              // Status & Hours
-              Expanded(
-                child: _buildStatItem(
-                  icon: isOpen
-                      ? Icons.storefront_rounded
-                      : Icons.do_not_disturb_on_rounded,
-                  iconColor: isOpen
-                      ? const Color(0xFF2A9D8F)
-                      : const Color(0xFFE76F51),
-                  title: isOpen ? 'เปิดบริการ' : 'ปิดให้บริการ',
-                  titleColor: isOpen
-                      ? const Color(0xFF2A9D8F)
-                      : const Color(0xFFE76F51),
-                  subtitle: shop.openingTime != null && shop.closingTime != null
-                      ? '${shop.openingTime}-${shop.closingTime}'
-                      : 'เปิดทุกวัน',
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          // Row 3: Action Buttons (Follow)
-          ShopDetailActionBar(
-            isFollowing: isFollowing,
-            onToggleFollow: onToggleFollow,
+            ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildStatItem({
-    required IconData icon,
-    required Color iconColor,
-    required String title,
-    Color? titleColor,
-    required String subtitle,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
+class _Stat extends StatelessWidget {
+  final IconData icon;
+  final double iconSize;
+  final Color iconColor;
+  final String value;
+  final Color? valueColor;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _Stat({
+    required this.icon,
+    required this.value,
+    required this.label,
+    this.iconSize = 15,
+    this.iconColor = DetailColors.muted,
+    this.valueColor,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 16, color: iconColor),
-            const SizedBox(width: 3),
-            Flexible(
-              child: Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: titleColor ?? const Color(0xFF0D2B22),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: iconSize, color: iconColor),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    value,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: valueColor ?? DetailColors.ink,
+                    ),
+                  ),
                 ),
-              ),
+              ],
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 11.5, color: DetailColors.muted),
             ),
           ],
         ),
-        const SizedBox(height: 2.5),
-        Text(
-          subtitle,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Color(0xFF5A7B70),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
+      ),
     );
   }
+}
 
-  Widget _buildVerticalDivider() {
-    return Container(width: 1, height: 34, color: const Color(0xFFE0EAE6));
-  }
+class _StatDivider extends StatelessWidget {
+  const _StatDivider();
 
-  Widget _buildLogoPlaceholder() {
-    return Container(
-      color: const Color(0xFF1B4D3E),
-      child: const Center(
-        child: Icon(Icons.storefront_rounded, size: 34, color: Colors.white),
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return const VerticalDivider(
+      width: 1,
+      thickness: 1,
+      indent: 4,
+      endIndent: 4,
+      color: DetailColors.line,
     );
   }
 }

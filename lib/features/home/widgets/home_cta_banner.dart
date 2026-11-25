@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../app/routes/app_routes.dart';
+import '../widgets/home_colors.dart';
 
 class HomeCtaBanner extends StatelessWidget {
   const HomeCtaBanner({super.key});
-
-  static const Color brandPrimary = Color(0xFFC85A17);
-  static const Color darkHeader = Color(0xFF0F172A);
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +13,9 @@ class HomeCtaBanner extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
-          color: darkHeader,
+          color: HomeColors.darkHeader,
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: brandPrimary, width: 2),
+          border: Border.all(color: HomeColors.brandPrimary, width: 2),
           boxShadow: const [
             BoxShadow(
               color: Colors.black26,
@@ -32,14 +30,14 @@ class HomeCtaBanner extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
               decoration: BoxDecoration(
-                color: brandPrimary,
+                color: HomeColors.brandPrimary,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Text(
                 'เข้าร่วมชุมชนกาญจนบุรี',
                 style: TextStyle(
                   fontSize: 12.5,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   color: Colors.white,
                 ),
               ),
@@ -49,7 +47,7 @@ class HomeCtaBanner extends StatelessWidget {
               'แบ่งปันเรื่องราว หรือ ลงทะเบียนร้านค้า',
               style: TextStyle(
                 fontSize: 19,
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
             ),
@@ -69,7 +67,7 @@ class HomeCtaBanner extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => Get.toNamed(AppRoutes.createContent),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: brandPrimary,
+                      backgroundColor: HomeColors.brandPrimary,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -81,7 +79,7 @@ class HomeCtaBanner extends StatelessWidget {
                       'เขียนเรื่องราว',
                       style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -102,7 +100,7 @@ class HomeCtaBanner extends StatelessWidget {
                       'เปิดร้านค้า',
                       style: TextStyle(
                         fontSize: 15,
-                        fontWeight: FontWeight.w900,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),

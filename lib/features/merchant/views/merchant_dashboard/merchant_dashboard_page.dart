@@ -8,6 +8,7 @@ import 'widgets/merchant_action_radar_tab.dart';
 import 'widgets/merchant_dashboard_hero_card.dart';
 import 'widgets/merchant_kpi_overview_tab.dart';
 import 'widgets/merchant_services_directory_tab.dart';
+import 'package:projecte/shared/widgets/back_to_home_button.dart';
 
 class MerchantDashboardPage extends StatefulWidget {
   const MerchantDashboardPage({super.key});
@@ -71,6 +72,11 @@ class _MerchantDashboardPageState extends State<MerchantDashboardPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        BackToHomeButton(
+                          color: MerchantColors.primary,
+                          borderColor: MerchantColors.border,
+                        ),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

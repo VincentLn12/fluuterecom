@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'home_network_image.dart';
 import 'package:get/get.dart';
 import '../controllers/home_controller.dart';
 import 'home_section_header.dart';
+import '../widgets/home_colors.dart';
 
 class HomeHeroSlider extends GetView<HomeController> {
   const HomeHeroSlider({super.key});
-
-  static const Color brandPrimary = Color(0xFFC85A17);
-  static const Color cardWhite = Colors.white;
-  static const Color borderDark = Color(0xFFD3C7BB);
 
   @override
   Widget build(BuildContext context) {
@@ -32,32 +30,29 @@ class HomeHeroSlider extends GetView<HomeController> {
                     ? item.coverImageUrl!
                     : item.youtubeThumbnail;
 
-                return Container(
+                final card = Container(
                   margin: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
-                    color: cardWhite,
+                    color: HomeColors.cardWhite,
                     borderRadius: BorderRadius.circular(22),
-                    border: Border.all(color: borderDark, width: 1.5),
                     boxShadow: const [
                       BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 12,
-                        offset: Offset(0, 4),
+                        color: Color(0x1F000000),
+                        blurRadius: 18,
+                        offset: Offset(0, 8),
                       ),
                     ],
                   ),
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(22),
                     child: Stack(
                       children: [
                         // Image
                         Positioned.fill(
                           child: imageUrl.isNotEmpty
-                              ? Image.network(
-                                  imageUrl,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (ctx, err, stack) =>
-                                      buildGradientBannerBg(),
+                              ? HomeNetworkImage(
+                                  url: imageUrl,
+                                  placeholder: buildGradientBannerBg(),
                                 )
                               : buildGradientBannerBg(),
                         ),
@@ -93,14 +88,14 @@ class HomeHeroSlider extends GetView<HomeController> {
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: brandPrimary,
+                                        color: HomeColors.brandPrimary,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
                                         item.categoryName ?? 'ไฮไลท์แนะนำ',
                                         style: const TextStyle(
                                           fontSize: 12,
-                                          fontWeight: FontWeight.w900,
+                                          fontWeight: FontWeight.w700,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -135,7 +130,7 @@ class HomeHeroSlider extends GetView<HomeController> {
                                   item.title,
                                   style: const TextStyle(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.w900,
+                                    fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                     height: 1.25,
                                   ),
@@ -159,6 +154,23 @@ class HomeHeroSlider extends GetView<HomeController> {
                     ),
                   ),
                 );
+
+                // Shrink side cards slightly so the active one stands out.
+                return AnimatedBuilder(
+                  animation: controller.bannerPageController,
+                  child: card,
+                  builder: (context, child) {
+                    final pc = controller.bannerPageController;
+                    final page = pc.hasClients && pc.position.haveDimensions
+                        ? pc.page ?? pc.initialPage.toDouble()
+                        : controller.carouselIndex.value.toDouble();
+                    final distance = (page - index).abs().clamp(0.0, 1.0);
+                    return Transform.scale(
+                      scale: 1 - distance * 0.06,
+                      child: child,
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -175,7 +187,9 @@ class HomeHeroSlider extends GetView<HomeController> {
                 width: isSelected ? 26 : 8,
                 height: 8,
                 decoration: BoxDecoration(
-                  color: isSelected ? brandPrimary : const Color(0xFF94A3B8),
+                  color: isSelected
+                      ? HomeColors.brandPrimary
+                      : const Color(0xFF94A3B8),
                   borderRadius: BorderRadius.circular(4),
                 ),
               );

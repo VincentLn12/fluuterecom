@@ -1,173 +1,141 @@
 import 'package:flutter/material.dart';
 import '../models/content_detail_model.dart';
+import 'detail_ui.dart';
 
-class ContentSummaryCard extends StatelessWidget {
+/// Summary lead + full story, collapsed to a few lines with "อ่านต่อ".
+class ContentSummaryCard extends StatefulWidget {
   final ContentDetailModel item;
-
   const ContentSummaryCard({super.key, required this.item});
 
   @override
+  State<ContentSummaryCard> createState() => _ContentSummaryCardState();
+}
+
+class _ContentSummaryCardState extends State<ContentSummaryCard> {
+  static const _collapsedLines = 6;
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final text = item.description ?? item.body;
-    if (text == null || text.trim().isEmpty) {
-      return const SizedBox.shrink();
-    }
+    final summary = widget.item.description?.trim() ?? '';
+    var body = widget.item.body?.trim() ?? '';
+    if (body == summary) body = '';
+    if (summary.isEmpty && body.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: const Color(0xFFEADCCF), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF332820).withValues(alpha: 0.05),
-            blurRadius: 16,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title Header
-          Row(
+    const bodyStyle = TextStyle(
+      fontSize: 15.5,
+      color: DetailColors.body,
+      height: 1.75,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const DetailSectionTitle(title: 'เกี่ยวกับที่นี่'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFFD96C2C), Color(0xFFED8936)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFD96C2C).withValues(alpha: 0.25),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Icon(
-                  Icons.auto_stories_rounded,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'เรื่องราวและความเป็นมา',
-                      style: TextStyle(
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF2B1F17),
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      'บอกเล่าเรื่องราวความสวยงามของสถานที่',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF7A6B5D),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
-          // Editorial Highlight Quote Container
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF9F5),
-              borderRadius: BorderRadius.circular(18),
-              border: const Border(
-                left: BorderSide(color: Color(0xFFD96C2C), width: 4),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.format_quote_rounded,
-                      color: Color(0xFFD96C2C),
-                      size: 24,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      'บันทึกการเดินทาง',
-                      style: TextStyle(
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFFD96C2C),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
+              if (summary.isNotEmpty)
                 Text(
-                  text,
+                  summary,
                   style: const TextStyle(
-                    fontSize: 15.5,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF332820),
-                    height: 1.7,
-                    letterSpacing: 0.1,
+                    fontSize: 16,
+                    color: DetailColors.ink,
+                    fontWeight: FontWeight.w500,
+                    height: 1.65,
                   ),
+                ),
+              if (body.isNotEmpty) ...[
+                if (summary.isNotEmpty) const SizedBox(height: 12),
+                LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Only offer "อ่านต่อ" when the story actually overflows.
+                    final painter = TextPainter(
+                      text: TextSpan(text: body, style: bodyStyle),
+                      maxLines: _collapsedLines,
+                      textDirection: Directionality.of(context),
+                      textScaler: MediaQuery.textScalerOf(context),
+                    )..layout(maxWidth: constraints.maxWidth);
+                    final overflows = painter.didExceedMaxLines;
+
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 250),
+                          curve: Curves.easeOutCubic,
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            body,
+                            style: bodyStyle,
+                            maxLines: _expanded ? null : _collapsedLines,
+                            overflow: _expanded
+                                ? TextOverflow.visible
+                                : TextOverflow.fade,
+                          ),
+                        ),
+                        if (overflows)
+                          TextButton.icon(
+                            onPressed: () =>
+                                setState(() => _expanded = !_expanded),
+                            style: TextButton.styleFrom(
+                              foregroundColor: DetailColors.brand,
+                              padding: EdgeInsets.zero,
+                            ),
+                            iconAlignment: IconAlignment.end,
+                            icon: Icon(
+                              _expanded
+                                  ? Icons.keyboard_arrow_up_rounded
+                                  : Icons.keyboard_arrow_down_rounded,
+                            ),
+                            label: Text(
+                              _expanded ? 'ย่อเนื้อหา' : 'อ่านต่อ',
+                              style: const TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                      ],
+                    );
+                  },
                 ),
               ],
-            ),
+              if (widget.item.tags.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: widget.item.tags
+                      .map(
+                        (tag) => Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: DetailColors.canvas,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '#$tag',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: DetailColors.body,
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ],
+            ],
           ),
-
-          // Hashtag Tags preview
-          if (item.tags.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: item.tags.map((tag) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFFF0E6),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: const Color(0xFFD96C2C).withValues(alpha: 0.25),
-                    ),
-                  ),
-                  child: Text(
-                    '#$tag',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFFD96C2C),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
-

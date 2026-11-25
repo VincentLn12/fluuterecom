@@ -21,9 +21,23 @@ class ShopController extends GetxController {
   final searchQuery = ''.obs;
 
   final isLoading = false.obs;
-  final displayMode = 'grid'.obs; // 'grid' | 'list'
-  final viewType = 'list'.obs; // 'list' | 'map'
+  // True once the first fetch finished; later fetches keep the page visible.
+  final hasLoaded = false.obs;
+  final viewMode = 'grid'.obs; // 'grid' | 'list' | 'map'
   final onlyOpenNow = false.obs;
+
+  bool get hasActiveFilters =>
+      searchQuery.value.isNotEmpty ||
+      selectedCategoryId.value != null ||
+      selectedDistrictId.value != null ||
+      onlyOpenNow.value;
+
+  String? get selectedDistrictName =>
+      districts.firstWhereOrNull((d) => d.id == selectedDistrictId.value)?.name;
+
+  String? get selectedCategoryName => categories
+      .firstWhereOrNull((c) => c.id == selectedCategoryId.value)
+      ?.name;
 
   List<ShopModel> get displayedShops {
     if (onlyOpenNow.value) {
@@ -56,7 +70,11 @@ class ShopController extends GetxController {
     }
   }
 
+  // Ignores responses from older requests when filters change quickly.
+  int _fetchId = 0;
+
   Future<void> fetchShops() async {
+    final fetchId = ++_fetchId;
     try {
       isLoading.value = true;
       final result = await _repository.fetchShops(
@@ -64,9 +82,12 @@ class ShopController extends GetxController {
         categoryId: selectedCategoryId.value,
         districtId: selectedDistrictId.value,
       );
-      shops.assignAll(result);
+      if (fetchId == _fetchId) shops.assignAll(result);
     } finally {
-      isLoading.value = false;
+      if (fetchId == _fetchId) {
+        isLoading.value = false;
+        hasLoaded.value = true;
+      }
     }
   }
 
@@ -106,16 +127,14 @@ class ShopController extends GetxController {
   }
 
   void setSearch(String query) {
-    searchQuery.value = query;
+    final trimmed = query.trim();
+    if (trimmed == searchQuery.value) return;
+    searchQuery.value = trimmed;
     fetchShops();
   }
 
-  void toggleDisplayMode() {
-    displayMode.value = displayMode.value == 'grid' ? 'list' : 'grid';
-  }
-
-  void setViewType(String type) {
-    viewType.value = type;
+  void setViewMode(String mode) {
+    viewMode.value = mode;
   }
 
   void clearFilters() {

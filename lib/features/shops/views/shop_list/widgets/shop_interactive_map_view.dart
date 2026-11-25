@@ -80,10 +80,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                 const Text(
                   'ลองเลือกอำเภออื่น หรือเปลี่ยนหมวดหมู่ร้านค้า',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: ShopListPalette.muted,
-                  ),
+                  style: TextStyle(fontSize: 13, color: ShopListPalette.muted),
                 ),
               ],
             ),
@@ -128,7 +125,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xDE0C2B22),
+              color: const Color(0xDE0F172A),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.25),
@@ -199,10 +196,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: const LinearGradient(
-                colors: [
-                  ShopListPalette.primaryDark,
-                  ShopListPalette.primary,
-                ],
+                colors: [ShopListPalette.primaryDark, ShopListPalette.primary],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -293,10 +287,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
               if (item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty)
                 AspectRatio(
                   aspectRatio: 21 / 9,
-                  child: Image.network(
-                    item.coverImageUrl!,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.network(item.coverImageUrl!, fit: BoxFit.cover),
                 ),
               Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -424,10 +415,7 @@ class _ShopInteractiveMapViewState extends State<ShopInteractiveMapView> {
                                 borderRadius: BorderRadius.circular(14),
                               ),
                             ),
-                            icon: const Icon(
-                              Icons.near_me_outlined,
-                              size: 16,
-                            ),
+                            icon: const Icon(Icons.near_me_outlined, size: 16),
                             label: const Text(
                               'นำทาง',
                               style: TextStyle(fontWeight: FontWeight.w700),

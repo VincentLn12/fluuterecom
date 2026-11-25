@@ -1,223 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:projecte/app/routes/app_routes.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 import 'package:projecte/features/contents/models/content_model.dart';
 
+/// Travel stories that feature this shop. Hidden when there are none.
 class ShopDetailContentSection extends StatelessWidget {
   final List<ContentModel> contents;
-
   const ShopDetailContentSection({super.key, required this.contents});
 
   @override
   Widget build(BuildContext context) {
-    if (contents.isEmpty) {
-      return const SizedBox.shrink(); // Hide section automatically if no data
-    }
+    if (contents.isEmpty) return const SizedBox.shrink();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  width: 4.5,
-                  height: 22,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF2A9D8F),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                const Text(
-                  'เรื่องราว & บทความร้านค้า',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0D2B22),
-                  ),
-                ),
-              ],
+        const DetailSectionTitle(title: 'เรื่องราวที่พูดถึงร้านนี้'),
+        if (contents.length == 1)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: _StoryTile(item: contents.first, wide: true),
+          )
+        else
+          SizedBox(
+            height: 206,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: contents.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
+              itemBuilder: (_, i) => _StoryTile(item: contents[i]),
             ),
-            Text(
-              '${contents.length} เรื่อง',
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF5A7B70),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-
-        // Horizontal Card Carousel List
-        SizedBox(
-          height: 230,
-          child: ListView.separated(
-            padding: EdgeInsets.zero,
-            scrollDirection: Axis.horizontal,
-            itemCount: contents.length,
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
-            itemBuilder: (context, index) {
-              final item = contents[index];
-
-              return GestureDetector(
-                onTap: () {
-                  Get.toNamed(AppRoutes.contentDetail, arguments: item);
-                },
-                child: Container(
-                  width: 240,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: const Color(0xFFE0EAE6)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Banner Image
-                      SizedBox(
-                        height: 130,
-                        width: double.infinity,
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            _buildCoverImage(item),
-                            Positioned(
-                              top: 8,
-                              right: 8,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.black.withValues(alpha: 0.65),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.remove_red_eye_rounded,
-                                      size: 12,
-                                      color: Colors.white,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${item.viewCount}',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      // Title & Subtitle
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              item.title,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14.5,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF0D2B22),
-                                height: 1.25,
-                              ),
-                            ),
-                            const SizedBox(height: 6),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.menu_book_rounded,
-                                  size: 13,
-                                  color: Color(0xFF2A9D8F),
-                                ),
-                                const SizedBox(width: 4),
-                                const Text(
-                                  'อ่านเรื่องราว',
-                                  style: TextStyle(
-                                    fontSize: 12.5,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF2A9D8F),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
           ),
-        ),
       ],
     );
   }
+}
 
-  Widget _buildCoverImage(ContentModel item) {
-    final hasCover =
-        item.coverImageUrl != null && item.coverImageUrl!.isNotEmpty;
-    final hasYoutube = item.youtubeThumbnail.isNotEmpty;
+class _StoryTile extends StatelessWidget {
+  final ContentModel item;
+  final bool wide;
+  const _StoryTile({required this.item, this.wide = false});
 
-    if (hasCover) {
-      return Image.network(
-        item.coverImageUrl!,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          if (hasYoutube) {
-            return Image.network(
-              item.youtubeThumbnail,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-            );
-          }
-          return _buildPlaceholder();
-        },
-      );
-    } else if (hasYoutube) {
-      return Image.network(
-        item.youtubeThumbnail,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => _buildPlaceholder(),
-      );
-    }
-    return _buildPlaceholder();
+  @override
+  Widget build(BuildContext context) {
+    final image = (item.coverImageUrl?.isNotEmpty ?? false)
+        ? item.coverImageUrl
+        : item.youtubeThumbnail;
+
+    final tile = InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () => Get.toNamed(AppRoutes.contentDetail, arguments: item),
+      child: wide
+          ? Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: SizedBox(
+                    width: 132,
+                    height: 88,
+                    child: DetailImage(url: image),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(child: _texts()),
+              ],
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(14),
+                  child: SizedBox(
+                    width: 200,
+                    height: 120,
+                    child: DetailImage(url: image),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _texts(),
+              ],
+            ),
+    );
+    return wide ? tile : SizedBox(width: 200, child: tile);
   }
 
-  Widget _buildPlaceholder() {
-    return Container(
-      color: const Color(0xFF1B4D3E),
-      child: const Center(
-        child: Icon(Icons.article_rounded, size: 36, color: Colors.white60),
-      ),
+  Widget _texts() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          item.title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            fontSize: 14.5,
+            fontWeight: FontWeight.w600,
+            color: DetailColors.ink,
+            height: 1.35,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            const Icon(
+              Icons.visibility_outlined,
+              size: 13,
+              color: DetailColors.muted,
+            ),
+            const SizedBox(width: 3),
+            Text(
+              '${item.viewCount} เข้าชม',
+              style: const TextStyle(fontSize: 12, color: DetailColors.muted),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

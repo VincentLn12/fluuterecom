@@ -1,155 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 
-class ShopTabItem {
-  final int id;
+class ShopNavItem {
   final String label;
-  final IconData icon;
   final int? count;
-
-  const ShopTabItem({
-    required this.id,
-    required this.label,
-    required this.icon,
-    this.count,
-  });
+  const ShopNavItem(this.label, [this.count]);
 }
 
-class ShopDetailNavTabs extends StatelessWidget {
+/// Pinned row of section shortcuts; tapping one scrolls to that section.
+class ShopDetailNavTabs extends SliverPersistentHeaderDelegate {
+  final List<ShopNavItem> items;
   final int activeIndex;
-  final ValueChanged<int> onTabSelected;
-  final int productCount;
-  final int contentCount;
-  final int reviewCount;
+  final ValueChanged<int> onSelected;
 
-  const ShopDetailNavTabs({
-    super.key,
+  ShopDetailNavTabs({
+    required this.items,
     required this.activeIndex,
-    required this.onTabSelected,
-    required this.productCount,
-    required this.contentCount,
-    required this.reviewCount,
+    required this.onSelected,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    final List<ShopTabItem> tabs = [
-      const ShopTabItem(id: 0, label: 'หน้าแรก', icon: Icons.grid_view_rounded),
-      ShopTabItem(
-        id: 1,
-        label: 'สินค้า',
-        icon: Icons.shopping_bag_outlined,
-        count: productCount,
-      ),
-      if (contentCount > 0)
-        ShopTabItem(
-          id: 2,
-          label: 'เรื่องราว',
-          icon: Icons.article_outlined,
-          count: contentCount,
-        ),
-      const ShopTabItem(
-        id: 3,
-        label: 'เกี่ยวกับ',
-        icon: Icons.info_outline_rounded,
-      ),
-      ShopTabItem(
-        id: 4,
-        label: 'รีวิว',
-        icon: Icons.star_outline_rounded,
-        count: reviewCount,
-      ),
-    ];
+  static const double height = 56;
 
+  @override
+  double get minExtent => height;
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlaps) {
     return Container(
-      height: 46,
-      decoration: const BoxDecoration(
+      height: height,
+      decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: Color(0xFFE5ECE8), width: 1)),
+        border: Border(
+          bottom: BorderSide(
+            color: overlaps ? DetailColors.line : Colors.transparent,
+          ),
+        ),
       ),
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: tabs.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 22),
-        itemBuilder: (context, index) {
-          final tab = tabs[index];
-          final isSelected = activeIndex == tab.id;
-
-          return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => onTabSelected(tab.id),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      tab.icon,
-                      size: 17,
-                      color: isSelected
-                          ? const Color(0xFF2A9D8F)
-                          : const Color(0xFF7A938B),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        itemCount: items.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (_, i) {
+          final item = items[i];
+          final selected = i == activeIndex;
+          return Material(
+            color: selected ? DetailColors.ink : DetailColors.canvas,
+            shape: const StadiumBorder(),
+            child: InkWell(
+              customBorder: const StadiumBorder(),
+              onTap: () => onSelected(i),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14),
+                child: Center(
+                  child: Text(
+                    item.count != null && item.count! > 0
+                        ? '${item.label} ${item.count}'
+                        : item.label,
+                    style: TextStyle(
+                      fontSize: 13.5,
+                      fontWeight: FontWeight.w600,
+                      color: selected ? Colors.white : DetailColors.body,
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      tab.label,
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                        color: isSelected
-                            ? const Color(0xFF0D2B22)
-                            : const Color(0xFF7A938B),
-                      ),
-                    ),
-                    if (tab.count != null && tab.count! > 0) ...[
-                      const SizedBox(width: 5),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 6,
-                          vertical: 1,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? const Color(0xFF2A9D8F)
-                              : const Color(0xFFEEF4F1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '${tab.count}',
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected
-                                ? Colors.white
-                                : const Color(0xFF5A7B70),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-                const SizedBox(height: 8),
-                // Active Underline Indicator Bar
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  height: 3,
-                  width: isSelected ? 34 : 0,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? const Color(0xFF2A9D8F)
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(2),
                   ),
                 ),
-              ],
+              ),
             ),
           );
         },
       ),
     );
   }
+
+  @override
+  bool shouldRebuild(ShopDetailNavTabs old) =>
+      old.activeIndex != activeIndex || old.items != items;
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import '../models/content_model.dart';
 import '../repositories/content_repository.dart';
@@ -15,14 +17,29 @@ class ContentController extends GetxController {
   final selectedCategoryId = RxnString();
   final selectedDistrictId = RxnString();
   final searchQuery = ''.obs;
+  final searchController = TextEditingController();
+  Timer? _searchDebounce;
 
   final isLoading = false.obs;
-  final displayMode = 'grid'.obs; // 'grid' | 'list'
-  final viewType = 'list'.obs; // 'list' | 'map'
+  // True once the first fetch finished; later fetches keep the page visible.
+  final hasLoaded = false.obs;
+  final viewMode = 'grid'.obs; // 'grid' | 'list' | 'map'
 
-  void setViewType(String type) {
-    viewType.value = type;
+  bool get hasActiveFilters =>
+      selectedCategoryId.value != null ||
+      selectedDistrictId.value != null ||
+      searchQuery.value.isNotEmpty;
+
+  void setViewMode(String mode) {
+    viewMode.value = mode;
   }
+
+  String? get selectedDistrictName =>
+      districts.firstWhereOrNull((d) => d.id == selectedDistrictId.value)?.name;
+
+  String? get selectedCategoryName => categories
+      .firstWhereOrNull((c) => c.id == selectedCategoryId.value)
+      ?.name;
 
   @override
   void onInit() {
@@ -32,12 +49,10 @@ class ContentController extends GetxController {
   }
 
   @override
-  void onReady() {
-    super.onReady();
-    if (Get.arguments != null) {
-      parseArguments(Get.arguments);
-      fetchContents();
-    }
+  void onClose() {
+    _searchDebounce?.cancel();
+    searchController.dispose();
+    super.onClose();
   }
 
   void parseArguments(dynamic args) {
@@ -49,9 +64,19 @@ class ContentController extends GetxController {
         selectedCategoryId.value = args['categoryId']?.toString();
       }
       if (args['search'] != null) {
-        searchQuery.value = args['search']?.toString() ?? '';
+        _setSearchText(args['search']?.toString() ?? '');
       }
     }
+  }
+
+  /// Applies filters coming from another page (e.g. home search or district
+  /// map). Unspecified filters are cleared so results match what was asked.
+  void applyFilters({String? search, String? districtId, String? categoryId}) {
+    _searchDebounce?.cancel();
+    _setSearchText(search ?? '');
+    selectedDistrictId.value = districtId;
+    selectedCategoryId.value = categoryId;
+    fetchContents();
   }
 
   Future<void> initMasterDataAndFetch() async {
@@ -67,7 +92,11 @@ class ContentController extends GetxController {
     }
   }
 
+  // Ignores responses from older requests when filters change quickly.
+  int _fetchId = 0;
+
   Future<void> fetchContents() async {
+    final fetchId = ++_fetchId;
     try {
       isLoading.value = true;
       final result = await _repository.fetchContents(
@@ -75,9 +104,12 @@ class ContentController extends GetxController {
         categoryId: selectedCategoryId.value,
         districtId: selectedDistrictId.value,
       );
-      contents.assignAll(result);
+      if (fetchId == _fetchId) contents.assignAll(result);
     } finally {
-      isLoading.value = false;
+      if (fetchId == _fetchId) {
+        isLoading.value = false;
+        hasLoaded.value = true;
+      }
     }
   }
 
@@ -99,19 +131,38 @@ class ContentController extends GetxController {
     fetchContents();
   }
 
-  void setSearch(String query) {
-    searchQuery.value = query;
-    fetchContents();
+  /// Called on every keystroke; searches once typing pauses.
+  void onSearchChanged(String query) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 400), () {
+      setSearch(query);
+    });
   }
 
-  void toggleDisplayMode() {
-    displayMode.value = displayMode.value == 'grid' ? 'list' : 'grid';
+  void clearSearch() {
+    _searchDebounce?.cancel();
+    searchController.clear();
+    setSearch('');
+  }
+
+  void setSearch(String query) {
+    _searchDebounce?.cancel();
+    final trimmed = query.trim();
+    if (trimmed == searchQuery.value) return;
+    searchQuery.value = trimmed;
+    fetchContents();
   }
 
   void clearFilters() {
+    _searchDebounce?.cancel();
     selectedCategoryId.value = null;
     selectedDistrictId.value = null;
-    searchQuery.value = '';
+    _setSearchText('');
     fetchContents();
+  }
+
+  void _setSearchText(String text) {
+    searchQuery.value = text.trim();
+    searchController.text = text;
   }
 }

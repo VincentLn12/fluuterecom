@@ -2,89 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../shared/widgets/empty_widget.dart';
 import '../../../shared/widgets/loading_widget.dart';
+import '../../home/widgets/home_colors.dart';
 import '../controllers/content_controller.dart';
 import '../widgets/content_card.dart';
 import '../widgets/content_category_district_filter.dart';
 import '../widgets/content_interactive_map_view.dart';
-import '../widgets/content_refresh_button.dart';
 import '../widgets/content_search_header.dart';
 
 class ContentsPage extends GetView<ContentController> {
   const ContentsPage({super.key});
 
+  static const double _toolbarHeight = 64;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F0E6),
+      backgroundColor: HomeColors.bgCanvas,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF332820),
+        backgroundColor: HomeColors.darkHeader,
         foregroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
-        centerTitle: false,
-        title: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: const Color(0xFFD96C2C),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Icon(Icons.explore, size: 20, color: Colors.white),
-            ),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'KANCHANABURI',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 1.2,
-                      color: Color(0xFFE9C46A),
-                    ),
-                  ),
-                  Text(
-                    'เนื้อหา & บทความท่องเที่ยว',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+        toolbarHeight: _toolbarHeight,
+        title: const ContentAppBarTitle(),
         actions: [
           Obx(
-            () => controller.viewType.value == 'list'
-                ? IconButton(
-                    tooltip: 'เปลี่ยนมุมมองการ์ด',
-                    icon: Icon(
-                      controller.displayMode.value == 'grid'
-                          ? Icons.view_list_rounded
-                          : Icons.grid_view_rounded,
-                      color: Colors.white,
+            () => controller.hasActiveFilters
+                ? TextButton.icon(
+                    onPressed: controller.clearFilters,
+                    style: TextButton.styleFrom(foregroundColor: Colors.white),
+                    icon: const Icon(Icons.filter_alt_off_rounded, size: 18),
+                    label: const Text(
+                      'ล้างตัวกรอง',
+                      style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    onPressed: controller.toggleDisplayMode,
                   )
                 : const SizedBox.shrink(),
           ),
-          Obx(
-            () => ContentRefreshButton(
-              onPressed: controller.clearFilters,
-              isLoading: controller.isLoading.value,
-            ),
-          ),
           const SizedBox(width: 6),
         ],
+        bottom: const ContentSearchBar(),
       ),
       body: Obx(() {
-        if (controller.isLoading.value) {
+        // Full-screen loader only on first open; refetches keep the
+        // search box and filters on screen.
+        if (controller.isLoading.value && !controller.hasLoaded.value) {
           return const LoadingWidget(
             message: 'กำลังสำรวจเรื่องราวเมืองกาญจน์...',
             subMessage: 'ค้นหาบทความ & สถานที่แนะนำ',
@@ -92,72 +54,112 @@ class ContentsPage extends GetView<ContentController> {
           );
         }
 
-        return RefreshIndicator(
-          onRefresh: controller.fetchContents,
-          color: const Color(0xFFD96C2C),
-          backgroundColor: Colors.white,
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            slivers: [
-              const SliverToBoxAdapter(child: ContentSearchHeader()),
+        final progress = SizedBox(
+          height: 3,
+          child: controller.isLoading.value
+              ? const LinearProgressIndicator(
+                  color: HomeColors.brandPrimary,
+                  backgroundColor: Colors.transparent,
+                )
+              : null,
+        );
 
-              const SliverToBoxAdapter(child: ContentCategoryDistrictFilter()),
+        final mode = controller.viewMode.value;
 
-              if (controller.viewType.value == 'map')
-                SliverFillRemaining(
-                  child: ContentInteractiveMapView(
-                    contents: controller.contents,
-                  ),
-                )
-              else if (controller.contents.isEmpty)
-                const SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: EmptyWidget(
-                    message: 'ไม่พบข้อมูลคอนเทนต์ตรงกับเงื่อนไขการค้นหา',
-                  ),
-                )
-              else if (controller.displayMode.value == 'grid')
-                SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      if (index < 0 || index >= controller.contents.length) {
-                        return const SizedBox.shrink();
-                      }
-                      final item = controller.contents[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: ContentCard(
-                          item: item,
-                          displayMode: 'grid',
-                          index: index,
+        // The app bar is shared by every mode, so switching views only
+        // swaps the content below it.
+        return Column(
+          children: [
+            Expanded(
+              child: mode == 'map'
+                  // Map stays outside the scroll view so dragging it never
+                  // scrolls the page or triggers pull-to-refresh.
+                  ? Column(
+                      children: [
+                        const ContentCategoryDistrictFilter(),
+                        progress,
+                        Expanded(
+                          child: ContentInteractiveMapView(
+                            contents: controller.contents,
+                          ),
                         ),
-                      );
-                    }, childCount: controller.contents.length),
-                  ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.all(16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      if (index < 0 || index >= controller.contents.length) {
-                        return const SizedBox.shrink();
-                      }
-                      final item = controller.contents[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12.0),
-                        child: ContentCard(
-                          item: item,
-                          displayMode: 'list',
-                          index: index,
-                        ),
-                      );
-                    }, childCount: controller.contents.length),
-                  ),
-                ),
-            ],
-          ),
+                      ],
+                    )
+                  : RefreshIndicator(
+                      onRefresh: controller.fetchContents,
+                      color: HomeColors.brandPrimary,
+                      backgroundColor: Colors.white,
+                      child: CustomScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        slivers: [
+                          const SliverToBoxAdapter(
+                            child: ContentCategoryDistrictFilter(),
+                          ),
+                          SliverToBoxAdapter(child: progress),
+                          if (controller.contents.isEmpty)
+                            SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: Column(
+                                children: [
+                                  const Expanded(
+                                    child: EmptyWidget(
+                                      message:
+                                          'ไม่พบข้อมูลคอนเทนต์ตรงกับเงื่อนไขการค้นหา',
+                                    ),
+                                  ),
+                                  if (controller.hasActiveFilters)
+                                    OutlinedButton.icon(
+                                      onPressed: controller.clearFilters,
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor:
+                                            HomeColors.brandPrimary,
+                                        side: const BorderSide(
+                                          color: HomeColors.brandPrimary,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                      ),
+                                      icon: const Icon(
+                                        Icons.filter_alt_off_rounded,
+                                      ),
+                                      label: const Text('ล้างตัวกรองทั้งหมด'),
+                                    ),
+                                  const SizedBox(height: 32),
+                                ],
+                              ),
+                            )
+                          else
+                            SliverPadding(
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                              sliver: SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  (context, index) => Padding(
+                                    padding: EdgeInsets.only(
+                                      bottom: mode == 'grid' ? 16 : 12,
+                                    ),
+                                    child: ContentCard(
+                                      // Keyed by mode so cards rebuild cleanly
+                                      // when switching card/list layouts.
+                                      key: ValueKey(
+                                        '$mode-${controller.contents[index].id}',
+                                      ),
+                                      item: controller.contents[index],
+                                      displayMode: mode,
+                                      index: index,
+                                    ),
+                                  ),
+                                  childCount: controller.contents.length,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+            ),
+          ],
         );
       }),
     );

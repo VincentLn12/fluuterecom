@@ -103,7 +103,7 @@ class ContentDetailModel {
       coverImageUrl:
           json['coverImageUrl']?.toString() ?? json['imageUrl']?.toString(),
       viewCount: int.tryParse(json['viewCount']?.toString() ?? '0') ?? 0,
-      rating: double.tryParse(json['rating']?.toString() ?? '5.0') ?? 5.0,
+      rating: double.tryParse(json['rating']?.toString() ?? '') ?? 0,
       publishedAt:
           json['publishedAt']?.toString() ?? json['createdAt']?.toString(),
       isFavorite: json['isFavorite'] == true,
@@ -153,6 +153,11 @@ class ContentDetailModel {
       website: website,
     );
   }
+
+  /// Full-HD thumbnail (1280x720). Not every video has one, so callers
+  /// should fall back to [youtubeThumbnail] when it fails to load.
+  String get youtubeThumbnailHd =>
+      youtubeThumbnail.replaceFirst('mqdefault.jpg', 'maxresdefault.jpg');
 
   String get youtubeThumbnail {
     if (youtubeUrl == null || youtubeUrl!.isEmpty) return '';

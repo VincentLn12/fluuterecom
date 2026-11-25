@@ -227,6 +227,33 @@ class ContentDetailController extends GetxController {
     }
   }
 
+  Future<void> callPhone(String phone) async {
+    final digits = phone.replaceAll(RegExp(r'[^0-9+]'), '');
+    await _launchOrWarn(Uri(scheme: 'tel', path: digits), 'ไม่สามารถโทรออกได้');
+  }
+
+  Future<void> openWebsite(String website) async {
+    final url = website.startsWith('http') ? website : 'https://$website';
+    await _launchOrWarn(Uri.parse(url), 'ไม่สามารถเปิดเว็บไซต์ได้');
+  }
+
+  Future<void> _launchOrWarn(Uri uri, String failMessage) async {
+    final ok =
+        await canLaunchUrl(uri) &&
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+    if (!ok) {
+      Get.snackbar(
+        'ข้อผิดพลาด',
+        failMessage,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+      );
+    }
+  }
+
   void shareContent() {
     Get.snackbar(
       'แชร์เรื่องราว',

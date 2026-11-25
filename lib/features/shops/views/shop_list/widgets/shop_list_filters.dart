@@ -3,366 +3,326 @@ import 'package:get/get.dart';
 import 'package:projecte/features/shops/controllers/shop_controller.dart';
 import 'package:projecte/features/shops/views/shop_list/shop_list_palette.dart';
 
+/// One scrollable row of filters (district, open now, categories)
+/// followed by "พบ N ร้าน" and removable tags for active filters.
 class ShopListFilters extends StatelessWidget {
-  const ShopListFilters({super.key, required this.controller});
-
   final ShopController controller;
+  final VoidCallback onClearSearch;
+
+  const ShopListFilters({
+    super.key,
+    required this.controller,
+    required this.onClearSearch,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-      child: Column(
+    return Obx(
+      () => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 1. View Type Switcher (ร้านค้า / แผนที่)
-          Container(
-            height: 52,
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: ShopListPalette.line),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x060D2B22),
-                  blurRadius: 10,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Obx(
-              () => Row(
-                children: [
-                  _viewTab(
-                    'list',
-                    Icons.storefront_rounded,
-                    'รายการร้านค้า',
-                  ),
-                  _viewTab(
-                    'map',
-                    Icons.map_rounded,
-                    'แผนที่ชุมชน',
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 14),
-
-          // 2. Categories Horizontal Scrollable Chips
-          Obx(
-            () => SizedBox(
-              height: 44,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  _categoryChip(
-                    label: 'ทั้งหมด',
-                    icon: Icons.grid_view_rounded,
-                    selected: controller.selectedCategoryId.value == null,
-                    onTap: () => controller.selectCategory(null),
-                  ),
-                  ...controller.categories.map(
-                    (category) => _categoryChip(
-                      label: category.name,
-                      selected:
-                          controller.selectedCategoryId.value == category.id,
-                      onTap: () => controller.selectCategory(category.id),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // 3. District Picker & Open Now Filter Bar
-          Row(
-            children: [
-              // District dropdown selector
-              Expanded(
-                child: Obx(() => _districtPicker()),
-              ),
-              const SizedBox(width: 10),
-              // Only open now toggle button
-              Obx(() => _openNowChip()),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _viewTab(String value, IconData icon, String label) {
-    final selected = controller.viewType.value == value;
-    return Expanded(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => controller.setViewType(value),
-          borderRadius: BorderRadius.circular(12),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeOutCubic,
-            decoration: BoxDecoration(
-              gradient: selected
-                  ? const LinearGradient(
-                      colors: [
-                        ShopListPalette.primaryDark,
-                        ShopListPalette.primary,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : null,
-              color: selected ? null : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: selected
-                  ? [
-                      BoxShadow(
-                        color: ShopListPalette.primary.withValues(alpha: 0.28),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
-                      ),
-                    ]
-                  : null,
-            ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 4),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  icon,
-                  size: 21,
-                  color: selected ? Colors.white : ShopListPalette.muted,
+                _PillButton(
+                  icon: Icons.location_on_rounded,
+                  label: controller.selectedDistrictName ?? 'ทุกอำเภอ',
+                  active: controller.selectedDistrictId.value != null,
+                  trailing: Icons.keyboard_arrow_down_rounded,
+                  onTap: () => _openDistrictSheet(context),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 14.5,
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                    color: selected ? Colors.white : ShopListPalette.inkSecondary,
-                  ),
+                _PillButton(
+                  icon: Icons.schedule_rounded,
+                  label: 'เปิดอยู่ตอนนี้',
+                  active: controller.onlyOpenNow.value,
+                  onTap: controller.toggleOnlyOpenNow,
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _categoryChip({
-    required String label,
-    IconData? icon,
-    required bool selected,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(22),
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 180),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-            decoration: BoxDecoration(
-              gradient: selected
-                  ? const LinearGradient(
-                      colors: [
-                        ShopListPalette.primaryDark,
-                        ShopListPalette.primary,
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    )
-                  : null,
-              color: selected ? null : Colors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(
-                color: selected ? Colors.transparent : ShopListPalette.line,
-                width: 1,
-              ),
-              boxShadow: selected
-                  ? [
-                      BoxShadow(
-                        color: ShopListPalette.primary.withValues(alpha: 0.22),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ]
-                  : const [
-                      BoxShadow(
-                        color: Color(0x040D2B22),
-                        blurRadius: 4,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (icon != null) ...[
-                  Icon(
-                    icon,
-                    size: 17,
-                    color: selected ? Colors.white : ShopListPalette.muted,
+                Container(
+                  width: 1,
+                  height: 24,
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  color: ShopListPalette.line,
+                ),
+                _CategoryChip(
+                  label: 'ทั้งหมด',
+                  selected: controller.selectedCategoryId.value == null,
+                  onTap: () => controller.selectCategory(null),
+                ),
+                for (final cat in controller.categories) ...[
+                  const SizedBox(width: 8),
+                  _CategoryChip(
+                    label: cat.name,
+                    selected: controller.selectedCategoryId.value == cat.id,
+                    onTap: () => controller.selectCategory(cat.id),
                   ),
-                  const SizedBox(width: 7),
                 ],
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: selected ? Colors.white : ShopListPalette.inkSecondary,
-                    fontSize: 14,
-                    fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
-                  ),
-                ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _districtPicker() {
-    return Container(
-      height: 48,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: controller.selectedDistrictId.value != null
-              ? ShopListPalette.primaryLight
-              : ShopListPalette.line,
-          width: controller.selectedDistrictId.value != null ? 1.4 : 1,
-        ),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x050D2B22),
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
+          _summary(),
         ],
       ),
-      child: Row(
+    );
+  }
+
+  Widget _summary() {
+    final count = controller.displayedShops.length;
+    final search = controller.searchQuery.value;
+    final district = controller.selectedDistrictName;
+    final category = controller.selectedCategoryName;
+    final loading = controller.isLoading.value && controller.hasLoaded.value;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 6),
+      child: Wrap(
+        spacing: 6,
+        runSpacing: 6,
+        crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          const Icon(
-            Icons.location_on_rounded,
-            size: 20,
-            color: ShopListPalette.primary,
+          Padding(
+            padding: const EdgeInsets.only(right: 2),
+            child: Text(
+              loading ? 'กำลังค้นหา...' : 'พบ $count ร้าน',
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: ShopListPalette.muted,
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String?>(
-                value: controller.selectedDistrictId.value,
-                isExpanded: true,
-                isDense: true,
-                borderRadius: BorderRadius.circular(14),
-                icon: const Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: ShopListPalette.muted,
-                  size: 22,
-                ),
-                hint: const Text(
-                  'ทุกอำเภอ',
+          if (search.isNotEmpty)
+            _FilterTag(label: '"$search"', onRemove: onClearSearch),
+          if (district != null)
+            _FilterTag(
+              label: district,
+              onRemove: () => controller.selectDistrict(null),
+            ),
+          if (category != null)
+            _FilterTag(
+              label: category,
+              onRemove: () => controller.selectCategory(null),
+            ),
+          if (controller.onlyOpenNow.value)
+            _FilterTag(
+              label: 'เปิดอยู่',
+              onRemove: controller.toggleOnlyOpenNow,
+            ),
+        ],
+      ),
+    );
+  }
+
+  void _openDistrictSheet(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      showDragHandle: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) {
+        void pick(String? id) {
+          Navigator.of(sheetContext).pop();
+          if (id != controller.selectedDistrictId.value) {
+            controller.selectDistrict(id);
+          }
+        }
+
+        Widget chip(String label, String? id) => ChoiceChip(
+          label: Text(label),
+          selected: controller.selectedDistrictId.value == id,
+          onSelected: (_) => pick(id),
+          showCheckmark: false,
+          selectedColor: ShopListPalette.primary,
+          backgroundColor: ShopListPalette.canvas,
+          side: BorderSide.none,
+          shape: const StadiumBorder(),
+          labelStyle: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: controller.selectedDistrictId.value == id
+                ? Colors.white
+                : ShopListPalette.ink,
+          ),
+        );
+
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'เลือกอำเภอ',
                   style: TextStyle(
-                    color: ShopListPalette.muted,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: ShopListPalette.ink,
                   ),
                 ),
-                style: const TextStyle(
-                  color: ShopListPalette.ink,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+                const SizedBox(height: 4),
+                const Text(
+                  'ดูร้านค้าชุมชนเฉพาะพื้นที่ที่สนใจ',
+                  style: TextStyle(fontSize: 13, color: ShopListPalette.muted),
                 ),
-                items: [
-                  const DropdownMenuItem<String?>(
-                    value: null,
-                    child: Text('ทุกอำเภอ'),
-                  ),
-                  ...controller.districts.map(
-                    (district) => DropdownMenuItem<String?>(
-                      value: district.id,
-                      child: Text(
-                        'อ.${district.name}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                const SizedBox(height: 16),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 10,
+                      children: [
+                        chip('ทุกอำเภอ', null),
+                        for (final d in controller.districts)
+                          chip(d.name, d.id),
+                      ],
                     ),
                   ),
-                ],
-                onChanged: controller.selectDistrict,
-              ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
+}
 
-  Widget _openNowChip() {
-    final selected = controller.onlyOpenNow.value;
+class _PillButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool active;
+  final IconData? trailing;
+  final VoidCallback onTap;
+
+  const _PillButton({
+    required this.icon,
+    required this.label,
+    required this.active,
+    required this.onTap,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final fg = active ? Colors.white : ShopListPalette.ink;
     return Material(
-      color: Colors.transparent,
+      color: active ? ShopListPalette.ink : Colors.white,
+      shape: StadiumBorder(
+        side: BorderSide(
+          color: active ? ShopListPalette.ink : ShopListPalette.line,
+        ),
+      ),
       child: InkWell(
-        onTap: controller.toggleOnlyOpenNow,
-        borderRadius: BorderRadius.circular(14),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 14),
-          decoration: BoxDecoration(
-            color: selected ? ShopListPalette.greenSoft : Colors.white,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: selected ? ShopListPalette.green : ShopListPalette.line,
-              width: selected ? 1.3 : 1,
-            ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x050D2B22),
-                blurRadius: 6,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
+        customBorder: const StadiumBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(12, 8, trailing != null ? 8 : 14, 8),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(
-                width: 9,
-                height: 9,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: selected ? ShopListPalette.green : ShopListPalette.mutedLight,
-                  boxShadow: selected
-                      ? [
-                          BoxShadow(
-                            color: ShopListPalette.green.withValues(alpha: 0.5),
-                            blurRadius: 6,
-                            spreadRadius: 1,
-                          ),
-                        ]
-                      : null,
+              Icon(icon, size: 16, color: fg),
+              const SizedBox(width: 5),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: fg,
                 ),
               ),
-              const SizedBox(width: 8),
-              Text(
-                'เปิดอยู่ตอนนี้',
-                style: TextStyle(
-                  color: selected ? ShopListPalette.ink : ShopListPalette.muted,
-                  fontSize: 13.5,
-                  fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+              if (trailing != null) ...[
+                const SizedBox(width: 2),
+                Icon(trailing, size: 18, color: fg),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _CategoryChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? ShopListPalette.primary : Colors.white,
+      shape: StadiumBorder(
+        side: BorderSide(
+          color: selected ? ShopListPalette.primary : ShopListPalette.line,
+        ),
+      ),
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: selected ? Colors.white : ShopListPalette.inkSecondary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FilterTag extends StatelessWidget {
+  final String label;
+  final VoidCallback onRemove;
+  const _FilterTag({required this.label, required this.onRemove});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: ShopListPalette.primarySoft,
+      shape: const StadiumBorder(),
+      child: InkWell(
+        customBorder: const StadiumBorder(),
+        onTap: onRemove,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 4, 6, 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w600,
+                    color: ShopListPalette.primary,
+                  ),
                 ),
+              ),
+              const SizedBox(width: 3),
+              const Icon(
+                Icons.close_rounded,
+                size: 14,
+                color: ShopListPalette.primary,
               ),
             ],
           ),

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../contents/controllers/content_controller.dart';
-import '../../navigation/controllers/navigation_controller.dart';
 import '../controllers/home_controller.dart';
+import 'home_colors.dart';
+import 'home_section_header.dart';
 
 class HomeDistrictTransitMap extends GetView<HomeController> {
   const HomeDistrictTransitMap({super.key});
-
-  static const Color brandPrimary = Color(0xFFC85A17);
-  static const Color textBlack = Color(0xFF0F172A);
-  static const Color textMuted = Color(0xFF334155);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +30,7 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                   Container(
                     padding: const EdgeInsets.all(11),
                     decoration: BoxDecoration(
-                      color: brandPrimary,
+                      color: HomeColors.brandPrimary,
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: const [
                         BoxShadow(
@@ -58,8 +55,8 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                           'สำรวจตามอำเภอและพื้นที่',
                           style: TextStyle(
                             fontSize: 20,
-                            fontWeight: FontWeight.w900,
-                            color: textBlack,
+                            fontWeight: FontWeight.w700,
+                            color: HomeColors.textBlack,
                             letterSpacing: -0.3,
                           ),
                         ),
@@ -68,8 +65,8 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                           'เลือกท่องเที่ยวและค้นหาเรื่องราวรายอำเภอทั่วกาญจนบุรี',
                           style: TextStyle(
                             fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: textMuted,
+                            fontWeight: FontWeight.w500,
+                            color: HomeColors.textSecondary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -78,7 +75,7 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () => Get.toNamed('/contents'),
+                    onPressed: () => openMainTab(2, '/contents'),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                     ),
@@ -88,15 +85,15 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                           'ดูพื้นที่ทั้งหมด',
                           style: TextStyle(
                             fontSize: 14,
-                            fontWeight: FontWeight.w900,
-                            color: brandPrimary,
+                            fontWeight: FontWeight.w700,
+                            color: HomeColors.brandPrimary,
                           ),
                         ),
                         SizedBox(width: 4),
                         Icon(
                           Icons.arrow_forward_rounded,
                           size: 15,
-                          color: brandPrimary,
+                          color: HomeColors.brandPrimary,
                         ),
                       ],
                     ),
@@ -146,20 +143,11 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 14,
-                              fontWeight: FontWeight.w900,
-                              color: textBlack,
+                              fontWeight: FontWeight.w700,
+                              color: HomeColors.textBlack,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 1),
-                          const Text(
-                            'จ.กาญจนบุรี',
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF78716C),
-                            ),
                           ),
                         ],
                       );
@@ -186,18 +174,15 @@ class HomeDistrictTransitMap extends GetView<HomeController> {
                           if (!Get.isRegistered<ContentController>()) {
                             Get.put(ContentController());
                           }
-                          final contentCtrl = Get.find<ContentController>();
-                          contentCtrl.selectedDistrictId.value = district.id;
-                          contentCtrl.fetchContents();
+                          Get.find<ContentController>().applyFilters(
+                            districtId: district.id,
+                          );
 
-                          if (Get.isRegistered<NavigationController>()) {
-                            Get.find<NavigationController>().changeTab(2);
-                          } else {
-                            Get.toNamed(
-                              '/contents',
-                              arguments: {'districtId': district.id},
-                            );
-                          }
+                          openMainTab(
+                            2,
+                            '/contents',
+                            arguments: {'districtId': district.id},
+                          );
                         },
                         borderRadius: BorderRadius.circular(12),
                         child: SizedBox(

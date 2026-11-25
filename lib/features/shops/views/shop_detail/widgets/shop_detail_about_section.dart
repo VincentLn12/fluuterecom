@@ -1,254 +1,264 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 import 'package:projecte/features/shops/models/shop_model.dart';
 
+/// Story, contact details and a map preview for the shop.
 class ShopDetailAboutSection extends StatelessWidget {
   final ShopModel shop;
-  final Function(String) onCallPhone;
+  final ValueChanged<String> onCallPhone;
+  final VoidCallback onDirections;
 
   const ShopDetailAboutSection({
     super.key,
     required this.shop,
     required this.onCallPhone,
+    required this.onDirections,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE0EAE6), width: 1.2),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 14,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Section Title
-          Row(
-            children: [
-              Container(
-                width: 4.5,
-                height: 22,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2A9D8F),
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-              const SizedBox(width: 10),
-              const Text(
-                'เกี่ยวกับร้านค้า',
-                style: TextStyle(
-                  fontSize: 21,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0D2B22),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 14),
+    String? clean(String? v) =>
+        (v == null || v.trim().isEmpty) ? null : v.trim();
 
-          // Description Text
-          if (shop.description != null && shop.description!.isNotEmpty) ...[
-            Text(
-              shop.description!,
-              style: const TextStyle(
-                fontSize: 16,
-                color: Color(0xFF334E45),
-                height: 1.55,
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Divider(color: Color(0xFFE0EAE6)),
-            const SizedBox(height: 14),
-          ],
-
-          // Category & District Badges
-          if ((shop.categoryName != null && shop.categoryName!.isNotEmpty) ||
-              (shop.districtName != null && shop.districtName!.isNotEmpty) ||
-              (shop.subDistrictName != null &&
-                  shop.subDistrictName!.isNotEmpty)) ...[
-            const Text(
-              'ข้อมูลหมวดหมู่ & ที่ตั้ง',
-              style: TextStyle(
-                fontSize: 16.5,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0D2B22),
-              ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                if (shop.categoryName != null && shop.categoryName!.isNotEmpty)
-                  _buildHighlightChip('🏪 หมวดหมู่: ${shop.categoryName!}'),
-                if (shop.districtName != null && shop.districtName!.isNotEmpty)
-                  _buildHighlightChip('📍 อำเภอ: ${shop.districtName!}'),
-                if (shop.subDistrictName != null &&
-                    shop.subDistrictName!.isNotEmpty)
-                  _buildHighlightChip('🏞️ ตำบล: ${shop.subDistrictName!}'),
-              ],
-            ),
-            const SizedBox(height: 18),
-            const Divider(color: Color(0xFFE0EAE6)),
-            const SizedBox(height: 14),
-          ],
-
-          // Store Contact Info List
-          const Text(
-            'ข้อมูลการติดต่อ & เวลาทำการ',
-            style: TextStyle(
-              fontSize: 16.5,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0D2B22),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // 1. Hours
-          if (shop.openingTime != null || shop.closingTime != null)
-            _buildInfoRow(
-              icon: Icons.access_time_filled_rounded,
-              iconColor: const Color(0xFF2A9D8F),
-              label: 'เวลาเปิดให้บริการ',
-              value:
-                  '${shop.openingTime ?? "08:00"} - ${shop.closingTime ?? "18:00"} น.',
-            ),
-
-          // 2. Phone Call
-          if (shop.phone != null && shop.phone!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                const Icon(
-                  Icons.phone_in_talk_rounded,
-                  size: 19,
-                  color: Color(0xFF2A9D8F),
-                ),
-                const SizedBox(width: 10),
-                const Text(
-                  'เบอร์โทรศัพท์: ',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF5A7B70),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    shop.phone!,
-                    style: const TextStyle(
-                      fontSize: 15.5,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF0D2B22),
-                    ),
-                  ),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () => onCallPhone(shop.phone!),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2A9D8F),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(80, 36),
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  icon: const Icon(Icons.call, size: 14),
-                  label: const Text(
-                    'โทรออก',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-          ],
-
-          // 3. Email
-          if (shop.email != null && shop.email!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            _buildInfoRow(
-              icon: Icons.email_rounded,
-              iconColor: const Color(0xFFE76F51),
-              label: 'อีเมล',
-              value: shop.email!,
-            ),
-          ],
-
-          // 4. Address
-          if (shop.address != null && shop.address!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            _buildInfoRow(
-              icon: Icons.location_on_rounded,
-              iconColor: const Color(0xFFE9C46A),
-              label: 'ที่อยู่ร้านค้า',
-              value: shop.address!,
-            ),
-          ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHighlightChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6.5),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEBF6F3),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: const Color(0xFF2A9D8F).withValues(alpha: 0.2),
+    final description = clean(shop.description);
+    final rows = <Widget>[
+      if (shop.openingTime != null && shop.closingTime != null)
+        _InfoRow(
+          icon: Icons.access_time_rounded,
+          label: 'เวลาทำการ',
+          value: '${shop.openingTime} - ${shop.closingTime} น.',
+          trailing: shop.isOpenNow ? 'เปิดอยู่' : 'ปิดแล้ว',
+          trailingColor: shop.isOpenNow
+              ? const Color(0xFF16A34A)
+              : DetailColors.muted,
         ),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 13.5,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFF0F382C),
+      if (clean(shop.phone) case final phone?)
+        _InfoRow(
+          icon: Icons.call_outlined,
+          label: 'โทรศัพท์',
+          value: phone,
+          action: Icons.call_rounded,
+          onTap: () => onCallPhone(phone),
         ),
+      if (clean(shop.email) case final email?)
+        _InfoRow(
+          icon: Icons.mail_outline_rounded,
+          label: 'อีเมล',
+          value: email,
+        ),
+      _InfoRow(
+        icon: Icons.location_on_outlined,
+        label: 'ที่อยู่',
+        value:
+            clean(shop.address) ??
+            [
+              if (shop.subDistrictName?.isNotEmpty ?? false)
+                'ต.${shop.subDistrictName}',
+              if (shop.districtName?.isNotEmpty ?? false)
+                'อ.${shop.districtName}',
+              'จ.กาญจนบุรี',
+            ].join(' '),
       ),
-    );
-  }
+    ];
 
-  Widget _buildInfoRow({
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    required String value,
-  }) {
-    return Row(
+    final hasMap =
+        shop.latitude != null &&
+        shop.longitude != null &&
+        shop.latitude != 0 &&
+        shop.longitude != 0;
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 19, color: iconColor),
-        const SizedBox(width: 10),
-        Text(
-          '$label: ',
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF5A7B70),
-          ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(
-              fontSize: 15.5,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0D2B22),
+        const DetailSectionTitle(title: 'ข้อมูลร้าน'),
+        if (description != null)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+            child: Text(
+              description,
+              style: const TextStyle(
+                fontSize: 15,
+                color: DetailColors.body,
+                height: 1.7,
+              ),
             ),
+          ),
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          clipBehavior: Clip.antiAlias,
+          decoration: BoxDecoration(
+            border: Border.all(color: DetailColors.line),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            children: [
+              if (hasMap) _mapPreview(LatLng(shop.latitude!, shop.longitude!)),
+              for (var i = 0; i < rows.length; i++) ...[
+                if (i > 0 || hasMap)
+                  const Divider(
+                    height: 1,
+                    indent: 52,
+                    color: DetailColors.line,
+                  ),
+                rows[i],
+              ],
+            ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _mapPreview(LatLng point) {
+    return SizedBox(
+      height: 150,
+      child: Stack(
+        children: [
+          FlutterMap(
+            options: MapOptions(
+              initialCenter: point,
+              initialZoom: 15,
+              // Preview only: the page scroll keeps priority.
+              interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.none,
+              ),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.kanchanaburi.projecte',
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: point,
+                    width: 44,
+                    height: 44,
+                    alignment: Alignment.topCenter,
+                    child: const Icon(
+                      Icons.location_on_rounded,
+                      size: 44,
+                      color: DetailColors.brand,
+                      shadows: [
+                        Shadow(color: Color(0x55000000), blurRadius: 6),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Positioned(
+            right: 10,
+            bottom: 10,
+            child: Material(
+              color: Colors.white,
+              shape: const StadiumBorder(),
+              elevation: 2,
+              child: InkWell(
+                customBorder: const StadiumBorder(),
+                onTap: onDirections,
+                child: const Padding(
+                  padding: EdgeInsets.fromLTRB(10, 7, 12, 7),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.directions_rounded,
+                        size: 18,
+                        color: DetailColors.brand,
+                      ),
+                      SizedBox(width: 4),
+                      Text(
+                        'เส้นทาง',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: DetailColors.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final IconData? action;
+  final String? trailing;
+  final Color? trailingColor;
+  final VoidCallback? onTap;
+
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.action,
+    this.trailing,
+    this.trailingColor,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 14, 12),
+        child: Row(
+          children: [
+            Icon(icon, size: 20, color: DetailColors.brand),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: DetailColors.muted,
+                    ),
+                  ),
+                  const SizedBox(height: 1),
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w500,
+                      color: onTap != null
+                          ? DetailColors.brand
+                          : DetailColors.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (trailing != null)
+              Text(
+                trailing!,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: trailingColor,
+                ),
+              ),
+            if (action != null)
+              Icon(action, size: 18, color: DetailColors.muted),
+          ],
+        ),
+      ),
     );
   }
 }

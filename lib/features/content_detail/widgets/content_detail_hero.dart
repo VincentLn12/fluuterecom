@@ -1,192 +1,193 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/content_detail_controller.dart';
 import '../models/content_detail_model.dart';
-import '../../contents/widgets/content_video_player.dart';
+import 'detail_ui.dart';
 
-class ContentDetailHero extends StatefulWidget {
+/// Full-bleed cover photo that collapses into a compact title bar.
+class ContentDetailHero extends GetView<ContentDetailController> {
   final ContentDetailModel item;
+  final VoidCallback onReport;
+  final VoidCallback? onPlayVideo;
 
-  const ContentDetailHero({super.key, required this.item});
+  const ContentDetailHero({
+    super.key,
+    required this.item,
+    required this.onReport,
+    this.onPlayVideo,
+  });
 
-  @override
-  State<ContentDetailHero> createState() => _ContentDetailHeroState();
-}
-
-class _ContentDetailHeroState extends State<ContentDetailHero> {
-  bool _isPlayingVideo = true;
+  static const double expandedHeight = 320;
 
   @override
   Widget build(BuildContext context) {
-    final hasVideo =
-        widget.item.youtubeUrl != null && widget.item.youtubeUrl!.isNotEmpty;
-    final coverUrl =
-        widget.item.coverImageUrl ??
-        (hasVideo ? widget.item.youtubeThumbnail : null);
+    final hasCover = item.coverImageUrl?.isNotEmpty ?? false;
+    final cover = hasCover ? item.coverImageUrl : item.youtubeThumbnailHd;
 
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF1F1713),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 16,
-              offset: const Offset(0, 6),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: _isPlayingVideo && hasVideo
-              ? ContentVideoPlayer(videoUrl: widget.item.youtubeUrl!)
-              : Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    if (coverUrl != null && coverUrl.isNotEmpty)
-                      Image.network(
-                        coverUrl,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) =>
-                            _buildPlaceholder(),
-                      )
-                    else
-                      _buildPlaceholder(),
-
-                    // Subtle gradient overlay for contrast
-                    Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Colors.black.withValues(alpha: 0.65),
-                            ],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: const [0.5, 1.0],
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    // Play Button overlay if YouTube video exists
-                    if (hasVideo && !_isPlayingVideo)
-                      Center(
-                        child: Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _isPlayingVideo = true;
-                              });
-                            },
-                            customBorder: const CircleBorder(),
-                            child: Container(
-                              padding: const EdgeInsets.all(15),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFFD96C2C), Color(0xFFED8936)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFFD96C2C)
-                                        .withValues(alpha: 0.5),
-                                    blurRadius: 16,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(
-                                Icons.play_arrow_rounded,
-                                color: Colors.white,
-                                size: 36,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                    // Video Pill Badge (Bottom Left)
-                    if (hasVideo && !_isPlayingVideo)
-                      Positioned(
-                        bottom: 12,
-                        left: 14,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.red[700]!.withValues(alpha: 0.9),
-                            borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 6,
-                              ),
-                            ],
-                          ),
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.play_circle_fill_rounded,
-                                color: Colors.white,
-                                size: 14,
-                              ),
-                              SizedBox(width: 5),
-                              Text(
-                                'วิดีโอพาเที่ยว',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+    return SliverAppBar(
+      pinned: true,
+      stretch: true,
+      expandedHeight: expandedHeight,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      foregroundColor: DetailColors.ink,
+      elevation: 0,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: _CircleButton(
+          icon: Icons.arrow_back_ios_new_rounded,
+          onTap: Get.back,
         ),
       ),
-    );
-  }
-
-  Widget _buildPlaceholder() {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFD96C2C), Color(0xFF2B1F17)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+      actions: [
+        Obx(
+          () => _CircleButton(
+            icon: controller.isFavorite.value
+                ? Icons.favorite_rounded
+                : Icons.favorite_border_rounded,
+            iconColor: controller.isFavorite.value
+                ? const Color(0xFFE5484D)
+                : null,
+            onTap: controller.toggleFavorite,
+          ),
         ),
-      ),
-      child: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.landscape_rounded, size: 48, color: Colors.white70),
-            SizedBox(height: 8),
-            Text(
-              'มหัศจรรย์เมืองกาญจนบุรี',
-              style: TextStyle(
-                color: Colors.white,
+        const SizedBox(width: 8),
+        _CircleButton(
+          icon: Icons.ios_share_rounded,
+          onTap: controller.shareContent,
+        ),
+        const SizedBox(width: 8),
+        _CircleButton(icon: Icons.more_horiz_rounded, onTap: onReport),
+        const SizedBox(width: 12),
+      ],
+      // Title only appears once the cover has collapsed.
+      title: Builder(
+        builder: (context) {
+          final settings = context
+              .dependOnInheritedWidgetOfExactType<FlexibleSpaceBarSettings>();
+          final collapsed =
+              settings != null &&
+              settings.currentExtent <= settings.minExtent + 8;
+          return AnimatedOpacity(
+            opacity: collapsed ? 1 : 0,
+            duration: const Duration(milliseconds: 180),
+            child: Text(
+              item.title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w800,
-                letterSpacing: -0.2,
+                fontWeight: FontWeight.w600,
+                color: DetailColors.ink,
               ),
             ),
+          );
+        },
+      ),
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.parallax,
+        stretchModes: const [StretchMode.zoomBackground],
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            DetailImage(
+              url: cover,
+              fallbackUrl: hasCover ? null : item.youtubeThumbnail,
+            ),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x66000000),
+                    Colors.transparent,
+                    Colors.transparent,
+                    Color(0x33000000),
+                  ],
+                  stops: [0, 0.3, 0.7, 1],
+                ),
+              ),
+            ),
+            if (onPlayVideo != null)
+              Center(
+                child: Material(
+                  color: Colors.white.withValues(alpha: 0.92),
+                  shape: const StadiumBorder(),
+                  child: InkWell(
+                    customBorder: const StadiumBorder(),
+                    onTap: onPlayVideo,
+                    child: const Padding(
+                      padding: EdgeInsets.fromLTRB(14, 10, 18, 10),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.play_arrow_rounded,
+                            color: DetailColors.brand,
+                            size: 26,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
+                            'ดูวิดีโอ',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: DetailColors.ink,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
+        ),
+      ),
+      // Rounded white lip that the content sheet continues from.
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(20),
+        child: Container(
+          height: 20,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
         ),
       ),
     );
   }
 }
 
+class _CircleButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color? iconColor;
 
+  const _CircleButton({
+    required this.icon,
+    required this.onTap,
+    this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.92),
+        shape: const CircleBorder(),
+        elevation: 0,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: SizedBox(
+            width: 38,
+            height: 38,
+            child: Icon(icon, size: 19, color: iconColor ?? DetailColors.ink),
+          ),
+        ),
+      ),
+    );
+  }
+}

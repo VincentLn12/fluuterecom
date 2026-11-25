@@ -23,7 +23,6 @@ class ShopDetailController extends GetxController {
   final isError = false.obs;
   final errorMessage = ''.obs;
 
-  final isFollowing = false.obs;
   final activeTab =
       0.obs; // 0: หน้าแรก, 1: สินค้า, 2: คอนเทนต์, 3: เกี่ยวกับ, 4: รีวิว
 
@@ -118,22 +117,6 @@ class ShopDetailController extends GetxController {
     activeTab.value = index;
   }
 
-  void toggleFollow() {
-    isFollowing.value = !isFollowing.value;
-    Get.snackbar(
-      isFollowing.value ? 'ติดตามร้านค้าแล้ว' : 'เลิกติดตามร้านค้า',
-      isFollowing.value
-          ? 'คุณจะได้รับการแจ้งเตือนโปรโมชั่นและสินค้าใหม่จากร้านนี้'
-          : 'คุณได้เลิกติดตามร้านค้านี้แล้ว',
-      snackPosition: SnackPosition.TOP,
-      backgroundColor: const Color(0xFF0F382C),
-      colorText: Colors.white,
-      duration: const Duration(seconds: 2),
-      margin: const EdgeInsets.all(12),
-      borderRadius: 12,
-    );
-  }
-
   Future<void> shareShop() async {
     final currentShop = shop.value;
     if (currentShop == null) return;
@@ -141,7 +124,7 @@ class ShopDetailController extends GetxController {
       'แชร์ร้านค้า',
       'คัดลอกลิงก์ร้านค้า "${currentShop.name}" เรียบร้อยแล้ว',
       snackPosition: SnackPosition.TOP,
-      backgroundColor: const Color(0xFF0F382C),
+      backgroundColor: const Color(0xFF0F172A),
       colorText: Colors.white,
       duration: const Duration(seconds: 2),
       margin: const EdgeInsets.all(12),
@@ -156,7 +139,7 @@ class ShopDetailController extends GetxController {
         'ไม่พบลำดับพิกัด',
         'ร้านค้านี้ยังไม่ได้ระบุพิกัดแผนที่',
         snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFFE76F51),
+        backgroundColor: const Color(0xFFC85A17),
         colorText: Colors.white,
       );
       return;

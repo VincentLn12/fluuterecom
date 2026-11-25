@@ -17,7 +17,8 @@ class ContentScheduleModel {
 
   factory ContentScheduleModel.fromJson(Map<String, dynamic> json) {
     return ContentScheduleModel(
-      scheduleId: json['scheduleId']?.toString() ?? json['id']?.toString() ?? '',
+      scheduleId:
+          json['scheduleId']?.toString() ?? json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? 'รอบกิจกรรม',
       date: json['date']?.toString() ?? json['startDate']?.toString(),
       time: json['time']?.toString() ?? json['startDateTime']?.toString(),

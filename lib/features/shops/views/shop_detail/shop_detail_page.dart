@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:projecte/shared/widgets/error_widget.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 import 'package:projecte/features/shops/controllers/shop_detail_controller.dart';
 import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_about_section.dart';
 import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_bottom_bar.dart';
@@ -11,270 +11,171 @@ import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_pr
 import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_reviews_section.dart';
 import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_skeleton.dart';
 import 'package:projecte/features/shops/views/shop_detail/widgets/shop_detail_summary_card.dart';
+import 'package:projecte/shared/widgets/error_widget.dart';
 
-class ShopDetailPage extends GetView<ShopDetailController> {
+class ShopDetailPage extends StatefulWidget {
   const ShopDetailPage({super.key});
 
   @override
+  State<ShopDetailPage> createState() => _ShopDetailPageState();
+}
+
+class _ShopDetailPageState extends State<ShopDetailPage> {
+  final controller = Get.find<ShopDetailController>();
+
+  // Section anchors for the pinned shortcut bar, in display order.
+  final _productsKey = GlobalKey();
+  final _storiesKey = GlobalKey();
+  final _aboutKey = GlobalKey();
+  final _reviewsKey = GlobalKey();
+  int _activeSection = 0;
+
+  Future<void> _scrollTo(GlobalKey key, int index) async {
+    setState(() => _activeSection = index);
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    await Scrollable.ensureVisible(
+      ctx,
+      duration: const Duration(milliseconds: 450),
+      curve: Curves.easeOutCubic,
+      // Land just under the pinned app bar + shortcut bar.
+      alignmentPolicy: ScrollPositionAlignmentPolicy.explicit,
+      alignment: 0.12,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFF3F7F5),
-      body: Obx(() {
-        final shop = controller.shop.value;
-        final isLoading = controller.isLoading.value;
-        final isError = controller.isError.value;
+    return Obx(() {
+      final shop = controller.shop.value;
 
-        // 1. Loading State (Skeleton)
-        if (isLoading && shop == null) {
-          return const ShopDetailSkeleton();
-        }
-
-        // 2. Error State
-        if (isError || shop == null) {
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: const Color(0xFF0F382C),
-              foregroundColor: Colors.white,
-              title: const Text('ไม่พบข้อมูลร้านค้า'),
-            ),
-            body: Center(
-              child: CustomErrorWidget(
-                message: controller.errorMessage.value.isNotEmpty
-                    ? controller.errorMessage.value
-                    : 'ไม่สามารถโหลดข้อมูลร้านค้าได้',
-                onRetry: () {
-                  final args = Get.arguments;
-                  if (args != null) {
-                    controller.loadShopDetailAndProducts(
-                      args is String ? args : args.id,
-                    );
-                  }
-                },
-              ),
-            ),
-          );
-        }
-
-        // 3. Main Loaded View
-        return Stack(
-          children: [
-            RefreshIndicator(
-              onRefresh: () async {
-                await controller.loadShopDetailAndProducts(shop.id);
+      if (controller.isLoading.value && shop == null) {
+        return const ShopDetailSkeleton();
+      }
+      if (controller.isError.value || shop == null) {
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            foregroundColor: DetailColors.ink,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+          ),
+          body: Center(
+            child: CustomErrorWidget(
+              message: controller.errorMessage.value.isNotEmpty
+                  ? controller.errorMessage.value
+                  : 'ไม่สามารถโหลดข้อมูลร้านค้าได้',
+              onRetry: () {
+                final args = Get.arguments;
+                final id = args is String
+                    ? args
+                    : (args?.id as String?) ?? Get.parameters['id'];
+                if (id != null) controller.loadShopDetailAndProducts(id);
               },
-              color: const Color(0xFF2A9D8F),
-              backgroundColor: Colors.white,
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                slivers: [
-                  // App Bar with Hero Image Banner
-                  SliverAppBar(
-                    expandedHeight: 220.0,
-                    pinned: true,
-                    backgroundColor: const Color(0xFF0F382C),
-                    foregroundColor: Colors.white,
-                    title: Text(
-                      shop.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+            ),
+          ),
+        );
+      }
+
+      final hasPhone = shop.phone?.trim().isNotEmpty ?? false;
+      final sections = [
+        (_productsKey, ShopNavItem('สินค้า', controller.products.length)),
+        if (controller.shopContents.isNotEmpty)
+          (
+            _storiesKey,
+            ShopNavItem('เรื่องราว', controller.shopContents.length),
+          ),
+        (_aboutKey, const ShopNavItem('ข้อมูลร้าน')),
+        (_reviewsKey, ShopNavItem('รีวิว', controller.reviews.length)),
+      ];
+      final active = _activeSection.clamp(0, sections.length - 1);
+
+      return Scaffold(
+        backgroundColor: Colors.white,
+        bottomNavigationBar: ShopDetailBottomBar(
+          onCall: hasPhone ? () => controller.makePhoneCall(shop.phone!) : null,
+          onDirections: controller.openDirections,
+        ),
+        body: RefreshIndicator(
+          onRefresh: () => controller.loadShopDetailAndProducts(shop.id),
+          color: DetailColors.brand,
+          edgeOffset: MediaQuery.paddingOf(context).top + kToolbarHeight,
+          child: CustomScrollView(
+            slivers: [
+              ShopDetailHero(shop: shop, onShare: controller.shareShop),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: ShopDetailHeaderCard(
+                    shop: shop,
+                    rating: controller.averageRating,
+                    reviewCount: controller.reviewCount,
+                    productCount: controller.products.length,
+                    onRatingTap: () =>
+                        _scrollTo(_reviewsKey, sections.length - 1),
+                    onProductsTap: () => _scrollTo(_productsKey, 0),
+                  ),
+                ),
+              ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: ShopDetailNavTabs(
+                  items: [for (final s in sections) s.$2],
+                  activeIndex: active,
+                  onSelected: (i) => _scrollTo(sections[i].$1, i),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 12),
+                    KeyedSubtree(
+                      key: _productsKey,
+                      child: ShopDetailProductsSection(
+                        products: controller.filteredProducts,
+                        totalCount: controller.products.length,
+                        searchQuery: controller.productSearchQuery.value,
+                        onSearchChanged: controller.setSearchQuery,
+                        sortOption: controller.productSortOption.value,
+                        onSortChanged: controller.setSortOption,
                       ),
                     ),
-                    leading: Container(
-                      margin: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.45),
-                        shape: BoxShape.circle,
-                      ),
-                      child: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_rounded,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                        onPressed: () => Get.back(),
-                      ),
-                    ),
-                    actions: [
-                      Container(
-                        margin: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withValues(alpha: 0.45),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.share_rounded,
-                            color: Colors.white,
-                            size: 19,
-                          ),
-                          onPressed: controller.shareShop,
+                    if (controller.shopContents.isNotEmpty) ...[
+                      const DetailDivider(),
+                      KeyedSubtree(
+                        key: _storiesKey,
+                        child: ShopDetailContentSection(
+                          contents: controller.shopContents,
                         ),
                       ),
                     ],
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: ShopDetailHero(shop: shop),
-                    ),
-                  ),
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 14)),
-
-                  // Main Store Header Card (Logo, Title, Badges, Stats, Actions)
-                  SliverToBoxAdapter(
-                    child: Obx(
-                      () => ShopDetailHeaderCard(
+                    const DetailDivider(),
+                    KeyedSubtree(
+                      key: _aboutKey,
+                      child: ShopDetailAboutSection(
                         shop: shop,
-                        rating: controller.averageRating,
-                        reviewCount: controller.reviewCount,
-                        productCount: controller.products.length,
-                        isFollowing: controller.isFollowing.value,
-                        onToggleFollow: controller.toggleFollow,
-                        onShare: controller.shareShop,
+                        onCallPhone: controller.makePhoneCall,
                         onDirections: controller.openDirections,
                       ),
                     ),
-                  ),
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 14)),
-
-                  // Navigation Tabs Bar
-                  SliverToBoxAdapter(
-                    child: Obx(
-                      () => ShopDetailNavTabs(
-                        activeIndex: controller.activeTab.value,
-                        onTabSelected: controller.setActiveTab,
-                        productCount: controller.products.length,
-                        contentCount: controller.shopContents.length,
-                        reviewCount: controller.reviews.length,
+                    const DetailDivider(),
+                    KeyedSubtree(
+                      key: _reviewsKey,
+                      child: ShopDetailReviewsSection(
+                        reviews: controller.reviews,
+                        averageRating: controller.averageRating,
                       ),
                     ),
-                  ),
-
-                  const SliverToBoxAdapter(child: SizedBox(height: 14)),
-
-                  // Main Content Body based on Selected Tab
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 140),
-                    sliver: SliverToBoxAdapter(
-                      child: Obx(() {
-                        final activeTab = controller.activeTab.value;
-
-                        switch (activeTab) {
-                          case 1:
-                            // Tab 1: Products
-                            return ShopDetailProductsSection(
-                              products: controller.filteredProducts,
-                              searchQuery: controller.productSearchQuery.value,
-                              onSearchChanged: controller.setSearchQuery,
-                              sortOption: controller.productSortOption.value,
-                              onSortChanged: controller.setSortOption,
-                            );
-
-                          case 2:
-                            // Tab 2: Content Stories
-                            return ShopDetailContentSection(
-                              contents: controller.shopContents,
-                            );
-
-                          case 3:
-                            // Tab 3: About
-                            return ShopDetailAboutSection(
-                              shop: shop,
-                              onCallPhone: (phone) {
-                                if (shop.phone != null) {
-                                  controller.makePhoneCall(phone);
-                                }
-                              },
-                            );
-
-                          case 4:
-                            // Tab 4: Reviews
-                            return ShopDetailReviewsSection(
-                              reviews: controller.reviews,
-                              averageRating: controller.averageRating,
-                            );
-
-                          case 0:
-                          default:
-                            // Tab 0: Overview (All Combined Sections)
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Content Section (Hides if empty)
-                                ShopDetailContentSection(
-                                  contents: controller.shopContents,
-                                ),
-                                if (controller.shopContents.isNotEmpty)
-                                  const SizedBox(height: 16),
-
-                                // Featured Products Grid Section
-                                ShopDetailProductsSection(
-                                  products: controller.filteredProducts,
-                                  searchQuery:
-                                      controller.productSearchQuery.value,
-                                  onSearchChanged: controller.setSearchQuery,
-                                  sortOption:
-                                      controller.productSortOption.value,
-                                  onSortChanged: controller.setSortOption,
-                                ),
-                                const SizedBox(height: 18),
-
-                                // About Section
-                                ShopDetailAboutSection(
-                                  shop: shop,
-                                  onCallPhone: (phone) {
-                                    if (shop.phone != null) {
-                                      controller.makePhoneCall(phone);
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 24),
-
-                                // Customer Reviews Section
-                                ShopDetailReviewsSection(
-                                  reviews: controller.reviews,
-                                  averageRating: controller.averageRating,
-                                ),
-                              ],
-                            );
-                        }
-                      }),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            // Sticky Bottom Action Bar for Mobile
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Obx(
-                () => ShopDetailBottomBar(
-                  isFollowing: controller.isFollowing.value,
-                  onToggleFollow: controller.toggleFollow,
-                  onCall: () {
-                    if (shop.phone != null && shop.phone!.isNotEmpty) {
-                      controller.makePhoneCall(shop.phone!);
-                    } else {
-                      Get.snackbar(
-                        'ไม่มีเบอร์โทรศัพท์',
-                        'ร้านค้านี้ยังไม่ได้ระบุเบอร์โทรศัพท์',
-                        snackPosition: SnackPosition.TOP,
-                      );
-                    }
-                  },
-                  onDirections: controller.openDirections,
+                    const SizedBox(height: 32),
+                  ],
                 ),
               ),
-            ),
-          ],
-        );
-      }),
-    );
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

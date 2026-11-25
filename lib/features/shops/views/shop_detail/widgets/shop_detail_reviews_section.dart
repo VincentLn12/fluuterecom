@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:projecte/shared/widgets/empty_widget.dart';
+import 'package:projecte/features/content_detail/widgets/detail_ui.dart';
 import 'package:projecte/features/shops/models/shop_review_model.dart';
 
-class ShopDetailReviewsSection extends StatelessWidget {
+/// Rating summary and customer reviews (with shop replies).
+class ShopDetailReviewsSection extends StatefulWidget {
   final List<ShopReviewModel> reviews;
   final double averageRating;
 
@@ -13,330 +14,325 @@ class ShopDetailReviewsSection extends StatelessWidget {
   });
 
   @override
+  State<ShopDetailReviewsSection> createState() =>
+      _ShopDetailReviewsSectionState();
+}
+
+class _ShopDetailReviewsSectionState extends State<ShopDetailReviewsSection> {
+  static const _preview = 3;
+  bool _showAll = false;
+
+  @override
   Widget build(BuildContext context) {
-    int countStar(int star) =>
-        reviews.where((r) => r.rating.round() == star).length;
-    double ratioStar(int star) =>
-        reviews.isEmpty ? 0.0 : countStar(star) / reviews.length;
+    final reviews = widget.reviews;
+
+    if (reviews.isEmpty) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const DetailSectionTitle(title: 'รีวิวจากลูกค้า'),
+          Container(
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
+            decoration: BoxDecoration(
+              color: DetailColors.canvas,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Column(
+              children: [
+                Icon(
+                  Icons.reviews_outlined,
+                  size: 32,
+                  color: DetailColors.muted,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'ยังไม่มีรีวิว',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: DetailColors.ink,
+                  ),
+                ),
+                SizedBox(height: 2),
+                Text(
+                  'รีวิวจะแสดงหลังลูกค้าได้รับสินค้าจากร้านนี้',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 13, color: DetailColors.muted),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    final visible = _showAll ? reviews : reviews.take(_preview).toList();
+    final counts = List<int>.filled(5, 0);
+    for (final r in reviews) {
+      counts[r.rating.round().clamp(1, 5) - 1]++;
+    }
+    final maxCount = counts.reduce((a, b) => a > b ? a : b);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Section Header
-        Row(
-          children: [
-            Container(
-              width: 4.5,
-              height: 22,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE9C46A),
-                borderRadius: BorderRadius.circular(3),
-              ),
-            ),
-            const SizedBox(width: 10),
-            const Text(
-              'รีวิวจากผู้ซื้อจริง',
-              style: TextStyle(
-                fontSize: 21,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF0D2B22),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 14),
-
-        // Rating Overview Card
-        Container(
-          padding: const EdgeInsets.all(18),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: const Color(0xFFE0EAE6), width: 1.2),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
+        const DetailSectionTitle(title: 'รีวิวจากลูกค้า'),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Row(
             children: [
-              // Score Box
-              Column(
-                children: [
-                  Text(
-                    reviews.isNotEmpty
-                        ? averageRating.toStringAsFixed(1)
-                        : '0.0',
-                    style: const TextStyle(
-                      fontSize: 38,
-                      fontWeight: FontWeight.w900,
-                      color: Color(0xFF0D2B22),
-                      height: 1.0,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: List.generate(
-                      5,
-                      (index) => Icon(
-                        Icons.star_rounded,
-                        color: index < averageRating.floor()
-                            ? const Color(0xFFE9C46A)
-                            : Colors.grey[300],
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${reviews.length} ความคิดเห็น',
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF5A7B70),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 20),
-              Container(width: 1, height: 75, color: const Color(0xFFE0EAE6)),
-              const SizedBox(width: 20),
-
-              // Star Breakdown Progress Bars
-              Expanded(
+              SizedBox(
+                width: 96,
                 child: Column(
                   children: [
-                    _buildStarBar(5, ratioStar(5)),
-                    _buildStarBar(4, ratioStar(4)),
-                    _buildStarBar(3, ratioStar(3)),
-                    _buildStarBar(2, ratioStar(2)),
-                    _buildStarBar(1, ratioStar(1)),
+                    Text(
+                      widget.averageRating.toStringAsFixed(1),
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w700,
+                        color: DetailColors.ink,
+                        height: 1.1,
+                      ),
+                    ),
+                    _Stars(rating: widget.averageRating, size: 15),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${reviews.length} รีวิว',
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        color: DetailColors.muted,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 16),
-
-        // Review List Cards or Empty State
-        if (reviews.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20.0),
-            child: EmptyWidget(
-              title: 'ยังไม่มีรีวิวสำหรับร้านนี้',
-              message:
-                  'ร้านค้านี้ยังไม่มีความคิดเห็นหรือรีวิวจากผู้ซื้อในขณะนี้',
-              icon: Icons.star_outline_rounded,
-            ),
-          )
-        else
-          ListView.separated(
-            padding: EdgeInsets.zero,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: reviews.length,
-            separatorBuilder: (context, index) => const SizedBox(height: 12),
-            itemBuilder: (context, index) {
-              final review = reviews[index];
-
-              return Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE0EAE6)),
-                ),
+              const SizedBox(width: 16),
+              Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // User Avatar & Name
-                    Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: const Color(
-                            0xFF2A9D8F,
-                          ).withValues(alpha: 0.15),
-                          child: Text(
-                            review.userName.isNotEmpty
-                                ? review.userName[0]
-                                : 'U',
-                            style: const TextStyle(
-                              color: Color(0xFF2A9D8F),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    review.userName,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF0D2B22),
-                                    ),
-                                  ),
-                                  if (review.isVerifiedBuyer) ...[
-                                    const SizedBox(width: 6),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 1.5,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(
-                                          0xFF2A9D8F,
-                                        ).withValues(alpha: 0.12),
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      child: const Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            Icons.check_circle,
-                                            size: 11,
-                                            color: Color(0xFF2A9D8F),
-                                          ),
-                                          SizedBox(width: 3),
-                                          Text(
-                                            'ผู้ซื้อจริง',
-                                            style: TextStyle(
-                                              fontSize: 10.5,
-                                              fontWeight: FontWeight.bold,
-                                              color: Color(0xFF2A9D8F),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                              const SizedBox(height: 2),
-                              Row(
-                                children: [
-                                  ...List.generate(
-                                    5,
-                                    (i) => Icon(
-                                      Icons.star_rounded,
-                                      size: 14,
-                                      color: i < review.rating.floor()
-                                          ? const Color(0xFFE9C46A)
-                                          : Colors.grey[300],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Review Comment
-                    Text(
-                      review.comment,
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Color(0xFF334E45),
-                        height: 1.4,
-                      ),
-                    ),
-
-                    // Shop Owner Reply Box (if any)
-                    if (review.ownerReply != null &&
-                        review.ownerReply!.isNotEmpty) ...[
-                      const SizedBox(height: 12),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF3F7F5),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: const Color(
-                              0xFF2A9D8F,
-                            ).withValues(alpha: 0.2),
-                          ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    for (var star = 5; star >= 1; star--)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
                           children: [
-                            const Row(
-                              children: [
-                                Icon(
-                                  Icons.reply_rounded,
-                                  size: 15,
-                                  color: Color(0xFF2A9D8F),
+                            SizedBox(
+                              width: 12,
+                              child: Text(
+                                '$star',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: DetailColors.muted,
                                 ),
-                                SizedBox(width: 6),
-                                Text(
-                                  'คำตอบจากร้านค้า',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color(0xFF2A9D8F),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                            const SizedBox(height: 5),
-                            Text(
-                              review.ownerReply!,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF0D2B22),
+                            const SizedBox(width: 6),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(3),
+                                child: LinearProgressIndicator(
+                                  value: maxCount == 0
+                                      ? 0
+                                      : counts[star - 1] / maxCount,
+                                  minHeight: 6,
+                                  backgroundColor: DetailColors.canvas,
+                                  color: DetailColors.star,
+                                ),
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
                   ],
                 ),
-              );
-            },
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        for (final r in visible) _ReviewTile(item: r),
+        if (reviews.length > _preview)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 0),
+            child: OutlinedButton(
+              onPressed: () => setState(() => _showAll = !_showAll),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: DetailColors.ink,
+                side: const BorderSide(color: DetailColors.line),
+                minimumSize: const Size.fromHeight(46),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                _showAll
+                    ? 'ย่อรีวิว'
+                    : 'ดูรีวิวทั้งหมด ${reviews.length} รายการ',
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+            ),
           ),
       ],
     );
   }
+}
 
-  Widget _buildStarBar(int starNum, double progress) {
+class _ReviewTile extends StatelessWidget {
+  final ShopReviewModel item;
+  const _ReviewTile({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasAvatar = item.userAvatar?.isNotEmpty ?? false;
+    final initial = item.userName.isNotEmpty
+        ? item.userName.characters.first.toUpperCase()
+        : 'U';
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1.5),
+      padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$starNum',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+          CircleAvatar(
+            radius: 19,
+            backgroundColor: DetailColors.brandSoft,
+            backgroundImage: hasAvatar ? NetworkImage(item.userAvatar!) : null,
+            child: hasAvatar
+                ? null
+                : Text(
+                    initial,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: DetailColors.brand,
+                    ),
+                  ),
           ),
-          const SizedBox(width: 4),
-          const Icon(Icons.star_rounded, size: 12, color: Color(0xFFE9C46A)),
-          const SizedBox(width: 6),
+          const SizedBox(width: 12),
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 6,
-                backgroundColor: const Color(0xFFE0EAE6),
-                color: const Color(0xFFE9C46A),
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                      child: Text(
+                        item.userName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w600,
+                          color: DetailColors.ink,
+                        ),
+                      ),
+                    ),
+                    if (item.isVerifiedBuyer) ...[
+                      const SizedBox(width: 6),
+                      const Icon(
+                        Icons.verified_rounded,
+                        size: 14,
+                        color: Color(0xFF16A34A),
+                      ),
+                      const SizedBox(width: 2),
+                      const Text(
+                        'ซื้อแล้ว',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF16A34A),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    _Stars(rating: item.rating, size: 13),
+                    const SizedBox(width: 8),
+                    Text(
+                      formatThaiDate(item.createdAt.toIso8601String()),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: DetailColors.muted,
+                      ),
+                    ),
+                  ],
+                ),
+                if (item.comment.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    item.comment,
+                    style: const TextStyle(
+                      fontSize: 14.5,
+                      color: DetailColors.body,
+                      height: 1.55,
+                    ),
+                  ),
+                ],
+                if (item.ownerReply?.isNotEmpty ?? false)
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: DetailColors.canvas,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'ตอบกลับจากร้าน',
+                          style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w600,
+                            color: DetailColors.brand,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          item.ownerReply!,
+                          style: const TextStyle(
+                            fontSize: 13.5,
+                            color: DetailColors.body,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _Stars extends StatelessWidget {
+  final double rating;
+  final double size;
+  const _Stars({required this.rating, required this.size});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (i) {
+        final icon = rating >= i + 1
+            ? Icons.star_rounded
+            : rating > i
+            ? Icons.star_half_rounded
+            : Icons.star_outline_rounded;
+        return Icon(
+          icon,
+          size: size,
+          color: rating > i ? DetailColors.star : DetailColors.line,
+        );
+      }),
     );
   }
 }
